@@ -1,0 +1,21 @@
+clc 
+close all
+
+hall_effect = load("hall_effect_data.csv");
+pressure = load("pressure_data.csv");
+
+distance = hall_effect(:, 1);
+polarity_1 = hall_effect(:, 2);
+polarity_2 = hall_effect(:, 4);
+
+weight = pressure(:, 1);
+sensor_reading = pressure(:, 2);
+
+plot(weight, sensor_reading)
+title("Resistive Pressure Sensor Calibration")
+xlabel("Weight (g)")
+ylabel("Sensor Reading (0-1023)")
+
+plot(distance, polarity_1)
+hold on
+plot(distance, polarity_2)

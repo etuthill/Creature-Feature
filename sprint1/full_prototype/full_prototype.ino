@@ -14,18 +14,23 @@ const int greenLED = 10;
 const int blueLED = 9;
 
 // motor speed/angle constraints
-int minAngle = 0;
-int maxAngle = 90;
+int minAngle1 = 60;  // servo1 range
+int maxAngle1 = 90;
+
+int minAngle2 = 60; // servo2 range 
+int maxAngle2 = 90;
+
 float stepSize = 1;
 int delayTime = 15;   // motion speed (ms between steps)
 
 // store current servo positions
-float currentPos1 = 0;
-float currentPos2 = 90;
+float currentPos1 = minAngle1;
+float currentPos2 = minAngle2;
 
 // motion tracking
 unsigned long previousMillis = 0;
-int direction = 1;
+int direction1 = 1;
+int direction2 = -1;  // can start opposite if you like
 
 void setup() {
   delay(1000);
@@ -59,23 +64,32 @@ void loop() {
   unsigned long currentMillis = millis();
 
   if (irValue < 550) { // object detected
-    // run motors in opposite directions (non-blocking)
     if (currentMillis - previousMillis >= delayTime) {
       previousMillis = currentMillis;
 
-      servo1.write(currentPos1);
-      servo2.write(maxAngle - currentPos1);
-
-      currentPos1 += direction * stepSize;
-      if (currentPos1 >= maxAngle) {
-        currentPos1 = maxAngle;
-        direction = -1;
-      } else if (currentPos1 <= minAngle) {
-        currentPos1 = minAngle;
-        direction = 1;
+      // update servo 1
+      currentPos1 += direction1 * stepSize;
+      if (currentPos1 >= maxAngle1) {
+        currentPos1 = maxAngle1;
+        direction1 = -1;
+      } else if (currentPos1 <= minAngle1) {
+        currentPos1 = minAngle1;
+        direction1 = 1;
       }
 
-      currentPos2 = maxAngle - currentPos1;
+      // update servo 2 independently
+      currentPos2 += direction2 * stepSize;
+      if (currentPos2 >= maxAngle2) {
+        currentPos2 = maxAngle2;
+        direction2 = -1;
+      } else if (currentPos2 <= minAngle2) {
+        currentPos2 = minAngle2;
+        direction2 = 1;
+      }
+
+      // write both
+      servo1.write(currentPos1);
+      servo2.write(currentPos2);
     }
 
     // green LED
