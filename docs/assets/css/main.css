@@ -100,12 +100,16 @@ html {
 
 body {
     background-color: #281C42;
-    background-image: url("images/overlay4.png"); 
-    background-image: url("images/overlay4.png"), -moz-linear-gradient(45deg, #421C3B 15%, #281C42 85%); 
-    background-image: url("images/overlay4.png"), linear-gradient(45deg, #421C3B 15%, #281C42 85%); 
-    background-repeat: no-repeat;
-    background-size: cover;
+    background-image: 
+        url("images/overlay4.png"),
+        linear-gradient(45deg, #421C3B 15%, #281C42 85%);
+    background-repeat: no-repeat, no-repeat;   
+    background-size: cover, cover;          
+    background-position: center, center;=
+    background-attachment: fixed, fixed;     
+	background-blend-mode: overlay;
 }
+
 
 body.is-preload *,
 body.is-preload *:before,
