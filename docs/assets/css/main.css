@@ -2167,7 +2167,7 @@ input, select, textarea {
 
 		select option {
 			color: #ffffff;
-			background: #935d8c;
+			background: #B34AA6;
 		}
 
 	input[type="checkbox"] + label,
@@ -2185,7 +2185,7 @@ input, select, textarea {
 	input[type="radio"]:checked + label:before {
 		background-color: #ffffff;
 		border-color: #ffffff;
-		color: #935d8c;
+		color: #B34AA6;
 	}
 
 	input[type="checkbox"]:focus + label:before,
