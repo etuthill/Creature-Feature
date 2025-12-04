@@ -3762,11 +3762,13 @@ input, select, textarea {
 
 /* Wrapper */
 
-	#wrapper {
-		width: 64em;
-		max-width: calc(100% - 4em);
-		margin: 0 auto;
-	}
+#wrapper {
+    width: 100%;
+    max-width: 64em; /* optional: caps the width on large screens */
+    margin: 0 auto;
+    min-height: 100vh; /* ensures background stretches full height */
+}
+
 
 		@media screen and (max-width: 480px) {
 
