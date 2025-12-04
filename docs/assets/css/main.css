@@ -103,10 +103,11 @@ body {
     background-image: 
         url("images/overlay4.png"),
         linear-gradient(45deg, #421C3B 15%, #281C42 85%);
-    background-repeat: no-repeat, no-repeat;
-    background-size: cover, cover;
-    background-position: center, center;
-    background-blend-mode: overlay;
+    background-repeat: no-repeat, no-repeat;   
+    background-size: cover, cover;          
+    background-position: center, center;=
+    background-attachment: fixed, fixed;     
+	background-blend-mode: overlay;
 }
 
 
