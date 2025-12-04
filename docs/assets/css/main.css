@@ -100,10 +100,11 @@ html {
 
 body {
     background-color: #281C42;
-    background-image: url("images/overlay4.png"), -moz-linear-gradient(45deg, #421C3B 15%, #281C42 85%);
-    background-image: url("images/overlay4.png"), -webkit-linear-gradient(45deg, #421C3B 15%, #281C42 85%);
-    background-image: url("images/overlay4.png"), -ms-linear-gradient(45deg, #421C3B 15%, #281C42 85%);
-    background-image: url("images/overlay4.png"), linear-gradient(45deg, #421C3B 15%, #281C42 85%);
+    background-image: url("images/overlay4.png"); 
+    background-image: url("images/overlay4.png"), -moz-linear-gradient(45deg, #421C3B 15%, #281C42 85%); 
+    background-image: url("images/overlay4.png"), linear-gradient(45deg, #421C3B 15%, #281C42 85%); 
+    background-repeat: no-repeat;
+    background-size: cover;
 }
 
 body.is-preload *,
