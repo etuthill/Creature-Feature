@@ -99,26 +99,14 @@ html {
 }
 
 body {
-    position: relative;
-    min-height: 100vh;
-    margin: 0;
-    background: linear-gradient(45deg, #421C3B 15%, #281C42 85%);
-    color: rgba(255, 255, 255, 0.65);
-    font-family: "Source Sans Pro", Helvetica, sans-serif;
-    font-weight: 300;
-    font-size: 17pt;
-    line-height: 1.65;
-}
-
-body::before {
-    content: "";
-    position: fixed;      
-    top: 0; left: 0; right: 0; bottom: 0;
-    background: url("images/overlay4.png") no-repeat center center;
-    background-size: cover; 
-    opacity: 0.25;        
-    pointer-events: none;    
-    z-index: -1;     
+    background-color: #281C42;
+    background-image: 
+        url("images/overlay4.png"),
+        linear-gradient(45deg, #421C3B 15%, #281C42 85%);
+    background-repeat: no-repeat, no-repeat;
+    background-size: cover, cover;
+    background-position: center, center;
+    background-blend-mode: overlay;
 }
 
 
