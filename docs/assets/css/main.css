@@ -7,8 +7,6 @@
     Free for personal and commercial use under the CCA 3.0 license (html5up.net/license)
 */
 
-/* Reset / Normalize */
-
 html, body, div, span, applet, object, iframe,
 h1, h2, h3, h4, h5, h6, p, blockquote, pre,
 a, abbr, acronym, address, big, cite, code, del,
@@ -100,28 +98,17 @@ html {
     box-sizing: inherit;
 }
 
-/* Background */
-
 body {
     background-color: #B34AA6;
-    background-image: 
-        url("images/overlay3.png"),
-        -moz-linear-gradient(45deg, #421C3B 15%, #281C42 85%);
-    background-image: 
-        url("images/overlay3.png"),
-        -webkit-linear-gradient(45deg, #421C3B 15%, #281C42 85%);
-    background-image: 
-        url("images/overlay3.png"),
-        -ms-linear-gradient(45deg, #421C3B 15%, #281C42 85%);
-    background-image: 
-        url("images/overlay3.png"),
-        linear-gradient(45deg, #421C3B 15%, #281C42 85%);
+    background-image: url("images/overlay3.png"), -moz-linear-gradient(45deg, #421C3B 15%, #281C42 85%);
+    background-image: url("images/overlay3.png"), -webkit-linear-gradient(45deg, #421C3B 15%, #281C42 85%);
+    background-image: url("images/overlay3.png"), -ms-linear-gradient(45deg, #421C3B 15%, #281C42 85%);
+    background-image: url("images/overlay3.png"), linear-gradient(45deg, #421C3B 15%, #281C42 85%);
 }
 
-body.is-preload *, 
-body.is-preload *:before, 
+body.is-preload *,
+body.is-preload *:before,
 body.is-preload *:after {
-
 			-moz-animation: none !important;
 			-webkit-animation: none !important;
 			-ms-animation: none !important;
