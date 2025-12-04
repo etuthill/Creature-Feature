@@ -121,8 +121,6 @@ body {
 body.is-preload *, 
 body.is-preload *:before, 
 body.is-preload *:after {
-    /* preloading styles go here */
-}
 
 			-moz-animation: none !important;
 			-webkit-animation: none !important;
