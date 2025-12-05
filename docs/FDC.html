@@ -47,29 +47,13 @@
 									<img src = "images/firmware-flowchart.png" width = "auto" height = "1000" display = "block" left-margin = "auto" right-margin = "auto" alt = "flow-chart">
 								</div>
 								<p>
-									Above is a high level flowchart of the firmware. The Lift/Claw Arduino referenced in the flowchart is the Arduino that has the Adafruit Motor Shield attached to it. 
-									The Gantry Arduino referenced in the flowchart is the Arduino that has the CNC shield attached to it. As said in the Electrical Design Analysis section, the two Arduinos 
-									communicate with each other through I2C. For our use case, we transmit integers between the Arduinos as signals. For example, as shown above in the flowchart, the 
-									Lift/Claw Arduino lets the Gantry Arduino know if it should be using the joystick input to control the gantry or to transmit the input to the Lift/Claw Arduino to control 
-									the lift by sending either a 21 or 22 over I2C. The initial state of the system has modeType set to true and sets the initial received value in the Gantry Arduino to 21, 
-									meaning the initial state of the system is set so the joystick controls the gantry. 
+									Description 
 								</p>
-								<h3>How the Motors are Controlled</h3>
+								<h3>Title</h3>
 								<p>
-									The firmware uses the Adafruit Motor Shield library to run the DC motors connected to the Adafruit Motor Shield Arduino, the Lift/Claw Arduino referenced in the flowchart. 
-									For the stepper motors, we needed to create a way to control the stepper motors using joystick inputs. 
+									Description
 								</p>
-								<p>
-									The stepper motors have their direction of rotation set through a direction pin. Setting the pin to HIGH makes the motor spin clockwise. Setting the pin to LOW makes the motor 
-									spin counter-clockwise. The speed of the stepper motors is controlled by the frequency of HIGH pulses sent to a step pin. In the Gantry Arduino firmware, we use micros() to 
-									keep track of how much time has elapsed. We then use booleans to keep track of the pulse of the step pin, HIGH or LOW. We then have a variable, delayStepper, to set how many 
-									microseconds should be between HIGH and LOW pulse, allowing us to control the frequency and subsequently the speed of the stepper motors.
-								</p>
-								<p>
-									Let’s run through a hypothetical scenario. Let’s say the user holds the joystick to the right. The x-axis motors have their direction pin set to LOW. It then continuously checks 
-									if delayStepper microseconds have elapsed. If it has, the program toggles the step pin pulse (from HIGH to LOW or LOW to HIGH). This cycle continues as long as the joystick is 
-									held right, allowing the gantry to move right while the joystick is held right. 
-								</p>
+
 							</section>
                             <section id="content" class="main">
 								<h2>Source Code</h2>
