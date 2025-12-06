@@ -142,10 +142,12 @@ def draw_rgb565_file(s, filename):
     with open(filename, "rb") as f:
         raw = f.read()
 
-    expected = 96 * 64 * 2
-    if len(raw) != expected:
-        print("File is wrong size:", len(raw), "expected", expected)
+    if len(raw) != 4 + 96 * 64 * 2:
+        print("File is wrong size:", len(raw))
         return
+
+    # skip 4-byte header
+    raw_pixels = raw[4:]
 
     send_cmd(s, 0x15)
     send_cmd(s, 0)
@@ -159,9 +161,9 @@ def draw_rgb565_file(s, filename):
 
     out = bytearray()
     append = out.extend
-    for i in range(0, len(raw), 2):
-        hi = raw[i] # high byte of RGB565 pixel
-        lo = raw[i+1] # low byte of RGB565 pixel
+    for i in range(0, len(raw_pixels), 2):
+        hi = raw_pixels[i] # high byte of RGB565 pixel
+        lo = raw_pixels[i+1] # low byte of RGB565 pixel
         pixel = (hi << 8) | lo # combine into a 16-bit integer
 
         # 5-bit red, 6-bit green, 5-bit blue components from RGB565
