@@ -16,6 +16,9 @@ def rgb888_to_rgb565(r, g, b):
 
 def process_image(path, out_path):
     img = Image.open(path).convert("RGB")
+
+    img = img.transpose(Image.ROTATE_270)
+
     width, height = img.size
     pixels = img.load()
 
@@ -28,6 +31,7 @@ def process_image(path, out_path):
                 r, g, b = pixels[x, y]
                 rgb565 = rgb888_to_rgb565(r, g, b)
                 f.write(rgb565.to_bytes(2, "little"))
+
 
 
 def process_folder(input_folder, output_folder):
