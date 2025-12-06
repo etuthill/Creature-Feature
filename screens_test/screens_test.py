@@ -197,8 +197,8 @@ for scr in screens:
     power_on_displays(scr)
 
 # show images on both screens
-draw_rgb565_file(screens[0], "../eyes/animations/normal_blink/eye_test_rgb565/left/normal_blink_closed_left.rgb565")
-draw_rgb565_file(screens[1], "../eyes/animations/normal_blink/eye_test_rgb565/right/normal_blink_closed_right.rgb565")
+draw_rgb565_file(screens[0], "../eyes/eye_test_rgb565/left/normal_blink_closed_left.rgb565")
+draw_rgb565_file(screens[1], "../eyes/normal_blink/eye_test_rgb565/right/normal_blink_closed_right.rgb565")
 
 time.sleep(10)  # display for 10 seconds
 
