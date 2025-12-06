@@ -1,6 +1,9 @@
 import os
 from PIL import Image
 
+TARGET_WIDTH = 64
+TARGET_HEIGHT = 96
+
 INPUT_RIGHT = "animations/normal_blink/right_side"
 INPUT_LEFT = "animations/normal_blink/left_side"
 
@@ -8,21 +11,21 @@ OUTPUT_BASE = "eye_test_rgb565"
 OUTPUT_RIGHT = os.path.join(OUTPUT_BASE, "right")
 OUTPUT_LEFT = os.path.join(OUTPUT_BASE, "left")
 
-def rgb888_to_rgb565(r, g, b):
-    """
-    Convert 8-bit RGB to 16-bit RGB565.
-    """
-    return ((r & 0xF8) << 8) | ((g & 0xFC) << 3) | (b >> 3)
 
+def rgb888_to_rgb565(r, g, b):
+    """Convert 8-bit RGB to 16-bit RGB565."""
+    return ((r & 0xF8) << 8) | ((g & 0xFC) << 3) | (b >> 3)
 def process_image(path, out_path):
     img = Image.open(path).convert("RGB")
 
-    img = img.transpose(Image.ROTATE_270)
+    # resize to target dimensions
+    img = img.resize((TARGET_WIDTH, TARGET_HEIGHT), Image.NEAREST)
 
     width, height = img.size
     pixels = img.load()
 
     with open(out_path, "wb") as f:
+        # 4b header
         f.write(width.to_bytes(2, "little"))
         f.write(height.to_bytes(2, "little"))
 
@@ -44,6 +47,7 @@ def process_folder(input_folder, output_folder):
             out_path = os.path.join(
                 output_folder, os.path.splitext(filename)[0] + ".rgb565"
             )
+            print(f"Processing {filename} → {out_path}")
             process_image(in_path, out_path)
 
 def main():
