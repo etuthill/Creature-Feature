@@ -8,26 +8,26 @@ class CreatureDraft:
 
         "Behavioral attributes"
         #healthbars
-        int hunger = random.randint(20, 25) #will subtract 1 on random time interval. Max 25
-        int boredom = random.randint(20, 25) #will subtract 1 on random time interval. Max 25
-        int hungryThreshold = 9
-        int boredThreshold = 9
+        self.hunger = random.randint(20, 25) #will subtract 1 on random time interval. Max 25
+        self.boredom = random.randint(20, 25) #will subtract 1 on random time interval. Max 25
+        self.hungryThreshold = 9
+        self.boredThreshold = 9
 
         #current state out of machineIdle, sensing, reacting
-        str currentState = "machineIdle"
+        self.currentState = "machineIdle"
         
-        dict idleStates = {
+        self.idleStates = {
         "idle": True,
         "hungry": False,
         "bored": False,
         }
 
-        dict sensingStates = {
+        self.sensingStates = {
         "foodSensing": False,
         "playSensing": False
         }
 
-        dict animations = {
+        self.animations = {
         "idle": True,
         "hungry": False,
         "bored": False,

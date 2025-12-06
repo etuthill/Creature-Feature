@@ -1,9 +1,12 @@
 """fsm"""
 import asyncio
 import paho.mqtt.client as mqtt
+import time
 
 class StateController:
     def __init__(self):
+        """REMINDER TO 'sudo usermod -a -G dialout $USER' TO ACCESS SERIAL PORTS
+"""
 
         #MQTT Client
         self.client = mqtt.Client()
@@ -22,8 +25,10 @@ class StateController:
 
     def start(self):
         "use as setup function"
+        asyncio.create_task(self.sensor())
     
     def loop(self):
+        message = None
 
         "control system"
         #check buttons and sensors to set machine mode
@@ -42,8 +47,8 @@ class StateController:
 
             elif self.currentState == "sensing":
                 self.lastState = "machineIdle"
-                #turn on sensors
-                self.sensorsOn()
+                #tell arduino to turn on sensors
+
                 #turn off healthbar and indicators
                 self.lightsOff()
                 message = "sensing"
@@ -66,27 +71,30 @@ class StateController:
     
     def sensorsOff(self):
         #turns off sensors somehow lol
+        pass
     
-    def sensorsOn(self):
-        #turns on sensors somehow lol
 
     def lightsOff(self):
         #turns off lights except back button somehow lol
+        pass
     
     def allLightsOn(self):
         #turns on all lights somehow lol
+        pass
+
     def contolOn(self):
         #enables control inputs somehow lol
+        pass
+    
     def controlOff(self):
         #disables control inputs somehow lol
-    
-    def on_message(client, userdata, msg):
-        text = msg.payload.decode()    # convert bytes → string
-        print("Received text:", text)
+        pass
 
-    def on_connect(self, client, userdata, flags, rc):
-        client.subscribe("state/text")
-        print("Connected and subscribed.")
+    async def sensorRead(self):
+        while True:
+            if self.currentState == "sensing":
+                #read arduino
+                pass
 
 
 if __name__ == "__main__":
@@ -95,5 +103,5 @@ if __name__ == "__main__":
 
     #50hz loop
     while True:
-        node.loop()
+        creature.loop()
         time.sleep(0.02)

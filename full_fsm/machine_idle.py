@@ -7,36 +7,39 @@ class MachineIdle:
     def __init__(self):
 
         #MQTT Client
-        client = mqtt.Client()
-        client.connect("localhost")
+        self.client = mqtt.Client()
+        self.client.on_connect = self.on_connect
+        self.client.on_message = self.on_message
+        self.client.connect("localhost")
+        self.client.loop_start()
 
         "Behavioral attributes"
         #healthbars
-        int hunger = random.randint(20, 25) #will subtract 1 on random time interval. Max 25
-        int boredom = random.randint(20, 25) #will subtract 1 on random time interval. Max 25
-        int hungryThreshold = 9
-        int boredThreshold = 9
+        self.hunger = random.randint(20, 25) #will subtract 1 on random time interval. Max 25
+        self.boredom = random.randint(20, 25) #will subtract 1 on random time interval. Max 25
+        self.hungryThreshold = 9
+        self.boredThreshold = 9
 
         #is this the active state?
-        bool machineIdle = True
+        self.machineIdle = True
         
-        dict idleStates = {
+        self.idleStates = {
         "idle": True,
         "hungry": False,
         "bored": False,
         }
 
-        dict animations = {
+        self.animations = {
         "idle": True,
         "hungry": False,
         "bored": False,
         }
 
         "Control attributes"
-        int modeSelect = 0 #0 = empty, 1 = eat, 2 = play. Controls indicator lights
-        bool sensing = False #turn on sensors, turn off buttons
-        bool reacting = False #turn off sensing and buttons - like a cutscene
-        bool machineIdle = True #no sensing or reacting - normal state
+        self.modeSelect = 0 #0 = empty, 1 = eat, 2 = play. Controls indicator lights
+        self.sensing = False #turn on sensors, turn off buttons
+        self.reacting = False #turn off sensing and buttons - like a cutscene
+        self.machineIdle = True #no sensing or reacting - normal state
         
 
         "Timing attributes"
@@ -53,22 +56,22 @@ class MachineIdle:
         "control system"
         #check buttons and sensors to set machine mode
         #update state to sensing, reacting, or machineIdle
-        if machineIdle:
+        if self.machineIdle:
             
-            if self.hunger <= self.hungryThreshold and not idleStates["bored"]:
+            if self.hunger <= self.hungryThreshold and not self.idleStates["bored"]:
                 #if hungry and not bored
-                if not idleStates["hungry"]:
+                if not self.idleStates["hungry"]:
                     #if not already in hungry state
                     self.setAllFalseExcept("hungry")
                     print("Switching to hungry state")
-            else if self.boredom <= self.boredThreshold and not idleStates["hungry"]:
+            elif self.boredom <= self.boredThreshold and not self.idleStates["hungry"]:
                 #if bored and not hungry
-                if not idleStates["bored"]:
+                if not self.idleStates["bored"]:
                     #if not already in bored state
                     self.setAllFalseExcept("bored")
                     print("Switching to bored state")
             else:
-                if not idleStates["idle"]:
+                if not self.idleStates["idle"]:
                     #if not already in idle state
                     self.setAllFalseExcept("idle")
                     print("Switching to idle state")
@@ -82,7 +85,7 @@ class MachineIdle:
     async def hungerTimer(self):
         while True:
             await asyncio.sleep(self.hungerInterval)
-            if not sensing and not reacting:
+            if not self.sensing and not self.reacting:
                 if self.hunger > 0:
                     self.hunger -= 1
                     print(f"Hunger decreased to {self.hunger}")
@@ -90,18 +93,30 @@ class MachineIdle:
     async def boredomTimer(self):
         while True:
             await asyncio.sleep(self.boredomInterval)
-            if not sensing and not reacting:
+            if not self.sensing and not self.reacting:
                 if self.boredom > 0:
                     self.boredom -= 1
                     print(f"Boredom decreased to {self.boredom}")
 
-    def setAllFalseExcept(self, str stateName):
+    def setAllFalseExcept(self, stateName):
         currentState = stateName
         for state in self.idleStates:
             if state == stateName:
                 self.states[state] = True
             else:
-            self.states[state] = False
+                self.idleStates[state] = False
+
+    def on_message(client, userdata, msg, self):
+        text = msg.payload.decode()    # convert bytes → string
+        if text == "machineIdle":
+                self.machineIdle = True
+        elif text == "sensing" or text == "reacting":
+                self.machineIdle = False
+        print("Received text:", text)
+
+    def on_connect(self, client, userdata, flags, rc):
+        client.subscribe("state/text")
+        print("Connected and subscribed.")
 
 if __name__ == "__main__":
     idle = MachineIdle()
