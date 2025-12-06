@@ -1,8 +1,3 @@
-import spidev
-import RPi.GPIO as GPIO
-import time
-import os
-
 # Data sheet instructions:
 # Power-On Sequence:
 #   1. Apply power to VCC
@@ -19,7 +14,13 @@ import os
 #   3. Delay 100ms
 #   4. Power off VCC
 
-GPIO.setmode(GPIO.BCM)
+import spidev
+import lgpio
+import time
+import os
+
+# open GPIO chip (lgpio replacement for GPIO.setmode)
+h = lgpio.gpiochip_open(0)
 
 # screen pinout
 screens = [
@@ -29,11 +30,11 @@ screens = [
 
 # setup GPIO pins
 for s in screens:
-    GPIO.setup(s["cs"], GPIO.OUT, initial=GPIO.HIGH)
-    GPIO.setup(s["dc"], GPIO.OUT, initial=GPIO.HIGH)
-    GPIO.setup(s["rst"], GPIO.OUT, initial=GPIO.HIGH)
-    GPIO.setup(s["vccen"], GPIO.OUT, initial=GPIO.LOW)
-    GPIO.setup(s["pmoden"], GPIO.OUT, initial=GPIO.LOW)
+    lgpio.gpio_claim_output(h, s["cs"], 1)  
+    lgpio.gpio_claim_output(h, s["dc"], 1)
+    lgpio.gpio_claim_output(h, s["rst"], 1)
+    lgpio.gpio_claim_output(h, s["vccen"], 0)
+    lgpio.gpio_claim_output(h, s["pmoden"], 0)
 
 # SPI setup
 spi = spidev.SpiDev()
@@ -42,14 +43,15 @@ spi.max_speed_hz = 7000000
 spi.mode = 0
 
 def send_cmd(s, cmd):
-    GPIO.output(s["dc"], GPIO.LOW)
-    GPIO.output(s["cs"], GPIO.LOW)
+    lgpio.gpio_write(h, s["dc"], 0)   # GPIO.output(s["dc"], GPIO.LOW)
+    lgpio.gpio_write(h, s["cs"], 0)
     spi.writebytes([cmd])
-    GPIO.output(s["cs"], GPIO.HIGH)
+    lgpio.gpio_write(h, s["cs"], 1)
 
 def send_data(s, data):
-    GPIO.output(s["dc"], GPIO.HIGH)
-    GPIO.output(s["cs"], GPIO.LOW)
+    lgpio.gpio_write(h, s["dc"], 1)   # GPIO.output(s["dc"], GPIO.HIGH)
+    lgpio.gpio_write(h, s["cs"], 0)
+
     CHUNK = 4096
     if isinstance(data, bytes):
         for i in range(0, len(data), CHUNK):
@@ -57,19 +59,20 @@ def send_data(s, data):
     else:
         for i in range(0, len(data), CHUNK):
             spi.writebytes(data[i:i+CHUNK])
-    GPIO.output(s["cs"], GPIO.HIGH)
+
+    lgpio.gpio_write(h, s["cs"], 1)
 
 # power-on sequence
 def power_on_displays(s):
 
     # 1. Apply power to VCC
-    GPIO.output(s["pmoden"], GPIO.HIGH)   # logic power only
+    lgpio.gpio_write(h, s["pmoden"], 1)   # logic power only
     time.sleep(0.05)
 
     # hardware reset
-    GPIO.output(s["rst"], GPIO.LOW)
+    lgpio.gpio_write(h, s["rst"], 0)
     time.sleep(0.05)
-    GPIO.output(s["rst"], GPIO.HIGH)
+    lgpio.gpio_write(h, s["rst"], 1)
     time.sleep(0.05)
 
     # 2. Send Display Off Command
@@ -123,7 +126,7 @@ def power_on_displays(s):
     send_cmd(s, 0)      # fill B
 
     # 5. Apply power to VCCEN
-    GPIO.output(s["vccen"], GPIO.HIGH)
+    lgpio.gpio_write(h, s["vccen"], 1)
 
     # 6. Delay 100ms
     time.sleep(0.1)
@@ -159,14 +162,14 @@ def draw_rgb565_file(s, filename):
     for i in range(0, len(raw), 2):
         hi = raw[i] # high byte of RGB565 pixel
         lo = raw[i+1] # low byte of RGB565 pixel
-        pixel = (hi << 8) | lo # combine into a 16‑bit integer
+        pixel = (hi << 8) | lo # combine into a 16-bit integer
 
-        # 5‑bit red, 6‑bit green, 5‑bit blue components from RGB565
+        # 5-bit red, 6-bit green, 5-bit blue components from RGB565
         r5 = (pixel >> 11) & 0x1F
         g6 = (pixel >> 5)  & 0x3F
         b5 =  pixel        & 0x1F
 
-        # convert RGB565 to full‑range 8‑bit RGB
+        # convert RGB565 to full-range 8-bit RGB
         r8 = (r5 * 527 + 23) >> 6
         g8 = (g6 * 259 + 33) >> 6
         b8 = (b5 * 527 + 23) >> 6
@@ -181,11 +184,11 @@ def shutdown_displays(s):
     #   1. Send Display Off command
     send_cmd(s, 0xAE)
     #   2. Power off VCCEN
-    GPIO.output(s["vccen"], GPIO.LOW)
+    lgpio.gpio_write(h, s["vccen"], 0)
     #   3. Delay 100ms
     time.sleep(0.1)
     #   4. Power off VCC
-    GPIO.output(s["pmoden"], GPIO.LOW)
+    lgpio.gpio_write(h, s["pmoden"], 0)
 
 # run init
 for scr in screens:
@@ -201,4 +204,5 @@ time.sleep(10)  # display for 10 seconds
 for scr in screens:
     shutdown_displays(scr)
 
-GPIO.cleanup()
+# lgpio cleanup 
+lgpio.gpiochip_close(h)
