@@ -151,20 +151,20 @@ def draw_rgb565_file(s, filename):
 
     send_cmd(s, 0x15)
     send_cmd(s, 0)
-    send_cmd(s, 95)
+    send_cmd(s, 63) 
 
     send_cmd(s, 0x75)
     send_cmd(s, 0)
-    send_cmd(s, 63)
+    send_cmd(s, 95) 
 
     send_cmd(s, 0x5C)
 
     out = bytearray()
     append = out.extend
     for i in range(0, len(raw_pixels), 2):
-        hi = raw_pixels[i] # high byte of RGB565 pixel
-        lo = raw_pixels[i+1] # low byte of RGB565 pixel
-        pixel = (hi << 8) | lo # combine into a 16-bit integer
+        lo = raw_pixels[i]
+        hi = raw_pixels[i+1]
+        pixel = (hi << 8) | lo
 
         # 5-bit red, 6-bit green, 5-bit blue components from RGB565
         r5 = (pixel >> 11) & 0x1F
