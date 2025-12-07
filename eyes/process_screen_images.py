@@ -16,7 +16,6 @@ def rgb888_to_rgb565(r, g, b):
     """Convert 8-bit RGB to 16-bit RGB565."""
     return ((r & 0xF8) << 8) | ((g & 0xFC) << 3) | (b >> 3)
 
-
 def process_image(path, out_path):
     img = Image.open(path).convert("RGB")
 
