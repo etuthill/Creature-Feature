@@ -115,7 +115,7 @@ def power_on_displays(s):
     # display ON
     send_cmd(s, 0xAF)
 
-def draw_rgb565_file(s, filename):
+def draw_rgb565_file(s, filename, bgr=False):
     if not os.path.exists(filename):
         print("File not found:", filename)
         return
@@ -129,14 +129,13 @@ def draw_rgb565_file(s, filename):
 
     raw_pixels = raw[4:]  # skip 4-byte header
 
+    # set column and row ranges
     send_cmd(s, 0x15)  # column
     send_cmd(s, 0)
     send_cmd(s, 95)
-
     send_cmd(s, 0x75)  # row
     send_cmd(s, 0)
     send_cmd(s, 63)
-
     send_cmd(s, 0x5C)  # write RAM
 
     fixed = bytearray(len(raw_pixels))
@@ -144,19 +143,12 @@ def draw_rgb565_file(s, filename):
     for i in range(0, len(raw_pixels), 2):
         lo = raw_pixels[i]
         hi = raw_pixels[i + 1]
-        pixel = (hi << 8) | lo   # original RGB565
 
-        r = (pixel >> 11) & 0x1F
-        g = (pixel >> 5)  & 0x3F
-        b =  pixel        & 0x1F
-
-        # swap R and B
-        new_pixel = (b << 11) | (g << 5) | r
-
-        fixed[i]     = new_pixel & 0xFF
-        fixed[i + 1] = new_pixel >> 8
+        fixed[i]     = lo
+        fixed[i + 1] = hi
 
     send_data(s, fixed)
+
 
 
 def shutdown_displays(s):
