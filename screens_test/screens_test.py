@@ -143,9 +143,8 @@ def draw_rgb565_file(s, filename, bgr=False):
     for i in range(0, len(raw_pixels), 2):
         lo = raw_pixels[i]
         hi = raw_pixels[i + 1]
-
-        fixed[i]     = lo
-        fixed[i + 1] = hi
+        fixed[i]     = hi  # send high byte first
+        fixed[i + 1] = lo  # send low byte second
 
     send_data(s, fixed)
 
