@@ -92,7 +92,7 @@ def power_on_displays(s):
 
     # RGB565 color mode
     send_cmd(s, 0xA0)
-    send_cmd(s, 0x74)
+    send_cmd(s, 0x76)
 
     # set column address range 0–95
     send_cmd(s, 0x15)
@@ -143,8 +143,21 @@ def draw_rgb565_file(s, filename, bgr=False):
     for i in range(0, len(raw_pixels), 2):
         lo = raw_pixels[i]
         hi = raw_pixels[i + 1]
-        fixed[i]     = hi  # send high byte first
-        fixed[i + 1] = lo  # send low byte second
+
+        # combine to 16-bit pixel
+        pixel = (hi << 8) | lo
+
+        # extract RGB565 components
+        r = (pixel >> 11) & 0x1F
+        g = (pixel >> 5) & 0x3F
+        b = pixel & 0x1F
+
+        # swap R and B
+        new_pixel = (b << 11) | (g << 5) | r
+
+        # write as big-endian to display
+        fixed[i] = (new_pixel >> 8) & 0xFF
+        fixed[i + 1] = new_pixel & 0xFF
 
     send_data(s, fixed)
 
