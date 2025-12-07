@@ -29,12 +29,11 @@ def process_image(path, out_path):
         f.write(width.to_bytes(2, "little"))
         f.write(height.to_bytes(2, "little"))
 
-        for y in range(height):
-            for x in range(width):
+        for x in range(width):
+            for y in range(height):
                 r, g, b = pixels[x, y]
                 rgb565 = rgb888_to_rgb565(r, g, b)
                 f.write(rgb565.to_bytes(2, "little"))
-
 
 
 def process_folder(input_folder, output_folder):

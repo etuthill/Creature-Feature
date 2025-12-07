@@ -148,15 +148,14 @@ def draw_rgb565_file(s, filename):
 
     # skip 4-byte header
     raw_pixels = raw[4:]
-    
-    send_cmd(s, 0x15) 
-    send_cmd(s, 0)
-    send_cmd(s, 95)
 
-    send_cmd(s, 0x75) 
+    send_cmd(s, 0x15)
     send_cmd(s, 0)
-    send_cmd(s, 63)
+    send_cmd(s, 63) 
 
+    send_cmd(s, 0x75)
+    send_cmd(s, 0)
+    send_cmd(s, 95) 
 
     send_cmd(s, 0x5C)
 
