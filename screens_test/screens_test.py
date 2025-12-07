@@ -92,7 +92,7 @@ def power_on_displays(s):
 
     # RGB565 color mode
     send_cmd(s, 0xA0)
-    send_cmd(s, 0x72)
+    send_cmd(s, 0x76)
 
     # set column address range 0–95
     send_cmd(s, 0x15)
