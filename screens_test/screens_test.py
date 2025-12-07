@@ -198,7 +198,7 @@ for scr in screens:
 
 # show images on both screens
 draw_rgb565_file(screens[0], "../eyes/eye_test_rgb565/left/normal_blink_closed_left.rgb565")
-draw_rgb565_file(screens[1], "../eyes/normal_blink/eye_test_rgb565/right/normal_blink_closed_right.rgb565")
+draw_rgb565_file(screens[1], "../eyes/eye_test_rgb565/right/normal_blink_closed_right.rgb565")
 
 time.sleep(10)  # display for 10 seconds
 
