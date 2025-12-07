@@ -196,12 +196,17 @@ end_time = time.time() + 30
 
 # loop until end time
 while time.time() < end_time:
-    animate_screens(left_files, right_files, 0.3)
+    animate_screens(left_files, right_files, 0.2)
     draw_both_screens(
         "../eyes/eye_test_rgb565/left/normal_blink_full_left.rgb565",
         "../eyes/eye_test_rgb565/right/normal_blink_full_right.rgb565",
     )
     time.sleep(5)
+    draw_both_screens(
+        "../eyes/eye_test_rgb565/left/normal_blink_half_left.rgb565",
+        "../eyes/eye_test_rgb565/right/normal_blink_half_right.rgb565",
+    )
+    time.sleep(0.2)
 
 for scr in screens:
     shutdown_displays(scr)
