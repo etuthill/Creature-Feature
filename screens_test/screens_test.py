@@ -137,10 +137,27 @@ def draw_rgb565_file(s, filename):
     send_cmd(s, 0)
     send_cmd(s, 63)
 
-    send_cmd(s, 0x5C)  # Write RAM
+    send_cmd(s, 0x5C)  # write RAM
 
-    # send RGB565
-    send_data(s, raw_pixels)
+    fixed = bytearray(len(raw_pixels))
+
+    for i in range(0, len(raw_pixels), 2):
+        lo = raw_pixels[i]
+        hi = raw_pixels[i + 1]
+        pixel = (hi << 8) | lo   # original RGB565
+
+        r = (pixel >> 11) & 0x1F
+        g = (pixel >> 5)  & 0x3F
+        b =  pixel        & 0x1F
+
+        # swap R and B
+        new_pixel = (b << 11) | (g << 5) | r
+
+        fixed[i]     = new_pixel & 0xFF
+        fixed[i + 1] = new_pixel >> 8
+
+    send_data(s, fixed)
+
 
 def shutdown_displays(s):
     send_cmd(s, 0xAE)
