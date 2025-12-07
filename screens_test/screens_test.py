@@ -151,11 +151,11 @@ def draw_rgb565_file(s, filename):
 
     send_cmd(s, 0x15)
     send_cmd(s, 0)
-    send_cmd(s, 63) 
+    send_cmd(s, 95)
 
     send_cmd(s, 0x75)
     send_cmd(s, 0)
-    send_cmd(s, 95) 
+    send_cmd(s, 63)
 
     send_cmd(s, 0x5C)
 
