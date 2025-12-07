@@ -167,7 +167,7 @@ def shutdown_displays(s):
     time.sleep(0.1)
     lgpio.gpio_write(h, s["pmoden"], 0)
 
-def animate_screens(s, left_files, right_files, sleep_time):
+def animate_screens(left_files, right_files, sleep_time):
     for lf, rf in zip(left_files, right_files):
         draw_rgb565_file(screens[0], lf)
         draw_rgb565_file(screens[1], rf)
@@ -177,13 +177,22 @@ def animate_screens(s, left_files, right_files, sleep_time):
 for scr in screens:
     power_on_displays(scr)
 
-animation_file_path_left = "../eyes/eye_test_rgb565/left/"
-left_files = ["normal_blink_closed_left.rgb565", "normal_blink_half_left.rgb565", "normal_blink_full_left.rgb565",]
-animation_file_path_right = "../eyes/eye_test_rgb565/right/"
-right_files = ["normal_blink_closed_right.rgb565", "normal_blink_half_right.rgb565", "normal_blink_full_right.rgb565",]
-animate_screens(screens[0], left_files, right_files, 0.5)
+left_files = [
+    "../eyes/eye_test_rgb565/left/normal_blink_closed_left.rgb565",
+    "../eyes/eye_test_rgb565/left/normal_blink_half_left.rgb565",
+    "../eyes/eye_test_rgb565/left/normal_blink_full_left.rgb565",
+]
+right_files = [
+    "../eyes/eye_test_rgb565/right/normal_blink_closed_right.rgb565",
+    "../eyes/eye_test_rgb565/right/normal_blink_half_right.rgb565",
+    "../eyes/eye_test_rgb565/right/normal_blink_full_right.rgb565",
+]
 
-time.sleep(30)
+end_time = time.time() + 30
+
+# loop until end time
+while time.time() < end_time:
+    animate_screens(left_files, right_files, 0.5)
 
 for scr in screens:
     shutdown_displays(scr)
