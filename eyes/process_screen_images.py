@@ -18,7 +18,6 @@ def rgb888_to_rgb565(r, g, b):
 
 def process_image(path, out_path):
     img = Image.open(path).convert("RGB")
-    img = img.rotate(-90, expand=True)
 
     # resize to target dimensions
     img = img.resize((TARGET_WIDTH, TARGET_HEIGHT), Image.NEAREST)
