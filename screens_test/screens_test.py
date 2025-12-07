@@ -148,14 +148,15 @@ def draw_rgb565_file(s, filename):
 
     # skip 4-byte header
     raw_pixels = raw[4:]
-
-    send_cmd(s, 0x15)
+    
+    send_cmd(s, 0x15) 
     send_cmd(s, 0)
-    send_cmd(s, 63) 
+    send_cmd(s, 95)
 
-    send_cmd(s, 0x75)
+    send_cmd(s, 0x75) 
     send_cmd(s, 0)
-    send_cmd(s, 95) 
+    send_cmd(s, 63)
+
 
     send_cmd(s, 0x5C)
 
@@ -197,8 +198,8 @@ for scr in screens:
     power_on_displays(scr)
 
 # show images on both screens
-draw_rgb565_file(screens[0], "../eyes/eye_test_rgb565/left/normal_blink_closed_left.rgb565")
-draw_rgb565_file(screens[1], "../eyes/eye_test_rgb565/right/normal_blink_closed_right.rgb565")
+draw_rgb565_file(screens[0], "../eyes/eye_test_rgb565/left/normal_blink_full_left.rgb565")
+draw_rgb565_file(screens[1], "../eyes/eye_test_rgb565/right/normal_blink_full_right.rgb565")
 
 time.sleep(10)  # display for 10 seconds
 
