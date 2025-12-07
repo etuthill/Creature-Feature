@@ -1,8 +1,8 @@
 import os
 from PIL import Image
 
-TARGET_WIDTH = 96
-TARGET_HEIGHT = 64
+TARGET_WIDTH = 64
+TARGET_HEIGHT = 96
 
 INPUT_RIGHT = "animations/normal_blink/right_side"
 INPUT_LEFT = "animations/normal_blink/left_side"
