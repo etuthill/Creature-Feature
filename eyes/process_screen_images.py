@@ -1,8 +1,8 @@
 import os
 from PIL import Image
 
-TARGET_WIDTH = 64
-TARGET_HEIGHT = 96
+TARGET_WIDTH = 96
+TARGET_HEIGHT = 64
 
 INPUT_RIGHT = "animations/normal_blink/right_side"
 INPUT_LEFT = "animations/normal_blink/left_side"
@@ -18,6 +18,7 @@ def rgb888_to_rgb565(r, g, b):
 
 def process_image(path, out_path):
     img = Image.open(path).convert("RGB")
+    img = img.rotate(90, expand=True)
 
     # resize to target dimensions
     img = img.resize((TARGET_WIDTH, TARGET_HEIGHT), Image.NEAREST)
@@ -31,8 +32,8 @@ def process_image(path, out_path):
         f.write(height.to_bytes(2, "little"))
 
         # row-major pixel order
-        for y in range(height):
-            for x in range(width):
+        for x in range(width):
+            for y in range(height):
                 r, g, b = pixels[x, y]
                 rgb565 = rgb888_to_rgb565(r, g, b)
                 f.write(rgb565.to_bytes(2, "little"))
