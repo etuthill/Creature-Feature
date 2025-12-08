@@ -36,8 +36,8 @@ class StateController:
         #update state to sensing, reacting, or machineIdle
         self.currentState = self.getCurrentState()
 
+        #state transition
         if self.lastState != self.currentState:
-            #transition behaviors like resetting hunger 
             if self.currentState == "machineIdle":
                 self.lastState = "machineIdle"
                 self.ser.write(b'B: idle/n')
