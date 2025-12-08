@@ -182,14 +182,14 @@ for scr in screens:
     power_on_displays(scr)
 
 left_files = [
-    "../eyes/eye_test_rgb565/left/normal_blink_closed_left.rgb565",
-    "../eyes/eye_test_rgb565/left/normal_blink_half_left.rgb565",
-    "../eyes/eye_test_rgb565/left/normal_blink_full_left.rgb565",
+    "../../eyes/eye_test_rgb565/left/normal_blink_closed_left.rgb565",
+    "../../eyes/eye_test_rgb565/left/normal_blink_half_left.rgb565",
+    "../../eyes/eye_test_rgb565/left/normal_blink_full_left.rgb565",
 ]
 right_files = [
-    "../eyes/eye_test_rgb565/right/normal_blink_closed_right.rgb565",
-    "../eyes/eye_test_rgb565/right/normal_blink_half_right.rgb565",
-    "../eyes/eye_test_rgb565/right/normal_blink_full_right.rgb565",
+    "../../eyes/eye_test_rgb565/right/normal_blink_closed_right.rgb565",
+    "../../eyes/eye_test_rgb565/right/normal_blink_half_right.rgb565",
+    "../../eyes/eye_test_rgb565/right/normal_blink_full_right.rgb565",
 ]
 
 end_time = time.time() + 30
@@ -198,13 +198,13 @@ end_time = time.time() + 30
 while time.time() < end_time:
     animate_screens(left_files, right_files, 0.15)
     draw_both_screens(
-        "../eyes/eye_test_rgb565/left/normal_blink_full_left.rgb565",
-        "../eyes/eye_test_rgb565/right/normal_blink_full_right.rgb565",
+        "../../eyes/eye_test_rgb565/left/normal_blink_full_left.rgb565",
+        "../../eyes/eye_test_rgb565/right/normal_blink_full_right.rgb565",
     )
     time.sleep(5)
     draw_both_screens(
-        "../eyes/eye_test_rgb565/left/normal_blink_half_left.rgb565",
-        "../eyes/eye_test_rgb565/right/normal_blink_half_right.rgb565",
+        "../../eyes/eye_test_rgb565/left/normal_blink_half_left.rgb565",
+        "../../eyes/eye_test_rgb565/right/normal_blink_half_right.rgb565",
     )
     time.sleep(0.15)
 

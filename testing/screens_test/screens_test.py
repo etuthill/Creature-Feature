@@ -173,8 +173,8 @@ def shutdown_displays(s):
 for scr in screens:
     power_on_displays(scr)
 
-draw_rgb565_file(screens[0], "../eyes/eye_test_rgb565/left/normal_blink_full_left.rgb565")
-draw_rgb565_file(screens[1], "../eyes/eye_test_rgb565/right/normal_blink_full_right.rgb565")
+draw_rgb565_file(screens[0], "../../eyes/eye_test_rgb565/left/normal_blink_full_left.rgb565")
+draw_rgb565_file(screens[1], "../../eyes/eye_test_rgb565/right/normal_blink_full_right.rgb565")
 
 time.sleep(10)
 
