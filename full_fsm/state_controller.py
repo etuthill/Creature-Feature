@@ -2,6 +2,7 @@
 import asyncio
 import paho.mqtt.client as mqtt
 import time
+import serial
 
 class StateController:
     def __init__(self):
@@ -15,12 +16,12 @@ class StateController:
         self.client.connect("localhost")
         self.client.loop_start()
 
+        #Serial
+        self.ser = serial.Serial('/dev/ttyACM0')
+
         #could be machineIdle, sensing, reacting
         self.lastState = "machineIdle"
         self.currentState = "machineIdle"
-
-        "Control attributes"
-        #button/dial pin decs
         
 
     def start(self):
@@ -39,28 +40,22 @@ class StateController:
             #transition behaviors like resetting hunger 
             if self.currentState == "machineIdle":
                 self.lastState = "machineIdle"
-                #turn off sensors
-                self.sensorsOff()
-                #turn on healthbar and indicators
-                self.allLightsOn()
+                self.ser.write(b'B: idle/n')
                 message = "machineIdle"
 
             elif self.currentState == "sensing":
                 self.lastState = "machineIdle"
-                #tell arduino to turn on sensors
-
-                #turn off healthbar and indicators
-                self.lightsOff()
+                if self.hungry_loop:
+                    self.ser.write(b'S: hall/n')
+                elif self.bored_loop:
+                    self.ser.write(b'S: force/n')
                 message = "sensing"
                 
             elif self.currentState == "reacting":
                 self.lastState = "reacting"
-                #turn off sensors and buttons
-                self.sensorsOff()
-                self.controlOff()
-                #turn off back button
-                #start relevant animation
+                self.ser.write(b'S: reacting/n')
                 message = "reacting"
+
         self.client.publish("state/text", message)
 
 
@@ -68,27 +63,7 @@ class StateController:
         self.lastState = self.currentState
         #determine current state
         return self.currentState
-    
-    def sensorsOff(self):
-        #turns off sensors somehow lol
-        pass
-    
 
-    def lightsOff(self):
-        #turns off lights except back button somehow lol
-        pass
-    
-    def allLightsOn(self):
-        #turns on all lights somehow lol
-        pass
-
-    def contolOn(self):
-        #enables control inputs somehow lol
-        pass
-    
-    def controlOff(self):
-        #disables control inputs somehow lol
-        pass
 
     async def sensorRead(self):
         while True:

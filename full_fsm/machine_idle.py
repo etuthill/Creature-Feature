@@ -1,6 +1,7 @@
 """Node for machine idle behavior state."""
 import asyncio
 import random
+import serial
 import paho.mqtt.client as mqtt
 
 class MachineIdle:
@@ -13,12 +14,15 @@ class MachineIdle:
         self.client.connect("localhost")
         self.client.loop_start()
 
+        #Serial
+        self.ser = serial.Serial('/dev/ttyACM0')
+
         "Behavioral attributes"
         #healthbars
-        self.hunger = random.randint(20, 25) #will subtract 1 on random time interval. Max 25
-        self.boredom = random.randint(20, 25) #will subtract 1 on random time interval. Max 25
-        self.hungryThreshold = 9
-        self.boredThreshold = 9
+        self.hunger = 17 #will subtract 1 on random time interval. Max 25
+        self.boredom = 17 #will subtract 1 on random time interval. Max 25
+        self.hungryThreshold = 8
+        self.boredThreshold = 8
 
         #is this the active state?
         self.machineIdle = True
@@ -75,12 +79,6 @@ class MachineIdle:
                     #if not already in idle state
                     self.setAllFalseExcept("idle")
                     print("Switching to idle state")
-            
-            self.setHealthLights()
-
-    def setHealthLights(self):
-        "set color of health lights based on hunger and boredom levels"
-        pass
     
     async def hungerTimer(self):
         while True:
@@ -89,6 +87,7 @@ class MachineIdle:
                 if self.hunger > 0:
                     self.hunger -= 1
                     print(f"Hunger decreased to {self.hunger}")
+                    self.ser.write(b'L: hunger/n')
 
     async def boredomTimer(self):
         while True:
@@ -97,6 +96,7 @@ class MachineIdle:
                 if self.boredom > 0:
                     self.boredom -= 1
                     print(f"Boredom decreased to {self.boredom}")
+                    self.ser.write(b'L: bored/n')
 
     def setAllFalseExcept(self, stateName):
         currentState = stateName
