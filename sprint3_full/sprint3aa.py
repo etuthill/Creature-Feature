@@ -5,6 +5,12 @@ import paho.mqtt.client as mqtt
 import time
 import serial
 import random
+from audio_screen_drivers import (
+    power_on_displays,
+    shutdown_displays,
+    draw_both_screens,
+    animate_screens,
+    play_sound)
 
 class Sprint3aa:
     def __init__(self):
