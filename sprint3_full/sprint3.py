@@ -1,0 +1,97 @@
+#fjdfiubufuewiodsfkjsfdhkksdf
+"""fsm"""
+import asyncio
+import paho.mqtt.client as mqtt
+import time
+import serial
+import random
+
+class Sprint3:
+    def __init__(self):
+        #MQTT Client
+        self.client = mqtt.Client()
+        self.client.on_connect = self.on_connect
+        self.client.on_message = self.on_message
+        self.client.connect("localhost")
+        self.client.loop_start()
+
+        #Serial
+        self.ser = serial.Serial('/dev/ttyACM0')
+
+        "Behavioral attributes"
+        #healthbars
+        self.hunger = 17 #will subtract 1 on random time interval. Max 25
+        self.hungryThreshold = 8
+
+        #states - idle, hungry, eating
+        self.currentState = "idle"
+        self.lastState = "idle"
+        self.eat = False
+
+        "Timing attributes"
+        #section for likely timers and intervals
+        self.hungerInterval = random.randint(1, 3) #seconds
+
+    def start(self):
+        "use as setup function"
+        asyncio.create_task(self.hungerTimer())
+
+    def loop(self):
+        "control system"
+        #determine state
+        if self.hunger <= self.hungryThreshold:
+            self.currentState = "hungry"
+        
+        elif self.eat:
+            self.currentState = "eating"
+        
+        #state transition
+        if self.lastState != self.currentState:
+            if self.currentState == "idle":
+                self.lastState = "idle"
+                self.hunger = 17
+                self.eat = False
+                self.client.publish("state/text", "idle")
+
+            elif self.currentState == "hungry":
+                self.lastState = "hungry"
+                self.client.publish("state/text", "hungry")
+
+            elif self.currentState == "eating":
+                self.lastState = "eating"
+                self.client.publish("state/text", "eating")
+
+
+    async def hungerTimer(self):
+        while True:
+            await asyncio.sleep(self.hungerInterval)
+            if self.idle:
+                if self.hunger > 0:
+                    self.hunger -= 1
+                    print(f"Hunger decreased to {self.hunger}")
+                    self.ser.write(b'L: hunger/n')
+
+    async def readSerial(self):
+        while True:
+            if self.ser.readline().decode(errors="ignore").strip() == "eat":
+                print("eat")
+                self.eat = True
+
+    def on_message(client, userdata, msg, self):
+        text = msg.payload.decode()    # convert bytes → string
+        if text == "done":
+                self.idle = True
+        print("Received text:", text)
+
+    def on_connect(self, client, userdata, flags, rc):
+        client.subscribe("state/text")
+        print("Connected and subscribed.")
+
+if __name__ == "__main__":
+    creature = Sprint3()
+    creature.start()
+
+    #50hz loop
+    while True:
+        creature.loop()
+        time.sleep(0.02)
