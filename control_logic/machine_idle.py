@@ -110,7 +110,7 @@ class MachineIdle:
         text = msg.payload.decode()    # convert bytes → string
         if text == "machineIdle":
                 self.machineIdle = True
-        elif text == "sensing" or text == "reacting":
+        elif text != None:
                 self.machineIdle = False
         print("Received text:", text)
 
