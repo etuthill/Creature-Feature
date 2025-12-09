@@ -1,25 +1,11 @@
-# Data sheet instructions:
-# Power-On Sequence:
-#   1. Apply power to VCC
-#   2. Send Display Off command
-#   3. Initialize display to +
-# default settings
-#   4. Clear Screen
-#   5. Apply power to VCCEN
-#   6. Delay 100ms
-#   7. Send Display On command
-# Power-Off Sequence:
-#   1. Send Display Off command
-#   2. Power off VCCEN
-#   3. Delay 100ms
-#   4. Power off VCC
-
 import spidev
 import lgpio
+import pygame
 import time
 import os
 
-# open GPIO chip (lgpio replacement for GPIO.setmode)
+# SCREENS
+# open GPIO chip
 h = lgpio.gpiochip_open(0)
 
 # screen pinout
@@ -36,7 +22,7 @@ for s in screens:
     lgpio.gpio_claim_output(h, s["vccen"], 0)  # VCCEN off
     lgpio.gpio_claim_output(h, s["pmoden"], 1)  # PMODEN on
 
-# SPI setup
+    # SPI setup
 spi = spidev.SpiDev()
 spi.open(0, 0)
 spi.max_speed_hz = 3000000   
@@ -177,38 +163,13 @@ def draw_both_screens(left_file, right_file):
     draw_rgb565_file(screens[0], left_file)
     draw_rgb565_file(screens[1], right_file)
 
-# run
-for scr in screens:
-    power_on_displays(scr)
+# SPEAKERS
 
-left_files = [
-    "../../eyes/eye_test_rgb565/left/normal_blink_closed_left.rgb565",
-    "../../eyes/eye_test_rgb565/left/normal_blink_half_left.rgb565",
-    "../../eyes/eye_test_rgb565/left/normal_blink_full_left.rgb565",
-]
-right_files = [
-    "../../eyes/eye_test_rgb565/right/normal_blink_closed_right.rgb565",
-    "../../eyes/eye_test_rgb565/right/normal_blink_half_right.rgb565",
-    "../../eyes/eye_test_rgb565/right/normal_blink_full_right.rgb565",
-]
+pygame.mixer.init()
 
-end_time = time.time() + 30
+def play_sound(filepath):
+    pygame.mixer.music.load(filepath)
+    pygame.mixer.music.play()
 
-# loop until end time
-while time.time() < end_time:
-    animate_screens(left_files, right_files, 0.15)
-    draw_both_screens(
-        "../../eyes/eye_test_rgb565/left/normal_blink_full_left.rgb565",
-        "../../eyes/eye_test_rgb565/right/normal_blink_full_right.rgb565",
-    )
-    time.sleep(5)
-    draw_both_screens(
-        "../../eyes/eye_test_rgb565/left/normal_blink_half_left.rgb565",
-        "../../eyes/eye_test_rgb565/right/normal_blink_half_right.rgb565",
-    )
-    time.sleep(0.15)
-
-for scr in screens:
-    shutdown_displays(scr)
-
-lgpio.gpiochip_close(h)
+    while pygame.mixer.music.get_busy():  # wait for sound to finish
+        time.sleep(0.1)
