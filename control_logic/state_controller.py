@@ -44,7 +44,7 @@ class StateController:
                 message = "machineIdle"
 
             elif self.currentState == "sensing":
-                self.lastState = "machineIdle"
+                self.lastState = "sensing"
                 if self.hungry_loop:
                     self.ser.write(b'S: hall/n')
                 elif self.bored_loop:
