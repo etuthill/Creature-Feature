@@ -3,6 +3,7 @@ import asyncio
 import random
 import serial
 import paho.mqtt.client as mqtt
+import time
 
 class MachineIdle:
     def __init__(self):
@@ -33,16 +34,7 @@ class MachineIdle:
         "bored": False,
         }
 
-        self.animations = {
-        "idle": True,
-        "hungry": False,
-        "bored": False,
-        }
-
         "Control attributes"
-        self.modeSelect = 0 #0 = empty, 1 = eat, 2 = play. Controls indicator lights
-        self.sensing = False #turn on sensors, turn off buttons
-        self.reacting = False #turn off sensing and buttons - like a cutscene
         self.machineIdle = True #no sensing or reacting - normal state
         
 
@@ -58,8 +50,7 @@ class MachineIdle:
     
     def loop(self):
         "control system"
-        #check buttons and sensors to set machine mode
-        #update state to sensing, reacting, or machineIdle
+        message = None
         if self.machineIdle:
             
             if self.hunger <= self.hungryThreshold and not self.idleStates["bored"]:
@@ -68,38 +59,41 @@ class MachineIdle:
                     #if not already in hungry state
                     self.setAllFalseExcept("hungry")
                     print("Switching to hungry state")
+                    message = "hungry"
             elif self.boredom <= self.boredThreshold and not self.idleStates["hungry"]:
                 #if bored and not hungry
                 if not self.idleStates["bored"]:
                     #if not already in bored state
                     self.setAllFalseExcept("bored")
                     print("Switching to bored state")
+                    message = "bored"
             else:
                 if not self.idleStates["idle"]:
                     #if not already in idle state
                     self.setAllFalseExcept("idle")
                     print("Switching to idle state")
+                    message = "idle"
+        self.client.publish("anim/text", message)
     
     async def hungerTimer(self):
         while True:
             await asyncio.sleep(self.hungerInterval)
-            if not self.sensing and not self.reacting:
+            if self.idleStates["idle"]:
                 if self.hunger > 0:
                     self.hunger -= 1
                     print(f"Hunger decreased to {self.hunger}")
-                    self.ser.write(b'L: hunger/n')
+                    self.ser.write(b'D: hunger\n')
 
     async def boredomTimer(self):
         while True:
             await asyncio.sleep(self.boredomInterval)
-            if not self.sensing and not self.reacting:
+            if self.idleStates["idle"]:
                 if self.boredom > 0:
                     self.boredom -= 1
                     print(f"Boredom decreased to {self.boredom}")
-                    self.ser.write(b'L: bored/n')
+                    self.ser.write(b'D: force\n')
 
     def setAllFalseExcept(self, stateName):
-        currentState = stateName
         for state in self.idleStates:
             if state == stateName:
                 self.states[state] = True
@@ -121,3 +115,7 @@ class MachineIdle:
 if __name__ == "__main__":
     idle = MachineIdle()
     idle.start()
+    #50hz loop#50hz loop
+    while True:
+        idle.loop()
+        time.sleep(0.02)

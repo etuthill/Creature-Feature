@@ -28,7 +28,8 @@ const int backButton = 9;
 
 int servoStartPos = 90;
 
-String state = String("idle");
+enum State { IDLE, HALL, FORCE, REACTING };
+State state = IDLE;
 
 int LEDsaveState[2][3] = {
   {0,255,0}, //food
@@ -69,128 +70,129 @@ void setup() {
 
 void loop() {
   //read serial
-  if (Serial.available() >= 4) {      // wait for full 4-char command
-    char cmd[4];
-    for (int i = 0; i < 4; i++) {
-      cmd[i] = Serial.read();
-    }
+  String cmd = Serial.readStringUntil('\n');
+  char cmdType = cmd[0];
+  char specific = cmd[3];
 
-    char cmdType = cmd[0];
-    char specific = cmd[3];
-
-    switch (cmdType) {
-      case 'S':   // BUTTON commands
-        switch (specific) {
-          case 'i':
-          // on h/b, off back button
-            state = "idle";
-            strip.setPixelColor(0, strip.Color(LEDsaveState[0][0],LEDsaveState[0][1],LEDsaveState[0][2]));
-            strip.setPixelColor(1, strip.Color(LEDsaveState[1][0],LEDsaveState[1][1],LEDsaveState[1][2]));
-            strip.setPixelColor(2, strip.Color(0,0,0));
-            strip.show();
-            break;
-          case 'h':
+  switch (cmdType) {
+    case 'S':   // BUTTON commands
+      switch (specific) {
+        case 'i':
+        // on h/b, off back button
+          state = IDLE;
+          strip.setPixelColor(0, strip.Color(LEDsaveState[0][0],LEDsaveState[0][1],LEDsaveState[0][2]));
+          strip.setPixelColor(1, strip.Color(LEDsaveState[1][0],LEDsaveState[1][1],LEDsaveState[1][2]));
+          strip.setPixelColor(2, strip.Color(0,0,0));
+          strip.show();
+          break;
+        case 'h':
+        // off h/b, on back button
+          state = HALL;
+          strip.setPixelColor(0, strip.Color(0,0,0));
+          strip.setPixelColor(1, strip.Color(0,0,0));
+          strip.setPixelColor(2, strip.Color(0,0,255));
+          strip.show();
+          break;
+        case 'f':
           // off h/b, on back button
-            state = "hall";
-            strip.setPixelColor(0, strip.Color(0,0,0));
-            strip.setPixelColor(1, strip.Color(0,0,0));
-            strip.setPixelColor(2, strip.Color(0,0,255));
-            strip.show();
-            break;
-          case 'f':
-            // off h/b, on back button
-            state = "force";
-            strip.setPixelColor(0, strip.Color(0,0,0));
-            strip.setPixelColor(1, strip.Color(0,0,0));
-            strip.setPixelColor(2, strip.Color(0,0,255));
-            strip.show();
-            break;
-          case 'r':
-            // off all
-            state = "reacting";
-            strip.setPixelColor(0, strip.Color(0,0,0));
-            strip.setPixelColor(1, strip.Color(0,0,0));
-            strip.setPixelColor(2, strip.Color(0,0,0));
-            strip.show();
-            break;
-        }
-        break;
-      case 'D':
-        switch (specific) {
-          case 'h':
-            //decrease food LED
-            LEDsaveState[0][0] += 15;
-            LEDsaveState[0][1] -= 15;
-            strip.setPixelColor(0, strip.Color(LEDsaveState[0][0],LEDsaveState[0][1],LEDsaveState[0][2]));
-            strip.show();
-            break;
-          case 'f':
-            //decrease food LED
-            LEDsaveState[1][0] += 15;
-            LEDsaveState[1][1] -= 15;
-            strip.setPixelColor(1, strip.Color(LEDsaveState[1][0],LEDsaveState[1][1],LEDsaveState[1][2]));
-            strip.show();
-            break;
-        }
-        break;
-      case 'R':
-        switch (specific) {
-          case 'h':
-            //reset food LED
-            LEDsaveState[0][0] = 255;
-            LEDsaveState[0][1] = 255;
-            strip.setPixelColor(0, strip.Color(LEDsaveState[0][0],LEDsaveState[0][1],LEDsaveState[0][2]));
-            strip.show();
-            break;
-          case 'f':
-            //reset food LED
-            LEDsaveState[1][0] = 255;
-            LEDsaveState[1][1] = 255;
-            strip.setPixelColor(0, strip.Color(LEDsaveState[1][0],LEDsaveState[1][1],LEDsaveState[1][2]));
-            strip.show();
-            break;
-        }
-        break;
+          state = FORCE;
+          strip.setPixelColor(0, strip.Color(0,0,0));
+          strip.setPixelColor(1, strip.Color(0,0,0));
+          strip.setPixelColor(2, strip.Color(0,0,255));
+          strip.show();
+          break;
+        case 'r':
+          // off all
+          state = REACTING;
+          strip.setPixelColor(0, strip.Color(0,0,0));
+          strip.setPixelColor(1, strip.Color(0,0,0));
+          strip.setPixelColor(2, strip.Color(0,0,0));
+          strip.show();
+          break;
+      }
+      break;
+    case 'D':
+      switch (specific) {
+        case 'h':
+          //decrease food LED
+          LEDsaveState[0][0] += 15;
+          LEDsaveState[0][1] -= 15;
+          strip.setPixelColor(0, strip.Color(LEDsaveState[0][0],LEDsaveState[0][1],LEDsaveState[0][2]));
+          strip.show();
+          break;
+        case 'f':
+          //decrease food LED
+          LEDsaveState[1][0] += 15;
+          LEDsaveState[1][1] -= 15;
+          strip.setPixelColor(1, strip.Color(LEDsaveState[1][0],LEDsaveState[1][1],LEDsaveState[1][2]));
+          strip.show();
+          break;
+      }
+      break;
+    case 'R':
+      switch (specific) {
+        case 'h':
+          //reset food LED
+          LEDsaveState[0][0] = 0;
+          LEDsaveState[0][1] = 255;
+          strip.setPixelColor(0, strip.Color(LEDsaveState[0][0],LEDsaveState[0][1],LEDsaveState[0][2]));
+          strip.show();
+          break;
+        case 'f':
+          //reset food LED
+          LEDsaveState[1][0] = 0;
+          LEDsaveState[1][1] = 255;
+          strip.setPixelColor(0, strip.Color(LEDsaveState[1][0],LEDsaveState[1][1],LEDsaveState[1][2]));
+          strip.show();
+          break;
+      }
+      break;
     }
-  }
 
   //take readings based on state
-  if (state.compareTo("hall")){
+  if (state == HALL){
     //read back button
-    if (digitalRead(backButton) == "HIGH"){
-      Serial.println("back");
+    if (digitalRead(backButton) == HIGH){
+      //hall->idle
+      Serial.println("hi");
     }
     else{
       //only do if still in this state
       //read hall
       int hallReading = analogRead(hallSensor);
-      while (hallReading > hallMin && hallReading < hallMax){
-        Serial.println("hall");
+      if (hallReading > hallMin && hallReading < hallMax){
+        //hall->food react
+        Serial.println("hf");
       }
     }  
   }
-  else if (state.compareTo("force")){
-    if (digitalRead(backButton) == "HIGH"){
-      //send back message
-      Serial.println("back");
+  else if (state == FORCE){
+    if (digitalRead(backButton) == HIGH){
+      //force->idle
+      Serial.println("fi");
     }
     else{
       //only do if still in this state
       //read force
       int forceReading = analogRead(forceSensor);
-      while (forceReading > forceMin && forceReading < forceMax){
-        Serial.println("force");
+      if (forceReading > forceMin && forceReading < forceMax){
+        //force->play react
+        Serial.println("fp");
       }
     }
   }
-  else if (state.compareTo("idle")){
+  else if (state == IDLE){
     //read h/b buttons
-    if(digitalRead(foodButton) == "HIGH"){
-      Serial.println("food");
+    if(digitalRead(foodButton) == HIGH){
+      //idle->hall
+      Serial.println("ih");
     }
-    else if(digitalRead(playButton) == "HIGH"){
-      Serial.println("play");
+    else if(digitalRead(playButton) == HIGH){
+      //idle->force
+      Serial.println("if");
     }
-  } 
-  
+  }
+  //else if (state == REACTING){
+    //sense or smthg hell if i know
+  //}  
 }
