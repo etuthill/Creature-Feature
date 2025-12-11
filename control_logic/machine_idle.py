@@ -82,7 +82,7 @@ class MachineIdle:
                 if self.hunger > 0:
                     self.hunger -= 1
                     print(f"Hunger decreased to {self.hunger}")
-                    self.ser.write(b'D: hunger/n')
+                    self.ser.write(b'D: hunger\n')
 
     async def boredomTimer(self):
         while True:
@@ -91,7 +91,7 @@ class MachineIdle:
                 if self.boredom > 0:
                     self.boredom -= 1
                     print(f"Boredom decreased to {self.boredom}")
-                    self.ser.write(b'D: force/n')
+                    self.ser.write(b'D: force\n')
 
     def setAllFalseExcept(self, stateName):
         for state in self.idleStates:
