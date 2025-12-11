@@ -158,39 +158,48 @@ void loop() {
   if (state.compareTo("hall")){
     //read back button
     if (digitalRead(backButton) == "HIGH"){
-      Serial.println("back");
+      //hall->idle
+      Serial.println("hi");
     }
     else{
       //only do if still in this state
       //read hall
       int hallReading = analogRead(hallSensor);
-      while (hallReading > hallMin && hallReading < hallMax){
-        Serial.println("hall");
+      if (hallReading > hallMin && hallReading < hallMax){
+        //hall->food react
+        Serial.println("hf");
       }
     }  
   }
   else if (state.compareTo("force")){
     if (digitalRead(backButton) == "HIGH"){
-      //send back message
-      Serial.println("back");
+      //force->idle
+      Serial.println("fi");
     }
     else{
       //only do if still in this state
       //read force
       int forceReading = analogRead(forceSensor);
-      while (forceReading > forceMin && forceReading < forceMax){
-        Serial.println("force");
+      if (forceReading > forceMin && forceReading < forceMax){
+        //force->play react
+        Serial.println("fp");
       }
     }
   }
   else if (state.compareTo("idle")){
     //read h/b buttons
     if(digitalRead(foodButton) == "HIGH"){
-      Serial.println("food");
+      //idle->hall
+      Serial.println("ih");
     }
     else if(digitalRead(playButton) == "HIGH"){
-      Serial.println("play");
+      //idle->force
+      Serial.println("if");
     }
+  }
+  else if (state.compareTo("reacting")){
+    //sense or smthg hell if i know
+    Serial.println("reactingggggggg");
   } 
   
 }

@@ -26,51 +26,58 @@ class StateController:
 
     def start(self):
         "use as setup function"
-        asyncio.create_task(self.sensor())
+        asyncio.create_task(self.serialRead())
     
     def loop(self):
         message = None
+        anim_message = None
 
         "control system"
         #check buttons and sensors to set machine mode
         #update state to sensing, reacting, or machineIdle
-        self.currentState = self.getCurrentState()
-
-        #state transition
-        if self.lastState != self.currentState:
-            if self.currentState == "machineIdle":
-                self.lastState = "machineIdle"
-                self.ser.write(b'B: idle/n')
-                message = "machineIdle"
-
-            elif self.currentState == "sensing":
-                self.lastState = "sensing"
-                if self.hungry_loop:
-                    self.ser.write(b'S: hall/n')
-                elif self.bored_loop:
-                    self.ser.write(b'S: force/n')
-                message = "sensing"
-                
-            elif self.currentState == "reacting":
-                self.lastState = "reacting"
-                self.ser.write(b'S: reacting/n')
-                message = "reacting"
+        serial_output = self.ser.readline().decode(errors="ignore").strip()
+        if serial_output == "hi":
+            #hall->idle
+            currentState = "machineIdle"
+            message = "machineIdle"
+            anim_message = "hi"
+            self.ser.write(b'B: idle/n')
+        elif serial_output == "hf":
+            #//hall->food react
+            currentState = "reacting"
+            message = "reacting"
+            anim_message = "hf"
+            self.ser.write(b'S: reacting/n')
+        elif serial_output == "fi":
+            #force->idle
+            currentState = "idle"
+            message = "idle"
+            anim_message = "fi"
+            self.ser.write(b'B: idle/n')
+        elif serial_output == "fp":
+            #force->play react
+            currentState = "reacting"
+            message = "reacting"
+            anim_message = "fp"
+            self.ser.write(b'S: reacting/n')
+        elif serial_output == "ih":
+            #//idle->hall
+            currentState = "sensing"
+            message = "sensing"
+            anim_message = "ih"
+            self.ser.write(b'S: hall/n')
+        elif serial_output == "if":
+            #idle->force
+            currentState = "sensing"
+            message = "sensing"
+            anim_message = "if"
+            self.ser.write(b'S: force/n')
+        #switch from reacting to idle 
 
         self.client.publish("state/text", message)
-
-
-    def getCurrentState(self):
-        self.lastState = self.currentState
-        #determine current state
-        return self.currentState
-
-
-    async def sensorRead(self):
-        while True:
-            if self.currentState == "sensing":
-                #read arduino
-                pass
-
+        #pause before sending anim message to ensure state message is received first
+        time.sleep(0.01)
+        self.client.publish("anim/text", anim_message)
 
 if __name__ == "__main__":
     creature = StateController()
