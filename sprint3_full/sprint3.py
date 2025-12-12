@@ -74,7 +74,6 @@ class Sprint3:
     async def readSerial(self):
             if not line:
                 await asyncio.sleep(0)
-                continue            
             line = self.ser.readline().decode(errors="ignore").strip()
             if line == "eat":
                 print("eat")
