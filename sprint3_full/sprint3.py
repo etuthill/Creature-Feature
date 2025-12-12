@@ -64,7 +64,6 @@ class Sprint3:
 
 
     async def hungerTimer(self):
-        while True:
             await asyncio.sleep(random.randint(1, 3))
             if self.currentState == "idle":
                 if self.hunger > 0:
@@ -73,7 +72,6 @@ class Sprint3:
                     self.ser.write(b"L:hunger\n")
 
     async def readSerial(self):
-        while True:
             if not line:
                 await asyncio.sleep(0)
                 continue            
