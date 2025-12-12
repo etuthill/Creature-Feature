@@ -64,6 +64,7 @@ class Sprint3:
 
 
     async def hungerTimer(self):
+        while True:
             await asyncio.sleep(random.randint(1, 3))
             if self.currentState == "idle":
                 if self.hunger > 0:
@@ -72,13 +73,17 @@ class Sprint3:
                     self.ser.write(b"L:hunger\n")
 
     async def readSerial(self):
-            if not line:
+        while True:
+            line = self.ser.readline().decode(errors="ignore").strip() 
+            if not line: 
                 await asyncio.sleep(0)
-            line = self.ser.readline().decode(errors="ignore").strip()
+                continue
             if line == "eat":
                 print("eat")
                 self.eat = True
+
             await asyncio.sleep(0) 
+
 
     def on_message(self, client, userdata, msg):
         text = msg.payload.decode()    # convert bytes → string
@@ -96,7 +101,8 @@ if __name__ == "__main__":
     creature.start()
 
     async def main_loop():
-        creature.loop()
-        await asyncio.sleep(0.02)
+        while True:
+            creature.loop()
+            await asyncio.sleep(0.02)
 
     asyncio.run(main_loop())
