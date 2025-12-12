@@ -98,9 +98,9 @@ class Sprint3:
 
 if __name__ == "__main__":
     creature = Sprint3()
-    creature.start()
 
     async def main_loop():
+        creature.start()
         while True:
             creature.loop()
             await asyncio.sleep(0.02)
