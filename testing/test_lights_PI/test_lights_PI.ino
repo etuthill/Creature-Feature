@@ -3,7 +3,7 @@
 #define NUM_LEDS 3
 #define DATA_PIN 13
 
-Adafruit_NeoPixel strip(NUM_LEDS, DATA_PIN, NEO_GRB + NEO_KHZ800);
+Adafruit_NeoPixel strip(NUM_LEDS, DATA_PIN, NEO_RGB + NEO_KHZ800);
 
 void setup() {
   strip.begin();
