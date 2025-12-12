@@ -30,6 +30,7 @@ void setup() {
 
   //initialize I/O pins
   pinMode(hallSensor, INPUT);
+  delay(10000);
 }
 
 void loop(){
