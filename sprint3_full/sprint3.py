@@ -49,15 +49,18 @@ class Sprint3:
                 self.hunger = 17
                 self.eat = False
                 self.client.publish("state/text", "idle")
+                print("idle")
 
             elif self.currentState == "hungry":
                 self.lastState = "hungry"
                 self.client.publish("state/text", "hungry")
+                print("hungry")
 
             elif self.currentState == "eating":
                 self.lastState = "eating"
                 self.client.publish("state/text", "eating")
                 self.eat = False
+                print("eating")
 
 
     async def hungerTimer(self):
