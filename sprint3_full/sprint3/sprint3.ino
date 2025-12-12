@@ -11,10 +11,12 @@ Adafruit_NeoPixel strip(NUM_LEDS, DATA_PIN, NEO_GRB + NEO_KHZ800);
 const int hallSensor = A1;
 
 //sensor vars
-int hallMin = 0;
-int hallMax = 999;
+int hallMin = 250;
+int hallMax = 950;
 
 int LEDsaveState[3] = {0,255,0}; //food
+
+bool wasEating = false;
 
 void setup() {
   //Serial
@@ -30,24 +32,35 @@ void setup() {
   pinMode(hallSensor, INPUT);
 }
 
-void_loop(){
+void loop(){
+    //read serial
     if (Serial.available() > 0) {
-    // reads one char
-    String command = String(Serial.read());
-    if command != None:
-        //decrease food LED
-        LEDsaveState[0] += 15;
-        LEDsaveState[1] -= 15;
-        strip.setPixelColor(0, strip.Color(LEDsaveState[0],LEDsaveState[1],LEDsaveState[2]));
-        strip.show();   
+        String cmd = Serial.readStringUntil('\n');
+
+        if (cmd.length() > 0) {
+            char cmdType = cmd[0];
+            char specific = cmd[3];
+
+            // decrease food LED
+            LEDsaveState[0] += 15;
+            LEDsaveState[1] -= 15;
+
+            if (LEDsaveState[0] > 255) LEDsaveState[0] = 255;
+            if (LEDsaveState[1] < 0) LEDsaveState[1] = 0;
+            if (LEDsaveState[2] < 0) LEDsaveState[2] = 0;
+            strip.show();
+        }
     }
-    
     //read hall
     int hallReading = analogRead(hallSensor);
-    if hallReading > hallMin && hallReading < hallMax{
-        Serial.println("hall");
-        LEDsaveState[0] == 0;
+    bool isEating = (hallReading < hallMin || hallReading > hallMax);
+    if (isEating && !wasEating) {
+        Serial.println("eat"); 
+        LEDsaveState[0] = 0;
         LEDsaveState[1] -= 255;
+        if (LEDsaveState[1] < 0) LEDsaveState[1] = 0;
     }
+    strip.show(); 
+    wasEating = isEating;
     delay(50);
 }

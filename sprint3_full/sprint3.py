@@ -16,7 +16,7 @@ class Sprint3:
         self.client.loop_start()
 
         #Serial
-        self.ser = serial.Serial('/dev/ttyACM0')
+        self.ser = serial.Serial('/dev/ttyACM0', timeout=0.1)
 
         "Behavioral attributes"
         #healthbars
@@ -28,13 +28,10 @@ class Sprint3:
         self.lastState = "idle"
         self.eat = False
 
-        "Timing attributes"
-        #section for likely timers and intervals
-        self.hungerInterval = random.randint(1, 3) #seconds
-
     def start(self):
         "use as setup function"
         asyncio.create_task(self.hungerTimer())
+        asyncio.create_task(self.readSerial())
 
     def loop(self):
         "control system"
@@ -42,7 +39,7 @@ class Sprint3:
         if self.hunger <= self.hungryThreshold:
             self.currentState = "hungry"
         
-        elif self.eat:
+        if self.eat:
             self.currentState = "eating"
         
         #state transition
@@ -60,27 +57,34 @@ class Sprint3:
             elif self.currentState == "eating":
                 self.lastState = "eating"
                 self.client.publish("state/text", "eating")
+                self.eat = False
 
 
     async def hungerTimer(self):
         while True:
-            await asyncio.sleep(self.hungerInterval)
+            await asyncio.sleep(random.randint(1, 3))
             if self.currentState == "idle":
                 if self.hunger > 0:
                     self.hunger -= 1
                     print(f"Hunger decreased to {self.hunger}")
-                    self.ser.write(b'L: hunger/n')
+                    self.ser.write(b"L:hunger\n")
 
     async def readSerial(self):
         while True:
-            if self.ser.readline().decode(errors="ignore").strip() == "eat":
+            if not line:
+                await asyncio.sleep(0)
+                continue            
+            line = self.ser.readline().decode(errors="ignore").strip()
+            if line == "eat":
                 print("eat")
                 self.eat = True
+            await asyncio.sleep(0) 
 
-    def on_message(client, userdata, msg, self):
+    def on_message(self, client, userdata, msg):
         text = msg.payload.decode()    # convert bytes → string
-        if text == "done":
-            self.currentState == "idle"
+        if text == "done": 
+            if self.currentState == "eating":
+                self.currentState = "idle"
         print("Received text:", text)
 
     def on_connect(self, client, userdata, flags, rc):
@@ -91,7 +95,9 @@ if __name__ == "__main__":
     creature = Sprint3()
     creature.start()
 
-    #50hz loop
-    while True:
-        creature.loop()
-        time.sleep(0.02)
+    async def main_loop():
+        while True:
+            creature.loop()
+            await asyncio.sleep(0.02)
+
+    asyncio.run(main_loop())
