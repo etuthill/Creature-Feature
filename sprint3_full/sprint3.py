@@ -65,7 +65,7 @@ class Sprint3:
     async def hungerTimer(self):
         while True:
             await asyncio.sleep(self.hungerInterval)
-            if self.idle:
+            if self.currentState == "idle":
                 if self.hunger > 0:
                     self.hunger -= 1
                     print(f"Hunger decreased to {self.hunger}")
@@ -80,7 +80,7 @@ class Sprint3:
     def on_message(client, userdata, msg, self):
         text = msg.payload.decode()    # convert bytes → string
         if text == "done":
-                self.idle = True
+            self.currentState == "idle"
         print("Received text:", text)
 
     def on_connect(self, client, userdata, flags, rc):
