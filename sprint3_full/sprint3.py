@@ -96,8 +96,7 @@ if __name__ == "__main__":
     creature.start()
 
     async def main_loop():
-        while True:
-            creature.loop()
-            await asyncio.sleep(0.02)
+        creature.loop()
+        await asyncio.sleep(0.02)
 
     asyncio.run(main_loop())
