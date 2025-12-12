@@ -5,7 +5,7 @@
 //led strip
 #define NUM_LEDS 1
 #define DATA_PIN 13
-Adafruit_NeoPixel strip(NUM_LEDS, DATA_PIN, NEO_GRB + NEO_KHZ800);
+Adafruit_NeoPixel strip(NUM_LEDS, DATA_PIN, NEO_RGB + NEO_KHZ800);
 
 //map pins
 const int hallSensor = A1;
@@ -45,8 +45,8 @@ void loop(){
             LEDsaveState[0] += 15;
             LEDsaveState[1] -= 15;
 
-            if (LEDsaveState[0] > 255) LEDsaveState[0] = 255;
-            if (LEDsaveState[1] < 0) LEDsaveState[1] = 0;
+            if (LEDsaveState[0] > 0) LEDsaveState[0] = 0;
+            if (LEDsaveState[1] < 255) LEDsaveState[1] = 255;
             if (LEDsaveState[2] < 0) LEDsaveState[2] = 0;
             strip.show();
         }
