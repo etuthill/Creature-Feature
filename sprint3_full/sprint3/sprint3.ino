@@ -14,6 +14,14 @@ const int hallSensor = A1;
 int hallMin = 250;
 int hallMax = 950;
 
+// debounce hall effect
+unsigned long lastEatTime = 0;
+const unsigned long eatCooldown = 500;
+
+// fluctuation buffer
+int hallMinLo = hallMin - 30;
+int hallMaxHi = hallMax + 30;
+
 int LEDsaveState[3] = {0,255,0}; //food
 
 bool wasEating = false;
@@ -54,9 +62,13 @@ void loop(){
     }
     //read hall
     int hallReading = analogRead(hallSensor);
-    bool isEating = (hallReading < hallMin || hallReading > hallMax);
-    if (isEating && !wasEating) {
-        Serial.println("eat"); 
+    bool isEating = (hallReading < hallMinLo || hallReading > hallMaxHi);
+
+    unsigned long now = millis();
+    if (isEating && !wasEating && (now - lastEatTime > eatCooldown)) {
+        Serial.println("eat");
+        lastEatTime = now;
+
         LEDsaveState[0] = 0;
         LEDsaveState[1] -= 255;
         if (LEDsaveState[1] < 0) LEDsaveState[1] = 0;
