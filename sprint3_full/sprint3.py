@@ -36,11 +36,13 @@ class Sprint3:
     def loop(self):
         "control system"
         #determine state
-        if self.hunger <= self.hungryThreshold:
+        if self.hunger <= self.hungryThreshold and not self.eat and not self.ate:
             self.currentState = "hungry"
         
         if self.eat:
             self.currentState = "eating"
+
+
         
         #state transition
         if self.lastState != self.currentState:
@@ -59,7 +61,6 @@ class Sprint3:
             elif self.currentState == "eating":
                 self.lastState = "eating"
                 self.client.publish("state/text", "eating")
-                self.eat = False
                 print("eating")
 
 
@@ -81,20 +82,13 @@ class Sprint3:
             if line == "eat":
                 print("eat")
                 self.eat = True
+            elif line == "ate":
+                print("ate")
+                self.eat = False
+                self.hunger = 17
+                self.currentState = "idle"
 
             await asyncio.sleep(0) 
-
-
-    def on_message(self, client, userdata, msg):
-        text = msg.payload.decode()    # convert bytes → string
-        if text == "done": 
-            if self.currentState == "eating":
-                self.currentState = "idle"
-        print("Received text:", text)
-
-    def on_connect(self, client, userdata, flags, rc):
-        client.subscribe("state/text")
-        print("Connected and subscribed.")
 
 if __name__ == "__main__":
     creature = Sprint3()
