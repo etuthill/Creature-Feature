@@ -15,7 +15,7 @@ unsigned long lastSerialCheck = 0;
 const unsigned long serialInterval = 50;
 
 void setup() {
-  Serial.begin(115200);
+  Serial.begin(9600);
   myServo.attach(9);
   myServo.write(currentPos);
 }

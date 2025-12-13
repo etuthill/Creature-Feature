@@ -4,17 +4,33 @@
 //led strip
 #define NUM_LEDS 3
 #define DATA_PIN 13
-Adafruit_NeoPixel strip(NUM_LEDS, DATA_PIN, NEO_GRB + NEO_KHZ800);
+Adafruit_NeoPixel strip(NUM_LEDS, DATA_PIN, NEO_RGB + NEO_KHZ800);
 
 //map pins
 const int forceSensor = A0;
 const int hallSensor = A1;
 
 //sensor vars
-int hallMin = 0;
-int hallMax = 999;
+int hallMin = 250;
+int hallMax = 950;
 int forceMin = 0;
-int forceMax = 99;
+int forceMax = 999;
+
+// debounce interactions
+unsigned long lastEatTime = 0;
+const unsigned long eatCooldown = 500;
+unsigned long lastPlayTime = 0;
+const unsigned long playCooldown = 500;
+
+bool wasEating = false;
+bool wasPlaying = false;
+
+// fluctuation buffer
+int hallMinLo = hallMin - 30;
+int hallMaxHi = hallMax + 30;
+
+int forceMinLo = forceMin - 30;
+int forceMaxHi = forceMax + 30;
 
 //servos
 Servo leftServo;
@@ -65,7 +81,7 @@ void setup() {
   leftServo.write(servoStartPos);
   rightServo.write(servoStartPos);
   backServo.write(servoStartPos);
-  delay(1000);
+  delay(10000);
 }
 
 void loop() {
