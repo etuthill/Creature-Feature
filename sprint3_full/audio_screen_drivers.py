@@ -31,6 +31,8 @@ class AudioScreenDrivers:
 
         self.stop_eyes = False
         self.stop_interval_audio = True
+        self.spi_lock = threading.Lock()     # protects SPI bus
+        self.draw_lock = threading.Lock()    # protects full frame draws
 
 
         # setup GPIO pins
@@ -44,7 +46,7 @@ class AudioScreenDrivers:
         # SPI setup
         self.spi = spidev.SpiDev()
         self.spi.open(0, 0)
-        self.spi.max_speed_hz = 3000000   
+        self.spi.max_speed_hz = 2000000   
         self.spi.mode = 0
 
         # SPEAKERS
@@ -52,20 +54,22 @@ class AudioScreenDrivers:
 
     # SCREEN FUNCTIONS 
     def send_cmd(self, s, cmd):
-        lgpio.gpio_write(self.h, s["dc"], 0)
-        lgpio.gpio_write(self.h, s["cs"], 0)
-        self.spi.writebytes([cmd])
-        lgpio.gpio_write(self.h, s["cs"], 1)
+        with self.spi_lock:
+            lgpio.gpio_write(self.h, s["dc"], 0)
+            lgpio.gpio_write(self.h, s["cs"], 0)
+            self.spi.writebytes([cmd])
+            lgpio.gpio_write(self.h, s["cs"], 1)
 
     def send_data(self, s, data):
-        lgpio.gpio_write(self.h, s["dc"], 1)
-        lgpio.gpio_write(self.h, s["cs"], 0)
+        with self.spi_lock:
+            lgpio.gpio_write(self.h, s["dc"], 1)
+            lgpio.gpio_write(self.h, s["cs"], 0)
 
-        CHUNK = 4096
-        for i in range(0, len(data), CHUNK):
-            self.spi.writebytes(list(data[i:i+CHUNK]))
+            CHUNK = 4096
+            for i in range(0, len(data), CHUNK):
+                self.spi.writebytes(data[i:i+CHUNK])
 
-        lgpio.gpio_write(self.h, s["cs"], 1)
+            lgpio.gpio_write(self.h, s["cs"], 1)
 
     # power-on sequence
     def power_on_displays(self, s):
@@ -177,9 +181,10 @@ class AudioScreenDrivers:
         lgpio.gpio_write(self.h, s["pmoden"], 0)
 
     def draw_both_screens(self, left_file, right_file):
-        self.draw_rgb565_file(self.screens[0], left_file)
-        time.sleep(0.002)
-        self.draw_rgb565_file(self.screens[1], right_file)
+        with self.draw_lock:
+            self.draw_rgb565_file(self.screens[0], left_file)
+            time.sleep(0.002)
+            self.draw_rgb565_file(self.screens[1], right_file)
 
     def narrowing_food_eyes(self):
         self.stop_eyes = False
@@ -188,9 +193,9 @@ class AudioScreenDrivers:
 
         steps = [
             ("eyes_big_open_color_left.rgb565", "eyes_big_open_color_right.rgb565", 3),
-            ("eyes_half_narrow_left.rgb565", "eyes_half_narrow_right.rgb565", 0.15),
-            ("eyes_full_narrow_left.rgb565", "eyes_full_narrow_right.rgb565", 0.15),
-            ("eyes_half_narrow_left.rgb565", "eyes_half_narrow_right.rgb565", 0.15),
+            ("eyes_half_narrow_left.rgb565", "eyes_half_narrow_right.rgb565", 1.5),
+            ("eyes_full_narrow_left.rgb565", "eyes_full_narrow_right.rgb565", 1.5),
+            ("eyes_half_narrow_left.rgb565", "eyes_half_narrow_right.rgb565", 1.5),
             ("normal_blink_full_right.rgb565", "normal_blink_full_left.rgb565", 2),
         ]
 
@@ -211,9 +216,9 @@ class AudioScreenDrivers:
 
         steps = [
             ("normal_blink_full_left.rgb565", "normal_blink_full_right.rgb565", 5),
-            ("normal_blink_half_left.rgb565", "normal_blink_half_right.rgb565", 0.15),
-            ("normal _blink_closed_left.rgb565", "norma_ blink_closed_right.rgb565", 0.15),
-            ("normal_blink_half_left.rgb565", "normal_blink_half_right.rgb565", 0.15),
+            ("normal_blink_half_left.rgb565", "normal_blink_half_right.rgb565", 1.5),
+            ("normal _blink_closed_left.rgb565", "norma_ blink_closed_right.rgb565", 1.5),
+            ("normal_blink_half_left.rgb565", "normal_blink_half_right.rgb565", 1.5),
         ]
 
         while not self.stop_eyes:
@@ -238,10 +243,10 @@ class AudioScreenDrivers:
         time.sleep(2)
 
         steps = [
-            ("eyes_half_color_small_star_left.rgb565", "eyes_half_color_small_star_right.rgb565", 0.15),
-            ("eyes_half_color_large_star_stars_left.rgb565", "eyes_half_color_large_star_stars_right.rgb565", 0.15),
-            ("eyes_half_color_small_circle_stars_left.rgb565", "eyes_half_color_small_circle_stars_right.rgb565", 0.15),
-            ("normal_blink_full_right.rgb565", "normal_blink_full_left.rgb565", 0.15),
+            ("eyes_half_color_small_star_left.rgb565", "eyes_half_color_small_star_right.rgb565", 1.5),
+            ("eyes_half_color_large_star_stars_left.rgb565", "eyes_half_color_large_star_stars_right.rgb565", 1.5),
+            ("eyes_half_color_small_circle_stars_left.rgb565", "eyes_half_color_small_circle_stars_right.rgb565", 1.5),
+            ("normal_blink_full_right.rgb565", "normal_blink_full_left.rgb565", 1.5),
         ]
 
 
@@ -263,13 +268,13 @@ class AudioScreenDrivers:
 
         steps = [
             ("normal_blink_full_left.rgb565", "normal_blink_full_right.rgb565", 3),
-            ("eyes_half_sideways_left.rgb565", "eyes_half_sideways_right.rgb565", 0.2),
-            ("eyes_full_sideways_left.rgb565", "eyes_full_sideways_right.rgb565", 0.2),
-            ("eyes_half_sideways_left.rgb565", "eyes_half_sideways_right.rgb565", 0.2),
-            ("normal_blink_full_left.rgb565", "normal_blink_full_right.rgb565", 0.2),
-            ("eyes_half_sideways_left2.rgb565", "eyes_half_sideways_right2.rgb565", 0.2),
-            ("eyes_full_sideways_left2.rgb565", "eyes_full_sideways_right2.rgb565", 0.2),
-            ("eyes_half_sideways_left2.rgb565", "eyes_half_sideways_right2.rgb565", 0.2),
+            ("eyes_half_sideways_left.rgb565", "eyes_half_sideways_right.rgb565", 2),
+            ("eyes_full_sideways_left.rgb565", "eyes_full_sideways_right.rgb565", 2),
+            ("eyes_half_sideways_left.rgb565", "eyes_half_sideways_right.rgb565", 2),
+            ("normal_blink_full_left.rgb565", "normal_blink_full_right.rgb565", 2),
+            ("eyes_half_sideways_left2.rgb565", "eyes_half_sideways_right2.rgb565", 2),
+            ("eyes_full_sideways_left2.rgb565", "eyes_full_sideways_right2.rgb565", 2),
+            ("eyes_half_sideways_left2.rgb565", "eyes_half_sideways_right2.rgb565", 2),
         ]
 
         while not self.stop_eyes:
@@ -345,12 +350,17 @@ class AudioScreenDrivers:
         if state == self.lastMsg:
             return
 
-        # stop previous behavior
         self.stop_eyes = True
         self.stop_interval_audio = True
         self.stop_sound()
-        time.sleep(0.05)
+
+        # wait for any in-progress frame to finish
+        with self.draw_lock:
+            pass
+
+        time.sleep(0.1)
         self.stop_eyes = False
+
 
         if state == "idle":
             threading.Thread(
