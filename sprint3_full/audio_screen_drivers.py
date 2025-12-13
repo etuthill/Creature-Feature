@@ -182,8 +182,8 @@ class AudioScreenDrivers:
 
     def narrowing_food_eyes(self):
         self.stop_eyes = False
-        left_dir = "../eyes/eye_outputs/left/narrowing_food"
-        right_dir = "../eyes/eye_outputs/right/narrowing_food"
+        left_dir = "../eyes/eye_outputs/narrowing_food/left"
+        right_dir = "../eyes/eye_outputs/narrowing_food/right"
 
         steps = [
             ("eyes_big_open_color_left.png", "eyes_big_open_color_right.png", 3),
@@ -205,8 +205,8 @@ class AudioScreenDrivers:
 
     def normal_blink_eyes(self):
         self.stop_eyes = False
-        left_dir = "../eyes/eye_outputs/left/normal_blink"
-        right_dir = "../eyes/eye_outputs/right/normal_blink"
+        left_dir = "../eyes/eye_outputs/normal_blink/left"
+        right_dir = "../eyes/eye_outputs/normal_blink/right"
 
         steps = [
             ("normal_blink_full_left.png", "normal_blink_full_right.png", 5),
@@ -228,8 +228,8 @@ class AudioScreenDrivers:
 
     def starry_eyes(self):
         self.stop_eyes = False
-        left_dir = "../eyes/eye_outputs/left/starry"
-        right_dir = "../eyes/eye_outputs/right/starry"
+        left_dir = "../eyes/eye_outputs/starry/left"
+        right_dir = "../eyes/eye_outputs/starry/right"
 
         left_file = os.path.join(left_dir, "normal_blink_full_left.png")
         right_file = os.path.join(right_dir, "normal_blink_full_right.png")
@@ -256,8 +256,8 @@ class AudioScreenDrivers:
 
     def side_to_side_eyes(self):
         self.stop_eyes = False
-        left_dir = "../eyes/eye_outputs/left/side_to_side"
-        right_dir = "../eyes/eye_outputs/right/side_to_side"
+        left_dir = "../eyes/eye_outputs/side_to_side/left"
+        right_dir = "../eyes/eye_outputs/side_to_side/right"
 
         steps = [
             ("normal_blink_full_left.png", "normal_blink_full_right.png", 3),
