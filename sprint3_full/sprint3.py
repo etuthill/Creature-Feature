@@ -5,6 +5,8 @@ import paho.mqtt.client as mqtt
 import time
 import serial
 import random
+from audio_screen_drivers import AudioScreenDrivers
+import threading
 
 class Sprint3:
     def __init__(self):
@@ -29,10 +31,15 @@ class Sprint3:
         self.eat = False
         self.ate = False
 
+        self.drivers = AudioScreenDrivers()
+        self.eye_task = None
+
     def start(self):
         "use as setup function"
         asyncio.create_task(self.hungerTimer())
         asyncio.create_task(self.readSerial())
+        for s in self.drivers.screens:
+            self.drivers.power_on_displays(s)
 
     def loop(self):
         "control system"
@@ -53,6 +60,7 @@ class Sprint3:
 
         #state transition
         if self.lastState != self.currentState:
+            self.drivers.set_state(self.currentState) 
             if self.currentState == "idle":
                 self.lastState = "idle"
                 self.eat = False
@@ -68,9 +76,7 @@ class Sprint3:
                 self.lastState = "eating"
                 #self.client.publish("state/text", "eating")
                 print("eating")
-
-
-
+                
     async def hungerTimer(self):
         while True:
             await asyncio.sleep(random.randint(1, 3))
@@ -96,6 +102,7 @@ class Sprint3:
                 self.hunger = 17
 
             await asyncio.sleep(0) 
+
 
 if __name__ == "__main__":
     creature = Sprint3()
