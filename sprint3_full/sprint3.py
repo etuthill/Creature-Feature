@@ -9,11 +9,11 @@ import random
 class Sprint3:
     def __init__(self):
         #MQTT Client
-        self.client = mqtt.Client()
-        self.client.on_connect = self.on_connect
-        self.client.on_message = self.on_message
-        self.client.connect("localhost")
-        self.client.loop_start()
+        # self.client = mqtt.Client()
+        # self.client.on_connect = self.on_connect
+        # self.client.on_message = self.on_message
+        # self.client.connect("localhost")
+        # self.client.loop_start()
 
         #Serial
         self.ser = serial.Serial('/dev/ttyACM0', timeout=0.1)
@@ -39,7 +39,7 @@ class Sprint3:
 
         # ate event
         if self.ate:
-            self.client.publish("state/text", "ate")
+            #self.client.publish("state/text", "ate")
             print("ate event")
             self.ate = False
 
@@ -56,17 +56,17 @@ class Sprint3:
             if self.currentState == "idle":
                 self.lastState = "idle"
                 self.eat = False
-                self.client.publish("state/text", "idle")
+                #self.client.publish("state/text", "idle")
                 print("idle")
 
             elif self.currentState == "hungry":
                 self.lastState = "hungry"
-                self.client.publish("state/text", "hungry")
+                #self.client.publish("state/text", "hungry")
                 print("hungry")
 
             elif self.currentState == "eating":
                 self.lastState = "eating"
-                self.client.publish("state/text", "eating")
+                #self.client.publish("state/text", "eating")
                 print("eating")
 
 
