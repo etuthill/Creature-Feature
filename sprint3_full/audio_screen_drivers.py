@@ -178,6 +178,7 @@ class AudioScreenDrivers:
 
     def draw_both_screens(self, left_file, right_file):
         self.draw_rgb565_file(self.screens[0], left_file)
+        time.sleep(0.002)
         self.draw_rgb565_file(self.screens[1], right_file)
 
     def narrowing_food_eyes(self):
@@ -190,7 +191,7 @@ class AudioScreenDrivers:
             ("eyes_half_narrow_left.rgb565", "eyes_half_narrow_right.rgb565", 0.15),
             ("eyes_full_narrow_left.rgb565", "eyes_full_narrow_right.rgb565", 0.15),
             ("eyes_half_narrow_left.rgb565", "eyes_half_narrow_right.rgb565", 0.15),
-            ("normal_blink_full_left.rgb565", "normal_blink_full_right.rgb565", 2),
+            ("normal_blink_full_right.rgb565", "normal_blink_full_left.rgb565", 2),
         ]
 
         while not self.stop_eyes:
@@ -211,7 +212,7 @@ class AudioScreenDrivers:
         steps = [
             ("normal_blink_full_left.rgb565", "normal_blink_full_right.rgb565", 5),
             ("normal_blink_half_left.rgb565", "normal_blink_half_right.rgb565", 0.15),
-            ("normal_blink_closed_left.rgb565", "normal_blink_closed_right.rgb565", 0.15),
+            ("normal _blink_closed_left.rgb565", "norma_ blink_closed_right.rgb565", 0.15),
             ("normal_blink_half_left.rgb565", "normal_blink_half_right.rgb565", 0.15),
         ]
 
@@ -240,8 +241,9 @@ class AudioScreenDrivers:
             ("eyes_half_color_small_star_left.rgb565", "eyes_half_color_small_star_right.rgb565", 0.15),
             ("eyes_half_color_large_star_stars_left.rgb565", "eyes_half_color_large_star_stars_right.rgb565", 0.15),
             ("eyes_half_color_small_circle_stars_left.rgb565", "eyes_half_color_small_circle_stars_right.rgb565", 0.15),
-            ("normal_blink_full_left.rgb565", "normal_blink_full_right.rgb565", 0.15)
+            ("normal_blink_full_right.rgb565", "normal_blink_full_left.rgb565", 0.15),
         ]
+
 
         while not self.stop_eyes:
             
