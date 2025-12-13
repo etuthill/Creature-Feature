@@ -27,6 +27,7 @@ class Sprint3:
         self.currentState = "idle"
         self.lastState = "idle"
         self.eat = False
+        self.ate = False
 
     def start(self):
         "use as setup function"
@@ -35,20 +36,25 @@ class Sprint3:
 
     def loop(self):
         "control system"
+
+        # ate event
+        if self.ate:
+            self.client.publish("state/text", "ate")
+            print("ate event")
+            self.ate = False
+
         #determine state
-        if self.hunger <= self.hungryThreshold and not self.eat and not self.ate:
-            self.currentState = "hungry"
-        
         if self.eat:
             self.currentState = "eating"
+        elif self.hunger <= self.hungryThreshold:
+            self.currentState = "hungry"
+        else:
+            self.currentState = "idle"
 
-
-        
         #state transition
         if self.lastState != self.currentState:
             if self.currentState == "idle":
                 self.lastState = "idle"
-                self.hunger = 17
                 self.eat = False
                 self.client.publish("state/text", "idle")
                 print("idle")
@@ -62,6 +68,7 @@ class Sprint3:
                 self.lastState = "eating"
                 self.client.publish("state/text", "eating")
                 print("eating")
+
 
 
     async def hungerTimer(self):
@@ -85,8 +92,8 @@ class Sprint3:
             elif line == "ate":
                 print("ate")
                 self.eat = False
+                self.ate = True
                 self.hunger = 17
-                self.currentState = "idle"
 
             await asyncio.sleep(0) 
 
