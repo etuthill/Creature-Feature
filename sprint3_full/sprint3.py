@@ -74,7 +74,7 @@ class Sprint3:
     async def hungerTimer(self):
         while True:
             await asyncio.sleep(random.randint(1, 3))
-            if self.currentState == "idle":
+            if self.currentState == "idle" or self.currentState == "hungry":
                 if self.hunger > 0:
                     self.hunger -= 1
                     print(f"Hunger decreased to {self.hunger}")
