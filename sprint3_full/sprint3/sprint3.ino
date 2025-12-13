@@ -75,7 +75,7 @@ void loop(){
         strip.setPixelColor(0, strip.Color(LEDsaveState[0], LEDsaveState[1], LEDsaveState[2]));
         strip.show();
         
-        if (hallReading < hallMinLo) {
+        if (hallReading > hallMinLo && hallReading < hallMaxHi) {
             Serial.println("ate");
         }
     }
