@@ -49,15 +49,16 @@ void loop(){
         if (cmd.length() > 0) {
             char cmdType = cmd[0];
             char specific = cmd[3];
-
-            // LEDsaveState[0] += 15;
-            // LEDsaveState[1] -= 15;
-            //
-            // if (LEDsaveState[0] > 255) LEDsaveState[0] = 255;
-            // if (LEDsaveState[1] < 0) LEDsaveState[0] = 0;
-            // if (LEDsaveState[2] < 0) LEDsaveState[2] = 0;
-            // strip.setPixelColor(0, strip.Color(LEDsaveState[0], LEDsaveState[1], LEDsaveState[2]));
-            // strip.show();
+            if (cmdType == 'L'){
+                LEDsaveState[0] += 15;
+                LEDsaveState[1] -= 15;
+                
+                if (LEDsaveState[0] > 255) LEDsaveState[0] = 255;
+                if (LEDsaveState[1] < 0) LEDsaveState[0] = 0;
+                if (LEDsaveState[2] < 0) LEDsaveState[2] = 0;
+                strip.setPixelColor(0, strip.Color(LEDsaveState[0], LEDsaveState[1], LEDsaveState[2]));
+                strip.show();
+            }
         }
     }
 
@@ -81,16 +82,6 @@ void loop(){
     // exit eat (ate)
     if (!isEating && wasEating) {
         Serial.println("ate"); // print once
-    }
-
-    // LED fade
-    if (!isEating) {
-        LEDsaveState[0] += 15;
-        LEDsaveState[1] -= 15;
-        if (LEDsaveState[0] > 255) LEDsaveState[0] = 255;
-        if (LEDsaveState[1] < 0) LEDsaveState[0] = 0;
-        if (LEDsaveState[2] < 0) LEDsaveState[2] = 0;
-        strip.show();
     }
 
     wasEating = isEating;
