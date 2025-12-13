@@ -237,10 +237,10 @@ class AudioScreenDrivers:
         time.sleep(2)
 
         steps = [
-            ("eyes_half_color_small_star_right.rgb565", "eyes_half_color_small_star_left.rgb565", 0.15),
+            ("eyes_half_color_small_star_left.rgb565", "eyes_half_color_small_star_right.rgb565", 0.15),
             ("eyes_half_color_large_star_stars_left.rgb565", "eyes_half_color_large_star_stars_right.rgb565", 0.15),
-            ("eyes_half_color_small_circle_star_left.rgb565", "eyes_half_color_small_circle_star_right.rgb565", 0.15),
-            ("eyes_half_color_large_star_stars_left.rgb565", "eyes_half_color_large_star_stars_right.rgb565", 0.15)
+            ("eyes_half_color_small_circle_stars_left.rgb565", "eyes_half_color_small_circle_stars_right.rgb565", 0.15),
+            ("normal_blink_full_left.rgb565", "normal_blink_full_right.rgb565", 0.15)
         ]
 
         while not self.stop_eyes:
