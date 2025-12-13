@@ -54,8 +54,8 @@ void loop(){
             LEDsaveState[0] += 15;
             LEDsaveState[1] -= 15;
 
-            if (LEDsaveState[0] > 0) LEDsaveState[0] = 0;
-            if (LEDsaveState[1] < 255) LEDsaveState[1] = 255;
+            if (LEDsaveState[0] > 255) LEDsaveState[0] = 255;
+            if (LEDsaveState[1] < 0) LEDsaveState[0] = 0;
             if (LEDsaveState[2] < 0) LEDsaveState[2] = 0;
             strip.show();
         }
@@ -70,8 +70,10 @@ void loop(){
         lastEatTime = now;
 
         LEDsaveState[0] = 0;
-        LEDsaveState[1] -= 255;
-        if (LEDsaveState[1] < 0) LEDsaveState[1] = 0;
+        LEDsaveState[1] = 255;
+        if (hallReading < hallMinLo) {
+            Serial.println("ate")
+        }
     }
     strip.show(); 
     wasEating = isEating;
