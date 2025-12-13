@@ -72,7 +72,7 @@ void loop(){
         LEDsaveState[0] = 0;
         LEDsaveState[1] = 255;
         if (hallReading < hallMinLo) {
-            Serial.println("ate")
+            Serial.println("ate");
         }
     }
     strip.show(); 
