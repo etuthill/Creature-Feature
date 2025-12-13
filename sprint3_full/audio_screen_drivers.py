@@ -186,11 +186,11 @@ class AudioScreenDrivers:
         right_dir = "../eyes/eye_outputs/narrowing_food/right"
 
         steps = [
-            ("eyes_big_open_color_left.png", "eyes_big_open_color_right.png", 3),
-            ("eyes_half_narrow_left.png", "eyes_half_narrow_right.png", 0.15),
-            ("eyes_full_narrow_left.png", "eyes_full_narrow_right.png", 0.15),
-            ("eyes_half_narrow_left.png", "eyes_half_narrow_right.png", 0.15),
-            ("normal_blink_full_left.png", "normal_blink_full_right.png", 2),
+            ("eyes_big_open_color_left.rgb565", "eyes_big_open_color_right.rgb565", 3),
+            ("eyes_half_narrow_left.rgb565", "eyes_half_narrow_right.rgb565", 0.15),
+            ("eyes_full_narrow_left.rgb565", "eyes_full_narrow_right.rgb565", 0.15),
+            ("eyes_half_narrow_left.rgb565", "eyes_half_narrow_right.rgb565", 0.15),
+            ("normal_blink_full_left.rgb565", "normal_blink_full_right.rgb565", 2),
         ]
 
         while not self.stop_eyes:
@@ -209,10 +209,10 @@ class AudioScreenDrivers:
         right_dir = "../eyes/eye_outputs/normal_blink/right"
 
         steps = [
-            ("normal_blink_full_left.png", "normal_blink_full_right.png", 5),
-            ("normal_blink_half_left.png", "normal_blink_half_right.png", 0.15),
-            ("normal_blink_closed_left.png", "normal_blink_closed_right.png", 0.15),
-            ("normal_blink_half_left.png", "normal_blink_half_right.png", 0.15),
+            ("normal_blink_full_left.rgb565", "normal_blink_full_right.rgb565", 5),
+            ("normal_blink_half_left.rgb565", "normal_blink_half_right.rgb565", 0.15),
+            ("normal_blink_closed_left.rgb565", "normal_blink_closed_right.rgb565", 0.15),
+            ("normal_blink_half_left.rgb565", "normal_blink_half_right.rgb565", 0.15),
         ]
 
         while not self.stop_eyes:
@@ -231,16 +231,16 @@ class AudioScreenDrivers:
         left_dir = "../eyes/eye_outputs/starry/left"
         right_dir = "../eyes/eye_outputs/starry/right"
 
-        left_file = os.path.join(left_dir, "normal_blink_full_left.png")
-        right_file = os.path.join(right_dir, "normal_blink_full_right.png")
+        left_file = os.path.join(left_dir, "normal_blink_full_left.rgb565")
+        right_file = os.path.join(right_dir, "normal_blink_full_right.rgb565")
         self.draw_both_screens(left_file, right_file)
         time.sleep(2)
 
         steps = [
-            ("eyes_half_color_small_star_right.png", "eyes_half_color_small_star_left.png", 0.15),
-            ("eyes_half_color_large_star_stars_left.png", "eyes_half_color_large_star_stars_right.png", 0.15),
-            ("eues_half_color_small_circle_star_left.png", "eues_half_color_small_circle_star_right.png", 0.15),
-            ("eyes_half_color_large_star_stars_left.png", "eyes_half_color_large_star_stars_right.png", 0.15)
+            ("eyes_half_color_small_star_right.rgb565", "eyes_half_color_small_star_left.rgb565", 0.15),
+            ("eyes_half_color_large_star_stars_left.rgb565", "eyes_half_color_large_star_stars_right.rgb565", 0.15),
+            ("eyes_half_color_small_circle_star_left.rgb565", "eyes_half_color_small_circle_star_right.rgb565", 0.15),
+            ("eyes_half_color_large_star_stars_left.rgb565", "eyes_half_color_large_star_stars_right.rgb565", 0.15)
         ]
 
         while not self.stop_eyes:
@@ -260,14 +260,14 @@ class AudioScreenDrivers:
         right_dir = "../eyes/eye_outputs/side_to_side/right"
 
         steps = [
-            ("normal_blink_full_left.png", "normal_blink_full_right.png", 3),
-            ("eyes_half_sideways_left.png", "eyes_half_sideways_right.png", 0.2),
-            ("eyes_full_sideways_left.png", "eyes_full_sideways_right.png", 0.2),
-            ("eyes_half_sideways_left.png", "eyes_half_sideways_right.png", 0.2),
-            ("normal_blink_full_left.png", "normal_blink_full_right.png", 0.2),
-            ("eyes_half_sideways_left2.png", "eyes_half_sideways_right2.png", 0.2),
-            ("eyes_full_sideways_left2.png", "eyes_full_sideways_right2.png", 0.2),
-            ("eyes_half_sideways_left2.png", "eyes_half_sideways_right2.png", 0.2),
+            ("normal_blink_full_left.rgb565", "normal_blink_full_right.rgb565", 3),
+            ("eyes_half_sideways_left.rgb565", "eyes_half_sideways_right.rgb565", 0.2),
+            ("eyes_full_sideways_left.rgb565", "eyes_full_sideways_right.rgb565", 0.2),
+            ("eyes_half_sideways_left.rgb565", "eyes_half_sideways_right.rgb565", 0.2),
+            ("normal_blink_full_left.rgb565", "normal_blink_full_right.rgb565", 0.2),
+            ("eyes_half_sideways_left2.rgb565", "eyes_half_sideways_right2.rgb565", 0.2),
+            ("eyes_full_sideways_left2.rgb565", "eyes_full_sideways_right2.rgb565", 0.2),
+            ("eyes_half_sideways_left2.rgb565", "eyes_half_sideways_right2.rgb565", 0.2),
         ]
 
         while not self.stop_eyes:
