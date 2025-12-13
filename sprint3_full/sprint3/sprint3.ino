@@ -66,6 +66,8 @@ void loop(){
     bool isEating = (hallReading < hallMinLo || hallReading > hallMaxHi);
 
     unsigned long now = millis();
+
+    // enter eat
     if (isEating && !wasEating && (now - lastEatTime > eatCooldown)) {
         Serial.println("eat");
         lastEatTime = now;
@@ -74,12 +76,12 @@ void loop(){
         LEDsaveState[1] = 255;
         strip.setPixelColor(0, strip.Color(LEDsaveState[0], LEDsaveState[1], LEDsaveState[2]));
         strip.show();
-        
-        if (hallReading > hallMinLo && hallReading < hallMaxHi) {
-            Serial.println("ate");
-        }
     }
-    strip.show(); 
+
+    // exit eat (ate)
+    if (!isEating && wasEating) {
+        Serial.println("ate"); // print once when eating ends
+    }
     wasEating = isEating;
     delay(50);
 }
