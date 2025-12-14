@@ -1,126 +1,254 @@
 <!DOCTYPE HTML>
 <!--
-	Stellar by HTML5 UP
-	html5up.net | @ajlkn
-	Free for personal and commercial use under the CCA 3.0 license (html5up.net/license)
+    Stellar by HTML5 UP
+    html5up.net | @ajlkn
+    Free for personal and commercial use under the CCA 3.0 license
 -->
 <html>
-	<head>
-		<title>Electrical Design Analysis</title>
-		<link rel="icon" type="image/x-icon" href="images/logo cube small.png">
-		<meta charset="utf-8" />
-		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
-		<link rel="stylesheet" href="assets/css/main.css" />
-		<noscript><link rel="stylesheet" href="assets/css/noscript.css" /></noscript>
-	</head>
-	<body class="is-preload">
 
-		<!-- Wrapper -->
-			<div id="wrapper">
+<head>
+	<title>Electrical Design Analysis</title>
+	<link rel="icon" type="image/x-icon" href="images/logo cube small.png">
+	<meta charset="utf-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+	<link rel="stylesheet" href="assets/css/main.css" />
+	<noscript>
+		<link rel="stylesheet" href="assets/css/noscript.css" />
+	</noscript>
 
-				<!-- Header -->
-					<header id="header">
-						<h1>Creature Feature</h1>
-					</header>
+	<!-- page-specific layout fixes -->
+	<style>
+		.component {
+			display: flex;
+			align-items: center;
+			gap: 24px;
+			margin: 2rem 0;
+		}
 
-                <!-- Nav -->
-				<nav id="nav">
-					<ul>
-						<li><a href="index.html" class="active">Home</a></li>
-						<li><a href="FSD.html">Full System Diagram</a></li>
-						<li><a href="time.html">Timeline</a></li>
-						<li><a href="ASD.html">Design Process</a></li>
-						<li><a href="DEF.html">Data and Energy Flow</a></li>
-						<li><a href="EDA.html"><b>Electrical Design Analysis</b></a></li>
-						<li><a href="MDA.html">Mechanical Design Analysis</a></li>
-						<li><a href="FDC.html">Software Design Analysis</a></li>
-						<li><a href="BOM.html">Bill of Materials</a></li>
-					</ul>
-				</nav>
+		.component img {
+			width: 400px;
+			height: auto;
+			flex-shrink: 0;
+		}
 
-				<!-- Main -->
-				<div id="main">
+		@media (max-width: 768px) {
+			.component {
+				flex-direction: column;
+				text-align: center;
+			}
+		}
+	</style>
+</head>
 
-					<!-- Content -->
-						<section id="content" class="main">
-							<header class="major">
-								<h2>Circuit Diagram</h2>
-							</header>
-							<img src = "images/final circuit white bg.png" width = "900" height = "auto" display = "block" left-margin = "auto" right-margin = "auto" alt = "schematic">
-							<p>
-								Description
-							</p>
-							<br>
-							<h3>Individual Components</h3>
-							<img src = "images\individual electrical components\rasppi.png" width = "400" height = "auto" display = "block" left-margin = "auto" right-margin = "auto" alt = "electrical_system">
-							<p>
-								Description
-							</p>
+<body class="is-preload">
 
-							<img src = "images\individual electrical components\arduino.png" width = "400" height = "auto" display = "block" left-margin = "auto" right-margin = "auto" alt = "electrical_system">
-							<p>
-								Description
-							</p>
+	<!-- Wrapper -->
+	<div id="wrapper">
 
-							<img src = "images\individual electrical components\speaker.png" width = "400" height = "auto" display = "block" left-margin = "auto" right-margin = "auto" alt = "electrical_system">
-							<p>
-								Description
-							</p>
+		<!-- Header -->
+		<header id="header">
+			<h1>Creature Feature</h1>
+		</header>
 
-							<img src = "images\individual electrical components\speaker bonnet.png" width = "400" height = "auto" display = "block" left-margin = "auto" right-margin = "auto" alt = "electrical_system">
-							<p>
-								Description
-							</p>
+		<!-- Nav -->
+		<nav id="nav">
+			<ul>
+				<li><a href="index.html">Home</a></li>
+				<li><a href="FSD.html">Full System Diagram</a></li>
+				<li><a href="time.html">Timeline</a></li>
+				<li><a href="ASD.html">Design Process</a></li>
+				<li><a href="DEF.html">Data and Energy Flow</a></li>
+				<li><a href="EDA.html" class="active"><b>Electrical Design Analysis</b></a></li>
+				<li><a href="MDA.html">Mechanical Design Analysis</a></li>
+				<li><a href="FDC.html">Software Design Analysis</a></li>
+				<li><a href="BOM.html">Bill of Materials</a></li>
+			</ul>
+		</nav>
 
-							<img src = "images\individual electrical components\led screen.png" width = "400" height = "auto" display = "block" left-margin = "auto" right-margin = "auto" alt = "electrical_system">
-							<p>
-								Description
-							</p>
+		<!-- Main -->
+		<div id="main">
 
-							<img src = "images\individual electrical components\servo.png" width = "400" height = "auto" display = "block" left-margin = "auto" right-margin = "auto" alt = "electrical_system">
-							<p>
-								Description
-							</p>
-							
-							<img src = "images\individual electrical components\force receptor.png" width = "400" height = "auto" display = "block" left-margin = "auto" right-margin = "auto" alt = "electrical_system">
-							<p>
-								Description
-							</p>
-							
-							<img src = "images\individual electrical components\hall effect.png" width = "400" height = "auto" display = "block" left-margin = "auto" right-margin = "auto" alt = "electrical_system">
-							<p>
-								Description
-							</p>
-							
-							<img src = "images\individual electrical components\button.png" width = "400" height = "auto" display = "block" left-margin = "auto" right-margin = "auto" alt = "electrical_system">
-							<p>
-								Description
-							</p>
-							
-						</section>
+			<!-- Content -->
+			<section id="content" class="main">
 
+				<header class="major">
+					<h2>Circuit Diagram</h2>
+				</header>
+
+				<img src="images/final circuit white bg.png" alt="schematic"
+					style="display:block; margin:0 auto; max-width:900px; width:100%; height:auto;">
+
+				<p>
+					We used Google Drawing to create our circuit diagram. It contains all of the following:
+				</p>
+				<ul>
+					<li>Raspberry Pi 5</li>
+					<li>Arduino Uno R4 Wifi</li>
+					<li>Adafruit I2S 3W Stereo Speaker Bonnet</li>
+					<li>8W 3Ohm Speakers (2)</li>
+					<li>PmodOLEDrgb Screens (3)</li>
+					<li>Vigor VS-2 Servo (3)</li>
+					<li>REXTiN WS2811 Pixel LEDs (3)</li>
+					<li>Force Resitive Sensor</li>
+					<li>Hall Effect Sensor</li>
+					<li>Push Button (3)</li>
+					<li>5V 10A Power Supply</li>
+					<li>5V 5A Power Supply (Raspberry Pi)</li>
+				</ul>
+				<p>
+					The Raspberry Pi is the main controller of the system,
+					handling high-level tasks such as audio and screens, and
+					coordinating with the Arduino through serial.
+					It manages the state machine while providing
+					variables to the Arduino for low-level control.
+					The Arduino manages real-time interactions with sensors and servos,
+					ensuring responsive behavior. The raspberry pi is powered by a dedicated 5V 5A power supply,
+					and the Arduino, speaker bonnet, speakers, and OLED screens draw power through the Raspberry Pi.
+					All other components are powered by an additional 5V 10A power supply.
+					The various components are interconnected to facilitate communication and
+					control, enabling the creature to perform its intended functions.
+				</p>
+
+				<hr>
+
+				<h3>Individual Components</h3>
+
+				<div class="component">
+					<img src="images/individual electrical components/rasppi.png" alt="raspberry pi">
+					<p>The Raspberry Pi 5 acts as the brain of the creature. It manages emotional state,
+						plays audio through the speaker bonnet, and displays visuals on the OLED screens. It stores and
+						runs
+						all the necessary Python code for the creature to function, while also storing, compiling, and
+						uploading
+						code to the Arduino.
+					</p>
 				</div>
 
-				<!-- Footer -->
-					<footer id="footer">
-						<section>
-							<h3>Back to main page</h3>
-								<li><a href="index.html" class="button">Back to Home</a></li>
-							</ul>
-						</section>
-						<p class="copyright">&copy; Creature Feature. Design: <a href="https://html5up.net">HTML5 UP</a>.</p>
-					</footer>
+				<div class="component">
+					<img src="images/individual electrical components/arduino.png" alt="arduino">
+					<p>The Arduino Uno R4 Wifi acts as the heart of the creature. It runs one continuous script that
+						takes in sensor data from the force resistive sensor, hall effect sensor, and push buttons to
+						allow the creature to respond to user interactions in real time. It also controls the servos and
+						pixel LEDs to
+						bring movement and convey information about the creature's emotional state.
+					</p>
+				</div>
 
-			</div>
+				<div class="component">
+					<img src="images/individual electrical components/speaker bonnet.png" alt="speaker bonnet">
+					<p>The speaker Bonnet connects directly to the entire Raspberry Pi pinout, and uses GPIO 18, 19, and
+						21
+						to play audio files stored on the Raspberry Pi through speakers. It uses the I2S protocol to
+						communicate with the Raspberry Pi. It also has breakout holes that allow for other components,
+						namely the screens, to be soldered directly onto it for a stable connection. It is one of the
+						highest
+						power drawing components connected to the Raspberry Pi, requiring up to 3W per channel at max
+						volume.
+					</p>
+				</div>
 
-		<!-- Scripts -->
-			<script src="assets/js/jquery.min.js"></script>
-			<script src="assets/js/jquery.scrollex.min.js"></script>
-			<script src="assets/js/jquery.scrolly.min.js"></script>
-			<script src="assets/js/browser.min.js"></script>
-			<script src="assets/js/breakpoints.min.js"></script>
-			<script src="assets/js/util.js"></script>
-			<script src="assets/js/main.js"></script>
 
-	</body>
+				<div class="component">
+					<img src="images/individual electrical components/speaker.png" alt="speaker">
+					<p>There are two speakers attached directly to the speaker bonnet. They are not particularly loud,
+						or the best quality. This was a tradeoff we made in order to stay within our power budget, as
+						we have a lot of peripherals connected to the Raspberry Pi and Arduino that also draw a lot of
+						power.
+						We also wanted them to be small enough to fit within the creature's base. Additionally, we
+						wanted
+						to imitate the slightly eerie sound of a furby, and the lower quality speakers help with that
+						effect.
+					</p>
+				</div>
+
+				<div class="component">
+					<img src="images/individual electrical components/led screen.png" alt="led screen">
+					<p>The 2 OLED screens act as the creature's eyes. They display different animations depending on the
+						creature's
+						mood. The screens are connected directly to the speaker bonnet via soldered connections, using
+						SPI communication.
+						They are powered through the Raspberry Pi's 3.3V and GND pins and each take 6 GPIO pins along
+						with COPI and Serial Clock. They are the part of the system that had to be most carefully wired
+						due to
+						the large number of wires and need to travel up into the moving creature.
+					</p>
+				</div>
+
+				<div class="component">
+					<img src="images/individual electrical components/servo.png" alt="servo motor">
+					<p>There are 3 servos inside of the creature's base. These act as spine control. They
+						are each attached to a spool that has string around it, and spinning the servos pulls on
+						the string to pull the creature's spine toward that corner. This allows the creature to
+						lean and wiggle and move in different directions, conveying emotion.
+					</p>
+				</div>
+
+				<div class="component">
+					<img src="images/individual electrical components/Pixels.png" alt="arduino">
+					<p>The Pixel LEDs are individually addressable. Their data line is wired to the Arduino,
+						while their power and ground are connected to the 5V 10A power supply. They are
+						on the front panel of the creature's base. 2 of them act as mood indicator lights,
+						while the third acts as a back status light.
+					</p>
+				</div>
+
+				<div class="component">
+					<img src="images/individual electrical components/force receptor.png" alt="force sensor">
+					<p>The force resistive sensor is placed on top of the creature's head. This senses any weight
+						on top of the creature. It's intended to allow users to push on the head. It was calibrated
+						to detect anything from a light brush to a firm press. There was an additional resistor wired to
+						it to allow for increased sensitivity to lighter touches.
+					</p>
+				</div>
+
+				<div class="component">
+					<img src="images/individual electrical components/hall effect.png" alt="hall effect sensor">
+					<p>The hall effect sensor is embedded in the beak of the creature. Its intended purpose
+						is to detect when an object with an embedded magnet is placed into the beak. It is calibrated
+						to detect a magnet within about 2mm. This allows users to "feed" the creature.
+					</p>
+				</div>
+
+				<div class="component">
+					<img src="images/individual electrical components/button.png" alt="push button">
+					<p>There are 3 buttons in the base of the creature, one is assigned to each light. One acts as a
+						"feed" mode button so that the creature's hall effect sensor is activated to detech the food,
+						one acts as a "play" mode so that the creature's force sensor is activated to detect head
+						petting,
+						and one acts as a back button to interupt states and return to idle. If all three buttons are
+						pressed,
+						Raspberry Pi will run a shutdown script that safely powers down the screens and resets the
+						Arduino.
+					</p>
+				</div>
+
+			</section>
+		</div>
+
+		<!-- Footer -->
+		<footer id="footer">
+			<section>
+				<h3>Back to main page</h3>
+				<ul class="actions">
+					<li><a href="index.html" class="button">Back to Home</a></li>
+				</ul>
+			</section>
+			<p class="copyright">
+				&copy; Creature Feature. Design: <a href="https://html5up.net">HTML5 UP</a>.
+			</p>
+		</footer>
+
+	</div>
+
+	<!-- Scripts -->
+	<script src="assets/js/jquery.min.js"></script>
+	<script src="assets/js/jquery.scrollex.min.js"></script>
+	<script src="assets/js/jquery.scrolly.min.js"></script>
+	<script src="assets/js/browser.min.js"></script>
+	<script src="assets/js/breakpoints.min.js"></script>
+	<script src="assets/js/util.js"></script>
+	<script src="assets/js/main.js"></script>
+
+</body>
+
 </html>
