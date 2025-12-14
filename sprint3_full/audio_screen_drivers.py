@@ -191,11 +191,12 @@ class AudioScreenDrivers:
         right_dir = "../eyes/eye_outputs/narrowing_food/right"
 
         steps = [
-            ("eyes_big_open_color_left.rgb565", "eyes_big_open_color_right.rgb565", 3),
-            ("eyes_half_narrow_left.rgb565", "eyes_half_narrow_right.rgb565", 1.5),
-            ("eyes_full_narrow_left.rgb565", "eyes_full_narrow_right.rgb565", 1.5),
-            ("eyes_half_narrow_left.rgb565", "eyes_half_narrow_right.rgb565", 1.5),
+            ("eyes_big_open_color_left.rgb565", "eyes_big_open_color_right.rgb565", 0.5),
             ("normal_blink_full_left.rgb565", "normal_blink_full_right.rgb565", 2),
+            ("eyes_half_narrow_left.rgb565", "eyes_half_narrow_right.rgb565", 0.75),
+            ("eyes_full_narrow_left.rgb565", "eyes_full_narrow_right.rgb565", 0.75),
+            ("eyes_half_narrow_left.rgb565", "eyes_half_narrow_right.rgb565", 0.75),
+            ("normal_blink_full_left.rgb565", "normal_blink_full_right.rgb565", 0.75),
         ]
 
         while not self.stop_eyes_event.is_set():
