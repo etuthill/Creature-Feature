@@ -60,6 +60,18 @@ void loop(){
                 strip.show();
             }
         }
+        if (cmd == "reset") {
+            LEDsaveState[0] = 0;
+            LEDsaveState[1] = 255;
+            LEDsaveState[2] = 0;
+
+            strip.setPixelColor(0, strip.Color(
+                LEDsaveState[0],
+                LEDsaveState[1],
+                LEDsaveState[2]
+            ));
+            strip.show();
+            }
     }
 
     //read hall

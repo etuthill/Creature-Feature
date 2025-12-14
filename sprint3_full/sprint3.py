@@ -114,4 +114,17 @@ if __name__ == "__main__":
             creature.loop()
             await asyncio.sleep(0.1)
 
-    asyncio.run(main_loop())
+    try:
+        asyncio.run(main_loop())
+
+    except KeyboardInterrupt:
+        print("Keyboard interrupt — resetting LED")
+
+        try:
+            creature.ser.write(b"reset\n")
+            creature.ser.flush()
+        except Exception as e:
+            print("Failed to reset LED:", e)
+
+        creature.drivers.stop_sound()
+        creature.drivers.stop_eyes_event.set()
