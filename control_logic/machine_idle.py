@@ -16,7 +16,7 @@ class MachineIdle:
         self.client.loop_start()
 
         #Serial
-        self.ser = serial.Serial('/dev/ttyACM0')
+        self.ser = serial.Serial('/dev/ttyACM0', baudrate=9600, timeout=0.1)
 
         "Behavioral attributes"
         #healthbars

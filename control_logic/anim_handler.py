@@ -26,28 +26,65 @@ class StateController:
 
     def loop(self):
         message = None
-        if self.fp:
-            #wait 3 seconds
-            time.sleep(3)
-            self.reacting = False
-            message = "pd"
-            if message != None:
-                self.client.publish("state/text", message)
-        if self.hf:
-            #wait 3 seconds
-            time.sleep(3)
-            self.reacting = False
-            message = "fd"
-            if message != None:
-                self.client.publish("state/text", message)
+        serial_output = self.ser.readline().decode(errors="ignore").strip()
+        if serial_output == "hi":
+            #hall->idle
+            pass
+            
+        elif serial_output == "fi":
+            #force->idle
+            pass
+            
+        elif serial_output == "ih":
+            #//idle->hall
+            pass
+            
+        elif serial_output == "if":
+            #idle->force
+            pass
+            
+        elif serial_output == "he":
+            #hall->eating
+            pass
+            
+        elif serial_output == "ef":
+            #eating->food react
+            pass
+            
+        elif serial_output == "fp":
+            #force->playing
+            pass
+            
+        elif serial_output == "pp":
+            #playing->play react
+            pass
+            
+        elif serial_output == "ed":
+            #playing->play react
+            pass
+            
+        elif serial_output == "pd":
+            #playing->play react
+            pass
+            
+        
 
 
     def on_message(client, userdata, msg, self):
         text = msg.payload.decode()    # convert bytes → string
-        if text == "fp":
-                self.fp = True
-        elif text == "hf":
-                self.hf = True
+        if text == "machineIdle":
+                pass
+        elif text == "sensing":
+                pass
+        elif text == "reacting":
+                pass
+        elif text == "idle":
+                pass
+        elif text == "bored":
+                pass
+        elif text == "hungry":
+                pass
+        print("Received text:", text)
 
     def on_connect(self, client, userdata, flags, rc):
         client.subscribe("anim/text")

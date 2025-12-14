@@ -89,7 +89,7 @@ void loop() {
   String cmd = Serial.readStringUntil('\n');
   char cmdType = cmd[0];
   char specific = cmd[3];
-
+  //only true if state has CHANGED
   switch (cmdType) {
     case 'S':   // BUTTON commands
       switch (specific) {
@@ -133,6 +133,8 @@ void loop() {
           //decrease food LED
           LEDsaveState[0][0] += 15;
           LEDsaveState[0][1] -= 15;
+          if (LEDsaveState[0][0] > 255) LEDsaveState[0][0] = 255;
+          if (LEDsaveState[0][1] < 0) LEDsaveState[0][1] = 0;
           strip.setPixelColor(0, strip.Color(LEDsaveState[0][0],LEDsaveState[0][1],LEDsaveState[0][2]));
           strip.show();
           break;
@@ -140,6 +142,8 @@ void loop() {
           //decrease food LED
           LEDsaveState[1][0] += 15;
           LEDsaveState[1][1] -= 15;
+          if (LEDsaveState[1][0] > 255) LEDsaveState[1][0] = 255;
+          if (LEDsaveState[1][1] < 0) LEDsaveState[1][1] = 0;
           strip.setPixelColor(1, strip.Color(LEDsaveState[1][0],LEDsaveState[1][1],LEDsaveState[1][2]));
           strip.show();
           break;
@@ -165,22 +169,32 @@ void loop() {
       break;
     }
 
-  //take readings based on state
-  if (state == HALL){
-    //read back button
-    if (digitalRead(backButton) == HIGH){
-      //hall->idle
-      Serial.println("hi");
+
+  ////////////////////////////////////////////////////////////////////////////////////////////////
+  //readings and reactions
+  if (state == HALL && digitalRead(backButton) == HIGH){
+    //hall->idle
+    Serial.println("hi");
+  }
+  else if (state == HALL){
+    //read hall
+    int hallReading = analogRead(hallSensor);
+    bool isEating = (hallReading < hallMinLo || hallReading > hallMaxHi);
+
+    unsigned long now_eat = millis();
+
+    // enter eat
+    if (isEating && !wasEating && (now_eat - lastEatTime > eatCooldown)) {
+        Serial.println("he");
+        lastEatTime = now_eat;
     }
-    else{
-      //only do if still in this state
-      //read hall
-      int hallReading = analogRead(hallSensor);
-      if (hallReading > hallMin && hallReading < hallMax){
-        //hall->food react
-        Serial.println("hf");
-      }
-    }  
+
+    // exit eat (ate)
+    if (!isEating && wasEating) {
+        Serial.println("ef"); // print once
+    }
+
+    wasEating = isEating;
   }
   else if (state == FORCE){
     if (digitalRead(backButton) == HIGH){
@@ -197,6 +211,30 @@ void loop() {
       }
     }
   }
+  if (state == FORCE && digitalRead(backButton) == HIGH){
+    //force->idle
+    Serial.println("fi");
+  }
+  else if (state == FORCE){
+    //force hall
+    int forceReading = analogRead(forceSensor);
+    bool isPlaying = (forceReading < forceMinLo || forceReading > forceMaxHi);
+
+    unsigned long now_play = millis();
+
+    // enter eat
+    if (isPlaying && !wasPlaying && (now_play - lastPlayTime > playCooldown)) {
+        Serial.println("fp");
+        lastPlayTime = now_play;
+    }
+
+    // exit eat (ate)
+    if (!isPlaying && wasPlaying) {
+        Serial.println("pp"); // print once
+    }
+
+    wasPlaying = isPlaying;
+  }
   else if (state == IDLE){
     //read h/b buttons
     if(digitalRead(foodButton) == HIGH){
@@ -209,6 +247,7 @@ void loop() {
     }
   }
   //else if (state == REACTING){
-    //sense or smthg hell if i know
+    //blocking loop
+    //print a play_done (pd) or eat_done (ed) message
   //}  
 }
