@@ -16,6 +16,7 @@ class AudioScreenDrivers:
         self.client.connect("localhost")
         self.client.loop_start()
 
+        self.msg = "idle"
         self.lastMsg = None
         
         # SCREENS
@@ -33,9 +34,6 @@ class AudioScreenDrivers:
         self.stop_interval_audio = True
         self.spi_lock = threading.Lock()     # protects SPI bus
         self.draw_lock = threading.Lock()    # protects full frame draws
-
-        self.set_state("idle")
-
 
         # setup GPIO pins
         for s in self.screens:
