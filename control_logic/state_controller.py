@@ -4,6 +4,8 @@ import paho.mqtt.client as mqtt
 import time
 import serial
 
+#ALL OF THIS NEEDS TO BE RESET SOMEHOW!!!!!!!!!
+
 class StateController:
     def __init__(self):
         """REMINDER TO 'sudo usermod -a -G dialout $USER' TO ACCESS SERIAL PORTS

@@ -1,6 +1,8 @@
 #include <Servo.h>
 #include <Adafruit_NeoPixel.h>
 
+//ALL OF THIS NEEDS TO BE RESET SOMEHOW!!!!!!!!!
+
 //led strip
 #define NUM_LEDS 3
 #define DATA_PIN 13
