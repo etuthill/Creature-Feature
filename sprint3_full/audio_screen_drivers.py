@@ -315,6 +315,18 @@ class AudioScreenDrivers:
                 if not self.sleep_or_stop(duration):
                     return
 
+    def sleep_or_stop(self, duration, check_interval=0.05):
+        """
+        Sleep for `duration` seconds, but wake early if stop_eyes_event is set.
+        Returns False if stopped early, True if full duration elapsed.
+        """
+        start = time.time()
+        while time.time() - start < duration:
+            if self.stop_eyes_event.is_set():
+                return False
+            time.sleep(check_interval)
+        return True
+
     # SPEAKER FUNCTIONs
     def start_looping_sound(self, filename):
         filepath = os.path.join("../audio", filename)
