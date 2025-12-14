@@ -199,8 +199,8 @@ class AudioScreenDrivers:
 
         # hungry stare loop
         loop_steps = [
-            ("eyes_full_narrow_left.rgb565", "eyes_full_narrow_right.rgb565", 1.2),
-            ("normal_blink_closed_left.rgb565", "normal_blink_closed_right.rgb565", 0.4),
+            ("eyes_full_narrow_left.rgb565", "eyes_full_narrow_right.rgb565", 5),
+            ("normal_blink_closed_left.rgb565", "normal_blink_closed_right.rgb565", 0.5),
         ]
 
         # run intro once
@@ -268,7 +268,6 @@ class AudioScreenDrivers:
             ("eyes_half_color_small_star_left.rgb565", "eyes_half_color_small_star_right.rgb565", 1.5),
             ("eyes_half_color_large_star_stars_left.rgb565", "eyes_half_color_large_star_stars_right.rgb565", 1.5),
             ("eyes_half_color_small_circle_stars_left.rgb565", "eyes_half_color_small_circle_stars_right.rgb565", 1.5),
-            ("normal_blink_full_left.rgb565", "normal_blink_full_right.rgb565", 1.5),
         ]
 
         while not self.stop_eyes_event.is_set():
