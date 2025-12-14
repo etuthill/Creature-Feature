@@ -200,7 +200,7 @@ class AudioScreenDrivers:
         # hungry stare loop
         loop_steps = [
             ("eyes_full_narrow_left.rgb565", "eyes_full_narrow_right.rgb565", 1.2),
-            ("normal_blink_full_left.rgb565", "normal_blink_full_right.rgb565", 0.4),
+            ("normal_blink_closed_left.rgb565", "normal_blink_closed_right.rgb565", 0.4),
         ]
 
         # run intro once
@@ -253,8 +253,6 @@ class AudioScreenDrivers:
 
                 if not self.sleep_or_stop(duration):
                     return
-
-
 
     def starry_eyes(self):
         left_dir = "../eyes/eye_outputs/starry/left"
