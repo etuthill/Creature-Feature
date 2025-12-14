@@ -195,15 +195,15 @@ class AudioScreenDrivers:
             ("eyes_half_narrow_left.rgb565", "eyes_half_narrow_right.rgb565", 1.5),
             ("eyes_full_narrow_left.rgb565", "eyes_full_narrow_right.rgb565", 1.5),
             ("eyes_half_narrow_left.rgb565", "eyes_half_narrow_right.rgb565", 1.5),
-            ("normal_blink_full_right.rgb565", "normal_blink_full_left.rgb565", 2),
+            ("normal_blink_full_left.rgb565", "normal_blink_full_right.rgb565", 2),
         ]
 
         while not self.stop_eyes_event.is_set():
             for lf_name, rf_name, duration in steps:
-                lf = os.path.join(left_dir, lf_name)
-                rf = os.path.join(right_dir, rf_name)
-
-                self.draw_both_screens(lf, rf)
+                self.draw_both_screens(
+                    os.path.join(left_dir, lf_name),
+                    os.path.join(right_dir, rf_name)
+                )
                 time.sleep(duration)
 
     def normal_blink_eyes(self):
@@ -230,9 +230,10 @@ class AudioScreenDrivers:
         left_dir = "../eyes/eye_outputs/starry/left"
         right_dir = "../eyes/eye_outputs/starry/right"
 
-        left_file = os.path.join(left_dir, "normal_blink_full_right.rgb565")
-        right_file = os.path.join(right_dir, "normal_blink_full_left.rgb565")
-        self.draw_both_screens(left_file, right_file)
+        self.draw_both_screens(
+            os.path.join(left_dir, "normal_blink_full_left.rgb565"),
+            os.path.join(right_dir, "normal_blink_full_right.rgb565")
+        )
         time.sleep(2)
 
         steps = [
@@ -243,12 +244,11 @@ class AudioScreenDrivers:
         ]
 
         while not self.stop_eyes_event.is_set():
-            
             for lf_name, rf_name, duration in steps:
-                lf = os.path.join(left_dir, lf_name)
-                rf = os.path.join(right_dir, rf_name)
-
-                self.draw_both_screens(lf, rf)
+                self.draw_both_screens(
+                    os.path.join(left_dir, lf_name),
+                    os.path.join(right_dir, rf_name)
+                )
                 time.sleep(duration)
 
     def side_to_side_eyes(self):
@@ -261,18 +261,19 @@ class AudioScreenDrivers:
             ("eyes_full_sideways_left.rgb565", "eyes_full_sideways_right.rgb565", 2),
             ("eyes_half_sideways_left.rgb565", "eyes_half_sideways_right.rgb565", 2),
             ("normal_blink_full_left.rgb565", "normal_blink_full_right.rgb565", 2),
-            ("eyes_half_sideways_left2.rgb565", "eyes_half_sideways_right2.rgb565", 2),
-            ("eyes_full_sideways_left2.rgb565", "eyes_full_sideways_right2.rgb565", 2),
-            ("eyes_half_sideways_left2.rgb565", "eyes_half_sideways_right2.rgb565", 2),
+            ("eyes_half_sideways_left_2.rgb565", "eyes_half_sideways_right_2.rgb565", 2),
+            ("eyes_full_sideways_left_2.rgb565", "eyes_full_sideways_right_2.rgb565", 2),
+            ("eyes_half_sideways_left_2.rgb565", "eyes_half_sideways_right_2.rgb565", 2),
         ]
 
         while not self.stop_eyes_event.is_set():
             for lf_name, rf_name, duration in steps:
-                lf = os.path.join(left_dir, lf_name)
-                rf = os.path.join(right_dir, rf_name)
-
-                self.draw_both_screens(lf, rf)
+                self.draw_both_screens(
+                    os.path.join(left_dir, lf_name),
+                    os.path.join(right_dir, rf_name)
+                )
                 time.sleep(duration)
+
 
 
     # SPEAKER FUNCTIONs
