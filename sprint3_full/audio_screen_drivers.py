@@ -253,15 +253,15 @@ class AudioScreenDrivers:
 
                 if not self.sleep_or_stop(duration):
                     return
-                
+                    
     def starry_eyes(self):
         left_dir = "../eyes/eye_outputs/starry/left"
         right_dir = "../eyes/eye_outputs/starry/right"
 
-        # intro frame
+        # intro frame 
         self.draw_both_screens(
-            os.path.join(left_dir, "eyes_half_color_small_star_left.rgb565"),
-            os.path.join(right_dir, "eyes_half_color_small_star_right.rgb565")
+            os.path.join(right_dir, "eyes_half_color_small_star_right.rgb565"),
+            os.path.join(left_dir, "eyes_half_color_small_star_left.rgb565")
         )
 
         if not self.sleep_or_stop(2):
@@ -283,9 +283,10 @@ class AudioScreenDrivers:
                 if self.stop_eyes_event.is_set():
                     return
 
+                # 🔁 SWAP HERE
                 self.draw_both_screens(
-                    os.path.join(left_dir, lf_name),
-                    os.path.join(right_dir, rf_name)
+                    os.path.join(right_dir, rf_name),
+                    os.path.join(left_dir, lf_name)
                 )
 
                 if not self.sleep_or_stop(duration):
