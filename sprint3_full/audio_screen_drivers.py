@@ -212,9 +212,9 @@ class AudioScreenDrivers:
 
         steps = [
             ("normal_blink_full_left.rgb565", "normal_blink_full_right.rgb565", 5),
-            ("normal_blink_half_left.rgb565", "normal_blink_half_right.rgb565", 1.5),
-            ("normal_blink_closed_left.rgb565", "normal_blink_closed_right.rgb565", 1.5),
-            ("normal_blink_half_left.rgb565", "normal_blink_half_right.rgb565", 1.5),
+            ("normal_blink_half_left.rgb565", "normal_blink_half_right.rgb565", 0.75),
+            ("normal_blink_closed_left.rgb565", "normal_blink_closed_right.rgb565", 0.75),
+            ("normal_blink_half_left.rgb565", "normal_blink_half_right.rgb565", 0.75),
         ]
 
         while not self.stop_eyes_event.is_set():
