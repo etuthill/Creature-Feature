@@ -35,6 +35,8 @@ class AudioScreenDrivers:
         self.spi_lock = threading.Lock()     # protects SPI bus
         self.draw_lock = threading.Lock()    # protects full frame draws
 
+        self.set_state("idle")
+
 
         # setup GPIO pins
         for s in self.screens:
@@ -214,7 +216,7 @@ class AudioScreenDrivers:
         steps = [
             ("normal_blink_full_left.rgb565", "normal_blink_full_right.rgb565", 5),
             ("normal_blink_half_left.rgb565", "normal_blink_half_right.rgb565", 1.5),
-            ("normal_blink_closed_right.rgb565", "normal_blink_closed_left.rgb565", 1.5),
+            ("normal_blink_closed_left.rgb565", "normal_blink_closed_right.rgb565", 1.5),
             ("normal_blink_half_left.rgb565", "normal_blink_half_right.rgb565", 1.5),
         ]
 
@@ -322,7 +324,7 @@ class AudioScreenDrivers:
     # MQTT FUNCTIONS
 
     def on_message(self, client, userdata, msg):
-        text = msg.payload.decode()    # convert bytes → string
+        text = msg.payload.decode() # convert bytes → string
         if text == "idle":
             self.msg = "idle"
         elif text == "hungry":
