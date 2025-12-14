@@ -16,7 +16,6 @@ class AudioScreenDrivers:
         self.client.connect("localhost")
         self.client.loop_start()
 
-        self.msg = "idle"
         self.lastMsg = None
         
         # SCREENS
