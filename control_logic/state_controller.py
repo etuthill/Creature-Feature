@@ -42,24 +42,12 @@ class StateController:
             message = "machineIdle"
             anim_message = "hi"
             self.ser.write(b'B: idle\n')
-        elif serial_output == "hf":
-            #//hall->food react
-            self.currentState = "reacting"
-            message = "reacting"
-            anim_message = "hf"
-            self.ser.write(b'S: reacting\n')
         elif serial_output == "fi":
             #force->idle
             self.currentState = "idle"
             message = "machineIdle"
             anim_message = "fi"
             self.ser.write(b'B: idle\n')
-        elif serial_output == "fp":
-            #force->play react
-            self.currentState = "reacting"
-            message = "reacting"
-            anim_message = "fp"
-            self.ser.write(b'S: reacting\n')
         elif serial_output == "ih":
             #//idle->hall
             self.currentState = "sensing"
@@ -72,6 +60,26 @@ class StateController:
             message = "sensing"
             anim_message = "if"
             self.ser.write(b'S: force\n')
+        elif serial_output == "he":
+            #hall->eating
+            self.currentState = "sensing"
+            message = "sensing"
+            anim_message = "he"
+        elif serial_output == "ef":
+            #eating->food react
+            self.currentState = "reacting"
+            message = "reacting"
+            anim_message = "ef"
+        elif serial_output == "fp":
+            #force->playing
+            self.currentState = "reacting"
+            message = "sensing"
+            anim_message = "fp"
+        elif serial_output == "pp":
+            #playing->play react
+            self.currentState = "reacting"
+            message = "reacting"
+            anim_message = "pp"
         #switch from reacting to idle 
         if message != None:
             self.client.publish("state/text", message)
