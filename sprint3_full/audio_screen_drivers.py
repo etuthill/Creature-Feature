@@ -190,22 +190,45 @@ class AudioScreenDrivers:
         left_dir = "../eyes/eye_outputs/narrowing_food/left"
         right_dir = "../eyes/eye_outputs/narrowing_food/right"
 
-        steps = [
+        # run onces narrow
+        intro_steps = [
             ("eyes_big_open_color_left.rgb565", "eyes_big_open_color_right.rgb565", 0.5),
-            ("normal_blink_full_left.rgb565", "normal_blink_full_right.rgb565", 2),
-            ("eyes_half_narrow_left.rgb565", "eyes_half_narrow_right.rgb565", 0.75),
-            ("eyes_full_narrow_left.rgb565", "eyes_full_narrow_right.rgb565", 0.75),
-            ("eyes_half_narrow_left.rgb565", "eyes_half_narrow_right.rgb565", 0.75),
-            ("normal_blink_full_left.rgb565", "normal_blink_full_right.rgb565", 0.75),
+            ("eyes_half_narrow_left.rgb565", "eyes_half_narrow_right.rgb565", 0.6),
+            ("eyes_full_narrow_left.rgb565", "eyes_full_narrow_right.rgb565", 0.8),
         ]
 
+        # hungry stare loop
+        loop_steps = [
+            ("eyes_full_narrow_left.rgb565", "eyes_full_narrow_right.rgb565", 1.2),
+            ("normal_blink_full_left.rgb565", "normal_blink_full_right.rgb565", 0.4),
+        ]
+
+        # run intro once
+        for lf_name, rf_name, duration in intro_steps:
+            if self.stop_eyes_event.is_set():
+                return
+
+            self.draw_both_screens(
+                os.path.join(left_dir, lf_name),
+                os.path.join(right_dir, rf_name)
+            )
+
+            if not self.sleep_or_stop(duration):
+                return
+
+        # loop hungry stare
         while not self.stop_eyes_event.is_set():
-            for lf_name, rf_name, duration in steps:
+            for lf_name, rf_name, duration in loop_steps:
+                if self.stop_eyes_event.is_set():
+                    return
+
                 self.draw_both_screens(
                     os.path.join(left_dir, lf_name),
                     os.path.join(right_dir, rf_name)
                 )
-                time.sleep(duration)
+
+                if not self.sleep_or_stop(duration):
+                    return
 
     def normal_blink_eyes(self):
         left_dir = "../eyes/eye_outputs/normal_blink/left"
@@ -220,11 +243,17 @@ class AudioScreenDrivers:
 
         while not self.stop_eyes_event.is_set():
             for lf_name, rf_name, duration in steps:
-                lf = os.path.join(left_dir, lf_name)
-                rf = os.path.join(right_dir, rf_name)
+                if self.stop_eyes_event.is_set():
+                    return
 
-                self.draw_both_screens(lf, rf)
-                time.sleep(duration)
+                self.draw_both_screens(
+                    os.path.join(left_dir, lf_name),
+                    os.path.join(right_dir, rf_name)
+                )
+
+                if not self.sleep_or_stop(duration):
+                    return
+
 
 
     def starry_eyes(self):
@@ -246,11 +275,17 @@ class AudioScreenDrivers:
 
         while not self.stop_eyes_event.is_set():
             for lf_name, rf_name, duration in steps:
+                if self.stop_eyes_event.is_set():
+                    return
+
                 self.draw_both_screens(
                     os.path.join(left_dir, lf_name),
                     os.path.join(right_dir, rf_name)
                 )
-                time.sleep(duration)
+
+                if not self.sleep_or_stop(duration):
+                    return
+
 
     def side_to_side_eyes(self):
         left_dir = "../eyes/eye_outputs/side_to_side/left"
@@ -269,13 +304,16 @@ class AudioScreenDrivers:
 
         while not self.stop_eyes_event.is_set():
             for lf_name, rf_name, duration in steps:
+                if self.stop_eyes_event.is_set():
+                    return
+
                 self.draw_both_screens(
                     os.path.join(left_dir, lf_name),
                     os.path.join(right_dir, rf_name)
                 )
-                time.sleep(duration)
 
-
+                if not self.sleep_or_stop(duration):
+                    return
 
     # SPEAKER FUNCTIONs
     def start_looping_sound(self, filename):
@@ -364,7 +402,7 @@ class AudioScreenDrivers:
 
             self.start_interval_audio(["idle_hehehehe.wav", 
                 "idle_hmhmhm.wav", "idle_jaunty_song.wav", "idle_lalala_lalala.wav", 
-                "idle_lala_lalala_laLA.wav", "idle_mountain_king.wav", "idle_oraawwrr.wav", 
+                "idle_lala_lalala_laLA.wav", "idle_mountain_king.wav", "idle_oraawrr.wav", 
                 "idle_second_jaunty_song.wav", "idle_slightly_maniacle.wav"], 3,6)
 
         elif state == "hungry":
