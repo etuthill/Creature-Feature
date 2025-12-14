@@ -248,6 +248,6 @@ void loop() {
   }
   //else if (state == REACTING){
     //blocking loop
-    //print a done message when done
+    //print a play_done (pd) or eat_done (ed) message
   //}  
 }

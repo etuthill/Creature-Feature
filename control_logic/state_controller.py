@@ -30,7 +30,6 @@ class StateController:
     
     def loop(self):
         message = None
-        anim_message = None
 
         "control system"
         #check buttons and sensors to set machine mode
@@ -40,52 +39,49 @@ class StateController:
             #hall->idle
             self.currentState = "machineIdle"
             message = "machineIdle"
-            anim_message = "hi"
             self.ser.write(b'B: idle\n')
         elif serial_output == "fi":
             #force->idle
             self.currentState = "idle"
             message = "machineIdle"
-            anim_message = "fi"
             self.ser.write(b'B: idle\n')
         elif serial_output == "ih":
             #//idle->hall
             self.currentState = "sensing"
             message = "sensing"
-            anim_message = "ih"
             self.ser.write(b'S: hall\n')
         elif serial_output == "if":
             #idle->force
             self.currentState = "sensing"
             message = "sensing"
-            anim_message = "if"
             self.ser.write(b'S: force\n')
         elif serial_output == "he":
             #hall->eating
             self.currentState = "sensing"
             message = "sensing"
-            anim_message = "he"
         elif serial_output == "ef":
             #eating->food react
             self.currentState = "reacting"
             message = "reacting"
-            anim_message = "ef"
         elif serial_output == "fp":
             #force->playing
             self.currentState = "reacting"
             message = "sensing"
-            anim_message = "fp"
         elif serial_output == "pp":
             #playing->play react
             self.currentState = "reacting"
             message = "reacting"
-            anim_message = "pp"
+        elif serial_output == "ed":
+            #eat react->done
+            self.currentState = "idle"
+            message = "idle"
+        elif serial_output == "pd":
+            #eat react->done
+            self.currentState = "idle"
+            message = "idle"
         #switch from reacting to idle 
         if message != None:
             self.client.publish("state/text", message)
-            #pause before sending anim message to ensure state message is received first
-        if anim_message != None:
-            self.client.publish("anim/text", anim_message)
 
 if __name__ == "__main__":
     creature = StateController()
