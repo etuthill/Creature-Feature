@@ -230,8 +230,8 @@ class AudioScreenDrivers:
         left_dir = "../eyes/eye_outputs/starry/left"
         right_dir = "../eyes/eye_outputs/starry/right"
 
-        left_file = os.path.join(left_dir, "normal_blink_full_left.rgb565")
-        right_file = os.path.join(right_dir, "normal_blink_full_right.rgb565")
+        left_file = os.path.join(left_dir, "normal_blink_full_right.rgb565")
+        right_file = os.path.join(right_dir, "normal_blink_full_left.rgb565")
         self.draw_both_screens(left_file, right_file)
         time.sleep(2)
 
@@ -239,9 +239,8 @@ class AudioScreenDrivers:
             ("eyes_half_color_small_star_left.rgb565", "eyes_half_color_small_star_right.rgb565", 1.5),
             ("eyes_half_color_large_star_stars_left.rgb565", "eyes_half_color_large_star_stars_right.rgb565", 1.5),
             ("eyes_half_color_small_circle_stars_left.rgb565", "eyes_half_color_small_circle_stars_right.rgb565", 1.5),
-            ("normal_blink_full_right.rgb565", "normal_blink_full_left.rgb565", 1.5),
+            ("normal_blink_full_left.rgb565", "normal_blink_full_right.rgb565", 1.5),
         ]
-
 
         while not self.stop_eyes_event.is_set():
             
