@@ -11,8 +11,8 @@ Adafruit_NeoPixel strip(NUM_LEDS, DATA_PIN, NEO_RGB + NEO_KHZ800);
 const int hallSensor = A1;
 
 //sensor vars
-int hallMin = 250;
-int hallMax = 950;
+int hallMin = 350;
+int hallMax = 750;
 
 // debounce hall effect
 unsigned long lastEatTime = 0;

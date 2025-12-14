@@ -253,21 +253,29 @@ class AudioScreenDrivers:
 
                 if not self.sleep_or_stop(duration):
                     return
-
+                
     def starry_eyes(self):
-        right_dir = "../eyes/eye_outputs/starry/left"
-        left_dir = "../eyes/eye_outputs/starry/right"
+        left_dir = "../eyes/eye_outputs/starry/left"
+        right_dir = "../eyes/eye_outputs/starry/right"
 
+        # intro frame
         self.draw_both_screens(
-            os.path.join(right_dir, "normal_blink_full_left.rgb565"),
-            os.path.join(left_dir, "normal_blink_full_right.rgb565")
+            os.path.join(left_dir, "eyes_half_color_small_star_left.rgb565"),
+            os.path.join(right_dir, "eyes_half_color_small_star_right.rgb565")
         )
-        time.sleep(2)
+
+        if not self.sleep_or_stop(2):
+            return
 
         steps = [
-            ("eyes_half_color_small_star_left.rgb565", "eyes_half_color_small_star_right.rgb565", 1.5),
-            ("eyes_half_color_large_star_stars_left.rgb565", "eyes_half_color_large_star_stars_right.rgb565", 1.5),
-            ("eyes_half_color_small_circle_stars_left.rgb565", "eyes_half_color_small_circle_stars_right.rgb565", 1.5),
+            ("eyes_half_color_small_star_left.rgb565",
+            "eyes_half_color_small_star_right.rgb565", 1.5),
+
+            ("eyes_half_color_large_star_stars_left.rgb565",
+            "eyes_half_color_large_star_stars_right.rgb565", 1.5),
+
+            ("eyes_half_color_small_circle_stars_left.rgb565",
+            "eyes_half_color_small_circle_stars_right.rgb565", 1.5),
         ]
 
         while not self.stop_eyes_event.is_set():
@@ -276,12 +284,13 @@ class AudioScreenDrivers:
                     return
 
                 self.draw_both_screens(
-                    os.path.join(right_dir, lf_name),
-                    os.path.join(left_dir, rf_name)
+                    os.path.join(left_dir, lf_name),
+                    os.path.join(right_dir, rf_name)
                 )
 
                 if not self.sleep_or_stop(duration):
                     return
+
 
 
     def side_to_side_eyes(self):
