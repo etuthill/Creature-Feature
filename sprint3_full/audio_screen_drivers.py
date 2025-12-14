@@ -29,7 +29,8 @@ class AudioScreenDrivers:
             {"cs": 6, "dc": 13, "rst": 20, "vccen": 4, "pmoden": 22}
         ]
 
-        self.stop_eyes = False
+        self.stop_eyes_event = threading.Event()
+        self.eye_thread = None
         self.stop_interval_audio = True
         self.spi_lock = threading.Lock()     # protects SPI bus
         self.draw_lock = threading.Lock()    # protects full frame draws
@@ -183,11 +184,10 @@ class AudioScreenDrivers:
     def draw_both_screens(self, left_file, right_file):
         with self.draw_lock:
             self.draw_rgb565_file(self.screens[0], left_file)
-            time.sleep(0.002)
+            time.sleep(0.05)
             self.draw_rgb565_file(self.screens[1], right_file)
 
     def narrowing_food_eyes(self):
-        self.stop_eyes = False
         left_dir = "../eyes/eye_outputs/narrowing_food/left"
         right_dir = "../eyes/eye_outputs/narrowing_food/right"
 
@@ -199,9 +199,7 @@ class AudioScreenDrivers:
             ("normal_blink_full_right.rgb565", "normal_blink_full_left.rgb565", 2),
         ]
 
-        while not self.stop_eyes:
-            if self.stop_eyes:
-                return
+        while not self.stop_eyes_event.is_set():
             for lf_name, rf_name, duration in steps:
                 lf = os.path.join(left_dir, lf_name)
                 rf = os.path.join(right_dir, rf_name)
@@ -210,20 +208,17 @@ class AudioScreenDrivers:
                 time.sleep(duration)
 
     def normal_blink_eyes(self):
-        self.stop_eyes = False
         left_dir = "../eyes/eye_outputs/normal_blink/left"
         right_dir = "../eyes/eye_outputs/normal_blink/right"
 
         steps = [
             ("normal_blink_full_left.rgb565", "normal_blink_full_right.rgb565", 5),
             ("normal_blink_half_left.rgb565", "normal_blink_half_right.rgb565", 1.5),
-            ("normal _blink_closed_left.rgb565", "norma_ blink_closed_right.rgb565", 1.5),
+            ("normal_blink_closed_left.rgb565", "normal_blink_closed_right.rgb565", 1.5),
             ("normal_blink_half_left.rgb565", "normal_blink_half_right.rgb565", 1.5),
         ]
 
-        while not self.stop_eyes:
-            if self.stop_eyes:
-                return
+        while not self.stop_eyes_event.is_set():
             for lf_name, rf_name, duration in steps:
                 lf = os.path.join(left_dir, lf_name)
                 rf = os.path.join(right_dir, rf_name)
@@ -233,7 +228,6 @@ class AudioScreenDrivers:
 
 
     def starry_eyes(self):
-        self.stop_eyes = False
         left_dir = "../eyes/eye_outputs/starry/left"
         right_dir = "../eyes/eye_outputs/starry/right"
 
@@ -250,11 +244,9 @@ class AudioScreenDrivers:
         ]
 
 
-        while not self.stop_eyes:
+        while not self.stop_eyes_event.is_set():
             
             for lf_name, rf_name, duration in steps:
-                if self.stop_eyes:
-                    return
                 lf = os.path.join(left_dir, lf_name)
                 rf = os.path.join(right_dir, rf_name)
 
@@ -262,7 +254,6 @@ class AudioScreenDrivers:
                 time.sleep(duration)
 
     def side_to_side_eyes(self):
-        self.stop_eyes = False
         left_dir = "../eyes/eye_outputs/side_to_side/left"
         right_dir = "../eyes/eye_outputs/side_to_side/right"
 
@@ -277,10 +268,8 @@ class AudioScreenDrivers:
             ("eyes_half_sideways_left2.rgb565", "eyes_half_sideways_right2.rgb565", 2),
         ]
 
-        while not self.stop_eyes:
+        while not self.stop_eyes_event.is_set():
             for lf_name, rf_name, duration in steps:
-                if self.stop_eyes:
-                    return
                 lf = os.path.join(left_dir, lf_name)
                 rf = os.path.join(right_dir, rf_name)
 
@@ -350,23 +339,28 @@ class AudioScreenDrivers:
         if state == self.lastMsg:
             return
 
-        self.stop_eyes = True
+        # stop eyes + audio
+        self.stop_eyes_event.set()
         self.stop_interval_audio = True
         self.stop_sound()
 
-        # wait for any in-progress frame to finish
+        # wait for draw in progress
         with self.draw_lock:
             pass
 
-        time.sleep(0.1)
-        self.stop_eyes = False
+        # wait for eye thread to exit
+        if self.eye_thread and self.eye_thread.is_alive():
+            self.eye_thread.join(timeout=1.0)
 
+        self.stop_eyes_event.clear()
+        time.sleep(0.05)
 
         if state == "idle":
-            threading.Thread(
+            self.eye_thread = threading.Thread(
                 target=self.normal_blink_eyes,
                 daemon=True
-            ).start()
+            )
+            self.eye_thread.start()
 
             self.start_interval_audio(["idle_hehehehe.wav", 
                 "idle_hmhmhm.wav", "idle_jaunty_song.wav", "idle_lalala_lalala.wav", 
@@ -374,19 +368,20 @@ class AudioScreenDrivers:
                 "idle_second_jaunty_song.wav", "idle_slightly_maniacle.wav"], 3,6)
 
         elif state == "hungry":
-            threading.Thread(
+            self.eye_thread = threading.Thread(
                 target=self.narrowing_food_eyes,
                 daemon=True
-            ).start()
+            )
+            self.eye_thread.start()
 
-            self.start_interval_audio(["hungry_dsitraught.wav"], 5,10)
+            self.start_interval_audio(["hungry_dsitraught.wav"], 5, 10)
 
         elif state == "eating":
             self.start_looping_sound("eating_omnomnom.wav")
-            threading.Thread(
+            self.eye_thread = threading.Thread(
                 target=self.starry_eyes,
                 daemon=True
-            ).start()
+            )
+            self.eye_thread.start()
 
         self.lastMsg = state
-
