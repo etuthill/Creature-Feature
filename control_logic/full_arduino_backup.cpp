@@ -52,10 +52,6 @@ int LEDsaveState[2][3] = {
   {0, 255, 0}, //bored
 };
 
-// Serial debounce vars
-unsigned long lastSerialCheck = 0;
-const unsigned long serialInterval = 50;
-
 
 void setup() {
   //Serial
@@ -89,19 +85,6 @@ void setup() {
 }
 
 void loop() {
-  checkSerialAndState();
-  //if true use this anim loop
-  //big statement
-    
-}
-
-void checkSerialAndState() {
-  //prob set anim states in here
-  unsigned long now = millis();
-  if (now - lastSerialCheck < serialInterval) return;
-
-  lastSerialCheck = now;
-
   //read serial
   String cmd = Serial.readStringUntil('\n');
   char cmdType = cmd[0];
@@ -186,6 +169,7 @@ void checkSerialAndState() {
       break;
     }
 
+
   ////////////////////////////////////////////////////////////////////////////////////////////////
   //readings and reactions
   if (state == HALL && digitalRead(backButton) == HIGH){
@@ -262,98 +246,8 @@ void checkSerialAndState() {
       Serial.println("if");
     }
   }
+  //else if (state == REACTING){
+    //blocking loop
+    //print a play_done (pd) or eat_done (ed) message
+  //}  
 }
-
-
-//give each of these unique vars
-//CHANGE THESE SO THEY WORK WITH 3 SERVOS UGHHHHHHH
-void goToNeutral() {
-  unsigned long now = millis();
-  if (now - lastServoUpdate >= servoInterval) {
-    lastServoUpdate = now;
-
-    if (currentPos == targetPos) return;
-
-    float step = speedDegPerSec * (servoInterval / 1000.0);
-
-    if (currentPos < targetPos)
-      currentPos = min(currentPos + step, targetPos);
-    else
-      currentPos = max(currentPos - step, targetPos);
-
-    myServo.write((int)currentPos);
-  }
-}
-
-void neutralToB() {
-  unsigned long now = millis();
-  if (now - lastServoUpdate >= servoInterval) {
-    lastServoUpdate = now;
-
-    if (currentPos == targetPos) return;
-
-    float step = speedDegPerSec * (servoInterval / 1000.0);
-
-    if (currentPos < targetPos)
-      currentPos = min(currentPos + step, targetPos);
-    else
-      currentPos = max(currentPos - step, targetPos);
-
-    myServo.write((int)currentPos);
-  }
-}
-
-void boredToPlaySense() {
-  unsigned long now = millis();
-  if (now - lastServoUpdate >= servoInterval) {
-    lastServoUpdate = now;
-
-    if (currentPos == targetPos) return;
-
-    float step = speedDegPerSec * (servoInterval / 1000.0);
-
-    if (currentPos < targetPos)
-      currentPos = min(currentPos + step, targetPos);
-    else
-      currentPos = max(currentPos - step, targetPos);
-
-    myServo.write((int)currentPos);
-  }
-}
-
-void boredToPlay() {
-  unsigned long now = millis();
-  if (now - lastServoUpdate >= servoInterval) {
-    lastServoUpdate = now;
-
-    if (currentPos == targetPos) return;
-
-    float step = speedDegPerSec * (servoInterval / 1000.0);
-
-    if (currentPos < targetPos)
-      currentPos = min(currentPos + step, targetPos);
-    else
-      currentPos = max(currentPos - step, targetPos);
-
-    myServo.write((int)currentPos);
-  }
-}
-
-void hungryToEat() {
-  unsigned long now = millis();
-  if (now - lastServoUpdate >= servoInterval) {
-    lastServoUpdate = now;
-
-    if (currentPos == targetPos) return;
-
-    float step = speedDegPerSec * (servoInterval / 1000.0);
-
-    if (currentPos < targetPos)
-      currentPos = min(currentPos + step, targetPos);
-    else
-      currentPos = max(currentPos - step, targetPos);
-
-    myServo.write((int)currentPos);
-  }
-}
-
