@@ -17,7 +17,7 @@ class AudioScreenDrivers:
         self.client.loop_start()
 
         self.msg = "idle"
-        self.lastMsg = "idle"
+        self.lastMsg = None
         
         # SCREENS
         # open GPIO chip
@@ -214,7 +214,7 @@ class AudioScreenDrivers:
         steps = [
             ("normal_blink_full_left.rgb565", "normal_blink_full_right.rgb565", 5),
             ("normal_blink_half_left.rgb565", "normal_blink_half_right.rgb565", 1.5),
-            ("normal_blink_closed_left.rgb565", "normal_blink_closed_right.rgb565", 1.5),
+            ("normal_blink_closed_right.rgb565", "normal_blink_closed_left.rgb565", 1.5),
             ("normal_blink_half_left.rgb565", "normal_blink_half_right.rgb565", 1.5),
         ]
 
