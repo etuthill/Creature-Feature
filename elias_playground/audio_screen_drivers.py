@@ -32,8 +32,8 @@ class AudioScreenDrivers:
         self.stop_eyes_event = threading.Event()
         self.eye_thread = None
         self.stop_interval_audio = True
-        self.spi_lock = threading.Lock()     # protects SPI bus
-        self.draw_lock = threading.Lock()    # protects full frame draws
+        self.spi_lock = threading.Lock() # protects SPI bus
+        self.draw_lock = threading.Lock() # protects full frame draws
 
         # setup GPIO pins
         for s in self.screens:
@@ -397,14 +397,10 @@ class AudioScreenDrivers:
     # MQTT FUNCTIONS
 
     def on_message(self, client, userdata, msg):
-        text = msg.payload.decode() # convert bytes → string
-        if text == "idle":
-            self.msg = "idle"
-        elif text == "hungry":
-            self.msg = "hungry"
-        elif text == "eating":
-            self.msg = "eating"
-        print("Received text:", text)
+        text = msg.payload.decode()
+        # call hardware state change
+        self.set_state(text)
+
 
     def on_connect(self, client, userdata, flags, rc):
         client.subscribe("state/text")
