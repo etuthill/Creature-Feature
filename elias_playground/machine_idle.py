@@ -19,7 +19,7 @@ class MachineIdle:
         self.hunger = Hunger(self.client, topic="anim/hunger")
         self.boredom = Boredom(self.client, topic="anim/boredom")
 
-        # machine idle/state
+        # machine idle/state tracking
         self.machineIdle = True 
         self.currentState = None 
 

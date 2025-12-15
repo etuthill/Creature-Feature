@@ -481,6 +481,18 @@ class AudioScreenDrivers:
             self.eye_thread.start()
 
             self.start_interval_audio(["waAaAa.wav", "wah_wah_wah.wav", "waowaowaoooo.wav", "waow.wav", "wOoOoOw.wav"], 2, 5)
+
+        elif state == "RESET":
+            self.eye_thread = threading.Thread(
+                target=self.normal_blink_eyes,
+                daemon=True
+            )
+            self.eye_thread.start()
+
+            self.start_interval_audio(["idle_hehehehe.wav", 
+                "idle_hmhmhm.wav", "idle_jaunty_song.wav", "idle_lalala_lalala.wav", 
+                "idle_lala_lalala_laLA.wav", "idle_mountain_king.wav", "idle_oraawrr.wav", 
+                "idle_second_jaunty_song.wav", "idle_slightly_maniacle.wav", "hehehewav.wav"], 3,6)
         
 
         self.lastMsg = state
