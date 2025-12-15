@@ -1,4 +1,4 @@
-"""node for machine idle behavior state"""
+"""Node for machine idle behavior state"""
 
 import paho.mqtt.client as mqtt
 from hunger import Hunger
@@ -7,7 +7,27 @@ import asyncio
 
 
 class MachineIdle:
-    def __init__(self):
+    """
+    Handles the machine's idle behavior state.
+
+    Tracks hunger and boredom needs, decides the current idle substate
+    (idle, hungry, bored, hangry), and publishes state updates over MQTT.
+
+    Attributes:
+        client (mqtt.Client): MQTT client for subscribing and publishing state.
+        hunger (Hunger): Hunger need system.
+        boredom (Boredom): Boredom need system.
+        machineIdle (bool): True if the machine is in idle mode, else False.
+        currentState (str | None): Currently active idle state.
+        idleStates (dict[str, bool]): Substate flags for idle, hungry, bored, hangry.
+    """
+
+    def __init__(self) -> None:
+        """Initialize the MachineIdle node.
+
+        Sets up MQTT client, subscribes to FSM topic, initializes
+        hunger and boredom systems, and idle state tracking.
+        """
         # mqtt client
         self.client = mqtt.Client()
         self.client.on_connect = self.on_connect
@@ -31,7 +51,8 @@ class MachineIdle:
             "hangry": False
         }
 
-    def reset(self):
+    def reset(self) -> None:
+        """Reset internal need systems and return machine to idle mode."""
         # reset internal need systems
         self.hunger.reset()
         self.boredom.reset()
@@ -42,7 +63,12 @@ class MachineIdle:
         self.machineIdle = True
         print("MachineIdle reset done")
 
-    def decide_state(self):
+    def decide_state(self) -> str:
+        """Determine which idle substate should be active.
+
+        Returns:
+            str: One of 'idle', 'hungry', 'bored', or 'hangry'.
+        """
         # highest priority when both needs are critical
         if self.hunger.is_hungry and self.boredom.is_bored:
             return "hangry"
@@ -57,12 +83,18 @@ class MachineIdle:
 
         return "idle" # idle otherwise
 
-    def start(self):
+    def start(self) -> None:
+        """Start the hunger and boredom decay timers."""
         # start need decay timers
         self.hunger.start()
         self.boredom.start()
 
-    def loop(self):
+    def loop(self) -> None:
+        """Main idle update loop.
+
+        Checks current needs, decides state, and publishes changes
+        if the machine is in idle mode.
+        """
         # do nothing if machine is not in idle mode
         if not self.machineIdle:
             return
@@ -75,7 +107,12 @@ class MachineIdle:
             print(f"Idle state → {next_state}")
             self.client.publish("anim/text", next_state)
 
-    def setAllFalseExcept(self, stateName):
+    def setAllFalseExcept(self, stateName: str) -> None:
+        """Mark one idle substate as active and all others as False.
+
+        Args:
+            stateName (str): The state to activate.
+        """
         # helper to mark one idle substate as active
         for state in self.idleStates:
             if state == stateName:
@@ -83,7 +120,14 @@ class MachineIdle:
             else:
                 self.idleStates[state] = False
 
-    def on_message(self, client, userdata, msg):
+    def on_message(self, client: mqtt.Client, userdata, msg: mqtt.MQTTMessage) -> None:
+        """Handle incoming FSM state messages.
+
+        Args:
+            client (mqtt.Client): The MQTT client instance.
+            userdata: User-defined data (unused).
+            msg (mqtt.MQTTMessage): Incoming MQTT message.
+        """
         text = msg.payload.decode() # handle incoming fsm state messages
 
         # machine entered idle state
@@ -99,13 +143,21 @@ class MachineIdle:
             print("Received RESET")
             self.reset()
 
-    def on_connect(self, client, userdata, flags, rc):
+    def on_connect(self, client: mqtt.Client, userdata, flags, rc: int) -> None:
+        """Subscribe to FSM topic when MQTT connects.
+
+        Args:
+            client (mqtt.Client): The MQTT client instance.
+            userdata: User-defined data (unused).
+            flags: Response flags from the broker.
+            rc (int): Connection result code.
+        """
         # subscribe to global fsm state topic
         client.subscribe("state/text")
         print("Connected and subscribed.")
 
 
-async def main():
+async def main() -> None:
         # create and start idle node
         idle = MachineIdle()
         idle.start()

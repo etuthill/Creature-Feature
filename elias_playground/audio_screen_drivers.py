@@ -8,8 +8,28 @@ import os
 import paho.mqtt.client as mqtt
 
 class AudioScreenDrivers:
+    """
+    Handles screen drawing, eye animations, and audio playback for the machine.
+
+    Attributes:
+        client (mqtt.Client): MQTT client for receiving FSM state messages.
+        msg (str): Current state message (initially "idle").
+        lastMsg (str | None): Last processed state message to prevent repeats.
+        h (int): GPIO chip handle from lgpio.
+        screens (list[dict]): List of screen pinouts with keys cs, dc, rst, vccen, pmoden.
+        stop_eyes_event (threading.Event): Event to stop eye animation threads.
+        eye_thread (threading.Thread | None): Thread currently running eye animation.
+        stop_interval_audio (bool): Flag to stop interval-based audio playback.
+        spi_lock (threading.Lock): Lock to protect SPI bus access.
+        draw_lock (threading.Lock): Lock to protect full-frame screen drawing.
+    """
+
     def __init__(self):
-        #MQTT Client
+        """
+        Init SPI, GPIO, MQTT, and audio systems for screens and speakers.
+        Sets up locks and threading control (aaaa screens corruption).
+        """
+        # MQTT Client
         self.client = mqtt.Client()
         self.client.on_connect = self.on_connect
         self.client.on_message = self.on_message
@@ -32,13 +52,13 @@ class AudioScreenDrivers:
         self.stop_eyes_event = threading.Event()
         self.eye_thread = None
         self.stop_interval_audio = True
-        self.spi_lock = threading.Lock() # protects SPI bus
-        self.draw_lock = threading.Lock() # protects full frame draws
+        self.spi_lock = threading.Lock()  # protects SPI bus
+        self.draw_lock = threading.Lock()  # protects full frame draws
 
         # setup GPIO pins
         for s in self.screens:
             lgpio.gpio_claim_output(self.h, s["cs"], 1)  # CS idle high
-            lgpio.gpio_claim_output(self.h, s["dc"], 0) # DC default low
+            lgpio.gpio_claim_output(self.h, s["dc"], 0)  # DC default low
             lgpio.gpio_claim_output(self.h, s["rst"], 1)  # Reset idle high
             lgpio.gpio_claim_output(self.h, s["vccen"], 0)  # VCCEN off
             lgpio.gpio_claim_output(self.h, s["pmoden"], 1)  # PMODEN on
@@ -46,21 +66,35 @@ class AudioScreenDrivers:
         # SPI setup
         self.spi = spidev.SpiDev()
         self.spi.open(0, 0)
-        self.spi.max_speed_hz = 2000000   
+        self.spi.max_speed_hz = 2000000
         self.spi.mode = 0
 
         # SPEAKERS
         pygame.mixer.init()
 
-    # SCREEN FUNCTIONS 
-    def send_cmd(self, s, cmd):
+    # SCREEN FUNCTIONS
+    def send_cmd(self, s: dict, cmd: int):
+        """
+        Send a command byte to a screen.
+
+        Args:
+            s (dict): Screen pin dictionary with keys cs and dc.
+            cmd (int): Command byte to send.
+        """
         with self.spi_lock:
             lgpio.gpio_write(self.h, s["dc"], 0)
             lgpio.gpio_write(self.h, s["cs"], 0)
             self.spi.writebytes([cmd])
             lgpio.gpio_write(self.h, s["cs"], 1)
 
-    def send_data(self, s, data):
+    def send_data(self, s: dict, data: bytes):
+        """
+        Send a data buffer to a screen.
+
+        Args:
+            s (dict): Screen pin dictionary with keys cs and dc.
+            data (bytes): Byte array of pixel data to send.
+        """
         with self.spi_lock:
             lgpio.gpio_write(self.h, s["dc"], 1)
             lgpio.gpio_write(self.h, s["cs"], 0)
@@ -71,9 +105,14 @@ class AudioScreenDrivers:
 
             lgpio.gpio_write(self.h, s["cs"], 1)
 
-    # power-on sequence
-    def power_on_displays(self, s):
+    def power_on_displays(self, s: dict):
+        """
+        Power on a screen with reset sequence, set address ranges, and enable RGB565 mode.
+        Basically drivers aaaaa.
 
+        Args:
+            s (dict): Screen pin dictionary with keys cs, dc, rst, vccen, pmoden.
+        """
         # hardware reset
         lgpio.gpio_write(self.h, s["rst"], 0)
         time.sleep(0.05)
@@ -128,7 +167,15 @@ class AudioScreenDrivers:
         # display ON
         self.send_cmd(s, 0xAF)
 
-    def draw_rgb565_file(self, s, filename, bgr=False):
+    def draw_rgb565_file(self, s: dict, filename: str, bgr: bool = False):
+        """
+        Draw RGB565 image file to one screen.
+
+        Args:
+            s (dict): Screen pin dictionary with keys cs and dc.
+            filename (str): Path to .rgb565 file.
+            bgr (bool): Whether to swap R/B channels (default False).
+        """
         if not os.path.exists(filename):
             print("File not found:", filename)
             return
@@ -175,6 +222,9 @@ class AudioScreenDrivers:
         self.send_data(s, fixed)
 
     def shutdown_all_displays(self):
+        """
+        Safely power off all displays and GPIO pins based on datasheet.
+        """
         print("Shutting down displays safely")
 
         for s in self.screens:
@@ -197,18 +247,29 @@ class AudioScreenDrivers:
         except:
             pass
 
+    def draw_both_screens(self, left_file: str, right_file: str):
+        """
+        Draw two screens with thread-safe locking (prevent corruption).
 
-    def draw_both_screens(self, left_file, right_file):
+        Args:
+            left_file (str): Left screen RGB565 file.
+            right_file (str): Right screen RGB565 file.
+        """
         with self.draw_lock:
             self.draw_rgb565_file(self.screens[0], left_file)
             time.sleep(0.05)
             self.draw_rgb565_file(self.screens[1], right_file)
 
+        #EYE ANIMATION
+
     def narrowing_food_eyes(self):
+        """
+        Animate the eyes narrowing to indicate hunger.
+        """
         left_dir = "../eyes/eye_outputs/narrowing_food/left"
         right_dir = "../eyes/eye_outputs/narrowing_food/right"
 
-        # run onces narrow
+        # run intro sequence once
         intro_steps = [
             ("eyes_big_open_color_left.rgb565", "eyes_big_open_color_right.rgb565", 0.5),
             ("eyes_half_narrow_left.rgb565", "eyes_half_narrow_right.rgb565", 0.6),
@@ -221,34 +282,27 @@ class AudioScreenDrivers:
             ("normal_blink_closed_left.rgb565", "normal_blink_closed_right.rgb565", 0.5),
         ]
 
-        # run intro once
         for lf_name, rf_name, duration in intro_steps:
             if self.stop_eyes_event.is_set():
                 return
-
-            self.draw_both_screens(
-                os.path.join(left_dir, lf_name),
-                os.path.join(right_dir, rf_name)
-            )
-
+            self.draw_both_screens(os.path.join(left_dir, lf_name),
+                                   os.path.join(right_dir, rf_name))
             if not self.sleep_or_stop(duration):
                 return
 
-        # loop hungry stare
         while not self.stop_eyes_event.is_set():
             for lf_name, rf_name, duration in loop_steps:
                 if self.stop_eyes_event.is_set():
                     return
-
-                self.draw_both_screens(
-                    os.path.join(left_dir, lf_name),
-                    os.path.join(right_dir, rf_name)
-                )
-
+                self.draw_both_screens(os.path.join(left_dir, lf_name),
+                                       os.path.join(right_dir, rf_name))
                 if not self.sleep_or_stop(duration):
                     return
 
     def normal_blink_eyes(self):
+        """
+        Animate normal blinking eyes for idle state.
+        """
         left_dir = "../eyes/eye_outputs/normal_blink/left"
         right_dir = "../eyes/eye_outputs/normal_blink/right"
 
@@ -263,56 +317,44 @@ class AudioScreenDrivers:
             for lf_name, rf_name, duration in steps:
                 if self.stop_eyes_event.is_set():
                     return
-
-                self.draw_both_screens(
-                    os.path.join(left_dir, lf_name),
-                    os.path.join(right_dir, rf_name)
-                )
-
+                self.draw_both_screens(os.path.join(left_dir, lf_name),
+                                       os.path.join(right_dir, rf_name))
                 if not self.sleep_or_stop(duration):
                     return
-                    
+
     def starry_eyes(self):
+        """
+        Animate starry eyes for eating or playful states.
+        """
         left_dir = "../eyes/eye_outputs/starry/left"
         right_dir = "../eyes/eye_outputs/starry/right"
 
-        # intro frame 
-        self.draw_both_screens(
-            os.path.join(right_dir, "eyes_half_color_small_star_right.rgb565"),
-            os.path.join(left_dir, "eyes_half_color_small_star_left.rgb565")
-        )
-
+        # intro frame
+        self.draw_both_screens(os.path.join(right_dir, "eyes_half_color_small_star_right.rgb565"),
+                               os.path.join(left_dir, "eyes_half_color_small_star_left.rgb565"))
         if not self.sleep_or_stop(2):
             return
 
         steps = [
-            ("eyes_half_color_small_star_left.rgb565",
-            "eyes_half_color_small_star_right.rgb565", 1.5),
-
-            ("eyes_half_color_large_star_stars_left.rgb565",
-            "eyes_half_color_large_star_stars_right.rgb565", 1.5),
-
-            ("eyes_half_color_small_circle_stars_left.rgb565",
-            "eyes_half_color_small_circle_stars_right.rgb565", 1.5),
+            ("eyes_half_color_small_star_left.rgb565", "eyes_half_color_small_star_right.rgb565", 1.5),
+            ("eyes_half_color_large_star_stars_left.rgb565", "eyes_half_color_large_star_stars_right.rgb565", 1.5),
+            ("eyes_half_color_small_circle_stars_left.rgb565", "eyes_half_color_small_circle_stars_right.rgb565", 1.5),
         ]
 
         while not self.stop_eyes_event.is_set():
             for lf_name, rf_name, duration in steps:
                 if self.stop_eyes_event.is_set():
                     return
-
-                # 🔁 SWAP HERE
-                self.draw_both_screens(
-                    os.path.join(right_dir, rf_name),
-                    os.path.join(left_dir, lf_name)
-                )
-
+                # swap left and right because aaah it's backward for unknown reason
+                self.draw_both_screens(os.path.join(right_dir, rf_name),
+                                       os.path.join(left_dir, lf_name))
                 if not self.sleep_or_stop(duration):
                     return
 
-
-
     def side_to_side_eyes(self):
+        """
+        Animate eyes looking side-to-side for boredom state.
+        """
         left_dir = "../eyes/eye_outputs/side_to_side/left"
         right_dir = "../eyes/eye_outputs/side_to_side/right"
 
@@ -331,19 +373,23 @@ class AudioScreenDrivers:
             for lf_name, rf_name, duration in steps:
                 if self.stop_eyes_event.is_set():
                     return
-
-                self.draw_both_screens(
-                    os.path.join(left_dir, lf_name),
-                    os.path.join(right_dir, rf_name)
-                )
-
+                self.draw_both_screens(os.path.join(left_dir, lf_name),
+                                       os.path.join(right_dir, rf_name))
                 if not self.sleep_or_stop(duration):
                     return
 
-    def sleep_or_stop(self, duration, check_interval=0.05):
+    # SLEEP
+
+    def sleep_or_stop(self, duration: float, check_interval: float = 0.05) -> bool:
         """
-        Sleep for `duration` seconds, but wake early if stop_eyes_event is set.
-        Returns False if stopped early, True if full duration elapsed.
+        Sleep for duration seconds, but wake early if stop_eyes_event is set.
+
+        Args:
+            duration (float): Total seconds to sleep.
+            check_interval (float): Interval to check stop condition.
+
+        Returns:
+            bool: True if full duration elapsed, False if stopped early.
         """
         start = time.time()
         while time.time() - start < duration:
@@ -352,70 +398,106 @@ class AudioScreenDrivers:
             time.sleep(check_interval)
         return True
 
-    # SPEAKER FUNCTIONs
-    def start_looping_sound(self, filename):
+    # AUDIO
+
+    def start_looping_sound(self, filename: str):
+        """
+        Play a sound in an infinite loop.
+
+        Args:
+            filename (str): Name of audio file.
+        """
         filepath = os.path.join("../audio", filename)
         pygame.mixer.music.load(filepath)
-        pygame.mixer.music.play(-1)  # loop forever
+        pygame.mixer.music.play(-1)
 
     def stop_sound(self):
+        """Stop any currently playing sound."""
         pygame.mixer.music.stop()
 
-    def interval_audio(self, filenames, min_interval, max_interval):
+    def interval_audio(self, filenames: list[str], min_interval: float, max_interval: float):
+        """
+        Play random sounds from a list at random intervals.
+
+        Args:
+            filenames (list[str]): List of filenames in '../audio/'.
+            min_interval (float): Minimum wait time between sounds.
+            max_interval (float): Maximum wait time between sounds.
+        """
         while not self.stop_interval_audio:
-            # wait random or fixed interval
             wait_time = random.uniform(min_interval, max_interval)
             start = time.time()
-
             while time.time() - start < wait_time:
                 if self.stop_interval_audio:
                     return
                 time.sleep(0.05)
-
             if self.stop_interval_audio:
                 return
-
             filename = random.choice(filenames)
             filepath = os.path.join("../audio", filename)
-
             pygame.mixer.music.load(filepath)
             pygame.mixer.music.play()
-
             while pygame.mixer.music.get_busy():
                 if self.stop_interval_audio:
                     pygame.mixer.music.stop()
                     return
                 time.sleep(0.05)
-    def start_interval_audio(self, filenames, min_interval, max_interval):
+
+    def start_interval_audio(self, filenames: list[str], min_interval: float, max_interval: float):
+        """
+        Start a background thread to play interval audio.
+
+        Args:
+            filenames (list[str]): List of audio filenames.
+            min_interval (float): Minimum interval.
+            max_interval (float): Maximum interval.
+        """
         self.stop_interval_audio = False
         threading.Thread(
             target=self.interval_audio,
             args=(filenames, min_interval, max_interval),
             daemon=True
         ).start()
-        
-    # MQTT FUNCTIONS
+
+    # MQTT
 
     def on_message(self, client, userdata, msg):
+        """
+        MQTT callback when a message is received.
+
+        Args:
+            client: MQTT client instance.
+            userdata: User data (unused).
+            msg: MQTT message object.
+        """
         text = msg.payload.decode()
-        # call hardware state change
         self.set_state(text)
 
-
     def on_connect(self, client, userdata, flags, rc):
+        """
+        MQTT callback when client connects.
+
+        Subscribes to 'state/text'.
+        """
         client.subscribe("state/text")
         print("Connected and subscribed.")
 
-    def set_state(self, state):
+    def set_state(self, state: str):
+        """
+        Change the system state and update eye animations and audio.
+
+        Args:
+            state (str): State string (idle, hungry, eating, boredom, etc.)
+        """
         if state == self.lastMsg:
             return
 
-        # stop eyes + audio
+        # stop current animations and audio
         self.stop_eyes_event.set()
         self.stop_interval_audio = True
         self.stop_sound()
 
-        # wait for draw in progress
+        # wait for ongoing draw to finish
         with self.draw_lock:
             pass
 
@@ -426,73 +508,46 @@ class AudioScreenDrivers:
         self.stop_eyes_event.clear()
         time.sleep(0.05)
 
+        #s new animation and audio based on state
         if state == "idle":
-            self.eye_thread = threading.Thread(
-                target=self.normal_blink_eyes,
-                daemon=True
-            )
+            self.eye_thread = threading.Thread(target=self.normal_blink_eyes, daemon=True)
             self.eye_thread.start()
-
-            self.start_interval_audio(["idle_hehehehe.wav", 
-                "idle_hmhmhm.wav", "idle_jaunty_song.wav", "idle_lalala_lalala.wav", 
-                "idle_lala_lalala_laLA.wav", "idle_mountain_king.wav", "idle_oraawrr.wav", 
-                "idle_second_jaunty_song.wav", "idle_slightly_maniacle.wav", "hehehewav.wav"], 3,6)
+            self.start_interval_audio(["idle_hehehehe.wav", "idle_hmhmhm.wav", "idle_jaunty_song.wav",
+                "idle_lalala_lalala.wav", "idle_lala_lalala_laLA.wav",
+                "idle_mountain_king.wav", "idle_oraawrr.wav", "idle_second_jaunty_song.wav",
+                "idle_slightly_maniacle.wav", "hehehewav.wav"], 3, 6)
 
         elif state == "hungry":
-            self.eye_thread = threading.Thread(
-                target=self.narrowing_food_eyes,
-                daemon=True
-            )
+            self.eye_thread = threading.Thread(target=self.narrowing_food_eyes, daemon=True)
             self.eye_thread.start()
-
             self.start_interval_audio(["hungry_dsitraught.wav"], 5, 10)
 
         elif state == "eating":
             self.start_looping_sound("eating_omnomnom.wav")
-            self.eye_thread = threading.Thread(
-                target=self.starry_eyes,
-                daemon=True
-            )
-            self.eye_thread.start()
-        
-        elif state == "boredom":
-            self.eye_thread = threading.Thread(
-                target=self.side_to_side_eyes,
-                daemon=True
-            )
+            self.eye_thread = threading.Thread(target=self.starry_eyes, daemon=True)
             self.eye_thread.start()
 
+        elif state == "boredom":
+            self.eye_thread = threading.Thread(target=self.side_to_side_eyes, daemon=True)
+            self.eye_thread.start()
             self.start_interval_audio(["bored_mm_mm.wav", "bored_nnnnnaa.wav"], 3, 6)
 
         elif state == "boredom_hungry":
-            self.eye_thread = threading.Thread(
-                target=self.side_to_side_eyes,
-                daemon=True
-            )
+            self.eye_thread = threading.Thread(target=self.narrowing_food_eyes, daemon=True)
             self.eye_thread.start()
-
             self.start_interval_audio(["bored_mm_mm.wav", "bored_nnnnnaa.wav", "hungry_dsitraught.wav"], 3, 6)
 
         elif state == "playing":
-            self.eye_thread = threading.Thread(
-                target=self.starry_eyes,
-                daemon=True
-            )
+            self.eye_thread = threading.Thread(target=self.starry_eyes, daemon=True)
             self.eye_thread.start()
-
             self.start_interval_audio(["waAaAa.wav", "wah_wah_wah.wav", "waowaowaoooo.wav", "waow.wav", "wOoOoOw.wav"], 2, 5)
 
         elif state == "RESET":
-            self.eye_thread = threading.Thread(
-                target=self.normal_blink_eyes,
-                daemon=True
-            )
+            self.eye_thread = threading.Thread(target=self.normal_blink_eyes, daemon=True)
             self.eye_thread.start()
-
-            self.start_interval_audio(["idle_hehehehe.wav", 
-                "idle_hmhmhm.wav", "idle_jaunty_song.wav", "idle_lalala_lalala.wav", 
-                "idle_lala_lalala_laLA.wav", "idle_mountain_king.wav", "idle_oraawrr.wav", 
-                "idle_second_jaunty_song.wav", "idle_slightly_maniacle.wav", "hehehewav.wav"], 3,6)
-        
+            self.start_interval_audio(["idle_hehehehe.wav", "idle_hmhmhm.wav", "idle_jaunty_song.wav",
+                "idle_lalala_lalala.wav", "idle_lala_lalala_laLA.wav",
+                "idle_mountain_king.wav", "idle_oraawrr.wav", "idle_second_jaunty_song.wav",
+                "idle_slightly_maniacle.wav", "hehehewav.wav"], 3, 6)
 
         self.lastMsg = state

@@ -1,5 +1,5 @@
 """
-state controller handles serial communication with arduino
+State controller handles serial communication with arduino
 and mqtt messaging for state changes
 """
 
@@ -8,7 +8,25 @@ import paho.mqtt.client as mqtt
 
 
 class StateController:
-    def __init__(self):
+    """Finite State Machine (FSM) controller.
+
+    Reads sensor input from Arduino via serial, determines state,
+    publishes state updates over MQTT, and handles reset.
+
+    Attributes:
+        client (mqtt.Client): MQTT client used to publish FSM state updates.
+        ser (serial.Serial): Serial connection to Arduino for non-blocking reads.
+        lastState (str | None): Last published FSM state, used to avoid duplicates.
+        currentState (str): Current FSM state.
+    """
+
+    def __init__(self) -> None:
+        """
+        Initialize the StateController.
+
+        Sets up MQTT client, connects to local broker, starts the MQTT loop,
+        and initializes serial communication and FSM state tracking.
+        """
         self.client = mqtt.Client() # MQTT client used to publish fsm state updates
         self.client.on_connect = self.on_connect # callback when mqtt connects
         self.client.connect("localhost") # connect to local 
@@ -24,7 +42,13 @@ class StateController:
         # starting fsm state
         self.currentState = "machineIdle"
 
-    def loop(self):
+    def loop(self) -> None:
+        """
+        Perform one iteration of the FSM loop.
+
+        Reads a line from Arduino over serial, determines the FSM state
+        based on input, and publishes the state to MQTT only if it has changed.
+        """
         # read a line from arduino over serial
         line = self.ser.readline().decode(errors="ignore").strip()
 
@@ -53,7 +77,13 @@ class StateController:
             print(f"fsm -> {message}")
             self.lastState = message
 
-    def handle_reset(self):
+    def handle_reset(self) -> None:
+        """
+        Reset the FSM to initial state and notify Arduino.
+
+        Clears lastState and currentState, then sends a RESET command
+        over the serial connection to the Arduino.
+        """
         # clear FSM state
         self.lastState = None
         self.currentState = "machineIdle"
@@ -66,16 +96,43 @@ class StateController:
 
         print("FSM reset complete")
 
-    def reset_machine(self):
+    def reset_machine(self) -> None:
+        """
+        Reset FSM and notify MQTT subscribers.
+
+        Publishes a RESET message over MQTT and calls handle_reset
+        to reset internal FSM state and notify the Arduino.
+        """
         print("fsm -> reset")
         self.client.publish("state/text", "RESET")
         self.handle_reset()
         
-    def on_connect(self, client, userdata, flags, rc):
+    def on_connect(self, client: mqtt.Client, userdata, flags, rc: int) -> None:
+        """
+        Callback when MQTT connects to broker.
+
+        Subscribes to FSM state topic.
+
+        Args:
+            client (mqtt.Client): The MQTT client instance.
+            userdata: User-defined data (unused).
+            flags: Response flags from the broker.
+            rc (int): Connection result code.
+        """
         print("FSM connected to MQTT")
         client.subscribe("state/text")
 
-    def on_message(self, client, userdata, msg):
+    def on_message(self, client: mqtt.Client, userdata, msg: mqtt.MQTTMessage) -> None:
+        """
+        Callback when an MQTT message is received.
+
+        If the message is "RESET", the FSM is reset.
+
+        Args:
+            client (mqtt.Client): The MQTT client instance.
+            userdata: User-defined data (unused).
+            msg (mqtt.MQTTMessage): Incoming MQTT message.
+        """
         text = msg.payload.decode()
 
         if text == "RESET":
@@ -91,4 +148,3 @@ if __name__ == "__main__":
             fsm.loop()
     except KeyboardInterrupt:
         print("FSM stopped")
-
