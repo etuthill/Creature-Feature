@@ -103,6 +103,31 @@ class Sprint3:
                 self.hunger = 17
 
             await asyncio.sleep(0) 
+   
+    def cleanup(self):
+        print("Cleaning up on interrupt")
+
+        # stop eyes + audio
+        self.drivers.stop_eyes_event.set()
+        self.drivers.stop_interval_audio = True
+        self.drivers.stop_sound()
+
+        # reset LED on Arduino
+        try:
+            self.ser.write(b"reset\n")
+            time.sleep(0.1)
+        except:
+            pass
+
+        # power off screens properly
+        self.drivers.shutdown_all_displays()
+
+        # close serial
+        try:
+            self.ser.close()
+        except:
+            pass
+
 
 
 if __name__ == "__main__":
@@ -118,13 +143,7 @@ if __name__ == "__main__":
         asyncio.run(main_loop())
 
     except KeyboardInterrupt:
-        print("Keyboard interrupt — resetting LED")
+        print("Keyboard interrupt received")
 
-        try:
-            creature.ser.write(b"reset\n")
-            creature.ser.flush()
-        except Exception as e:
-            print("Failed to reset LED:", e)
-
-        creature.drivers.stop_sound()
-        creature.drivers.stop_eyes_event.set()
+    finally:
+        creature.cleanup()

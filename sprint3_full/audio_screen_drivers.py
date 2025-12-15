@@ -174,11 +174,29 @@ class AudioScreenDrivers:
 
         self.send_data(s, fixed)
 
-    def shutdown_displays(self, s):
-        self.send_cmd(s, 0xAE)
-        lgpio.gpio_write(self.h, s["vccen"], 0)
-        time.sleep(0.1)
-        lgpio.gpio_write(self.h, s["pmoden"], 0)
+    def shutdown_all_displays(self):
+        print("Shutting down displays safely")
+
+        for s in self.screens:
+            try:
+                # display OFF
+                self.send_cmd(s, 0xAE)
+
+                # panel power off
+                lgpio.gpio_write(self.h, s["vccen"], 0)
+                time.sleep(0.1)
+
+                # logic power off
+                lgpio.gpio_write(self.h, s["pmoden"], 0)
+
+            except Exception as e:
+                print("Shutdown error:", e)
+
+        try:
+            lgpio.gpiochip_close(self.h)
+        except:
+            pass
+
 
     def draw_both_screens(self, left_file, right_file):
         with self.draw_lock:
