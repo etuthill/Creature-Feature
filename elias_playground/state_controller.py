@@ -13,6 +13,7 @@ class StateController:
         self.client.on_connect = self.on_connect # callback when mqtt connects
         self.client.connect("localhost") # connect to local 
         self.client.loop_start() # start mqtt loop in background thread
+        self.client.on_message = self.on_message # start message reading
 
         # serial connection to arduino non blocking read
         self.ser = serial.Serial('/dev/ttyACM0', baudrate=9600, timeout=0.1)
@@ -52,14 +53,42 @@ class StateController:
             print(f"fsm -> {message}")
             self.lastState = message
 
-    def reset_machine(self):
-        # publish reset event to all nodes
-        print("fsm -> reset")
-        self.client.publish("state/text", "RESET")
+    def handle_reset(self):
+        # clear FSM state
+        self.lastState = None
+        self.currentState = "machineIdle"
 
-        # send reset command to arduino
+        # optionally notify arduino
         try:
             self.ser.write(b"RESET\n")
         except Exception as e:
-            # serial write failure for debugging
             print("failed to send reset to arduino", e)
+
+        print("FSM reset complete")
+
+    def reset_machine(self):
+        print("fsm -> reset")
+        self.client.publish("state/text", "RESET")
+        self.handle_reset()
+        
+    def on_connect(self, client, userdata, flags, rc):
+        print("FSM connected to MQTT")
+        client.subscribe("state/text")
+
+    def on_message(self, client, userdata, msg):
+        text = msg.payload.decode()
+
+        if text == "RESET":
+            print("FSM received RESET")
+            self.handle_reset()
+
+
+if __name__ == "__main__":
+    fsm = StateController()
+
+    try:
+        while True:
+            fsm.loop()
+    except KeyboardInterrupt:
+        print("FSM stopped")
+
