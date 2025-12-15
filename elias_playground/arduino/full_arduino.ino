@@ -56,6 +56,15 @@ int LEDsaveState[2][3] = {
 unsigned long lastSerialCheck = 0;
 const unsigned long serialInterval = 50;
 
+// shut up servos for now
+unsigned long lastServoUpdate = 0;
+const unsigned long servoInterval = 20;
+float currentPos = 90;
+float targetPos = 90;
+float speedDegPerSec = 90;
+Servo* myServo = &leftServo;
+
+void resetMachine();
 
 void setup() {
   //Serial
@@ -103,9 +112,15 @@ void checkSerialAndState() {
   lastSerialCheck = now;
 
   //read serial
-  String cmd = Serial.readStringUntil('\n');
-  char cmdType = cmd[0];
-  char specific = cmd[3];
+  if (!Serial.available()) return;
+
+    String cmd = Serial.readStringUntil('\n');
+    cmd.trim();
+
+    if (cmd.length() < 1) return;
+
+    char cmdType = cmd.charAt(0);
+    char specific = (cmd.length() > 3) ? cmd.charAt(3) : '\0';
   //only true if state has CHANGED
   switch (cmdType) {
     case 'S':   // BUTTON commands
@@ -284,7 +299,7 @@ void goToNeutral() {
     else
       currentPos = max(currentPos - step, targetPos);
 
-    myServo.write((int)currentPos);
+    myServo->write((int)currentPos);
   }
 }
 
@@ -302,7 +317,7 @@ void neutralToB() {
     else
       currentPos = max(currentPos - step, targetPos);
 
-    myServo.write((int)currentPos);
+    myServo->write((int)currentPos);
   }
 }
 
@@ -320,7 +335,7 @@ void boredToPlaySense() {
     else
       currentPos = max(currentPos - step, targetPos);
 
-    myServo.write((int)currentPos);
+    myServo->write((int)currentPos);
   }
 }
 
@@ -338,7 +353,7 @@ void boredToPlay() {
     else
       currentPos = max(currentPos - step, targetPos);
 
-    myServo.write((int)currentPos);
+    myServo->write((int)currentPos);
   }
 }
 
@@ -356,7 +371,7 @@ void hungryToEat() {
     else
       currentPos = max(currentPos - step, targetPos);
 
-    myServo.write((int)currentPos);
+    myServo->write((int)currentPos);
   }
 }
 
@@ -384,9 +399,9 @@ void resetMachine() {
     wasPlaying = false;
 
     // reset sensor buffers
-    hallMinLo = hallMin - 30;
+    hallMinLo = max(0, hallMin - 30);
     hallMaxHi = hallMax + 30;
-    forceMinLo = forceMin - 30;
+    forceMinLo = max(0, forceMin - 30);
     forceMaxHi = forceMax + 30;
 
     Serial.println("Machine reset done");
