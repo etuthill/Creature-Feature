@@ -48,6 +48,7 @@ class Boredom:
 
         self._task: asyncio.Task | None = None
         self._running: bool = False
+        self._skip_next_tick = True 
 
     def start(self):
         """
@@ -109,6 +110,11 @@ class Boredom:
             await asyncio.sleep(random.uniform(*self.decay_range))
 
             if self.playing:
+                continue
+
+            # skip first tick (start at actual full hunger)
+            if getattr(self, "_skip_next_tick", False):
+                self._skip_next_tick = False
                 continue
 
             if self.boredom > 0:

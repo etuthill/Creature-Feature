@@ -104,7 +104,7 @@ class MachineIdle:
         # publish only if state changed
         if next_state != self.currentState:
             self.currentState = next_state
-            print(f"Idle state → {next_state}")
+            print(f"Idle state to {next_state}")
             self.client.publish("anim/text", next_state)
 
     def setAllFalseExcept(self, stateName: str) -> None:
@@ -120,25 +120,33 @@ class MachineIdle:
             else:
                 self.idleStates[state] = False
 
-    def on_message(self, client: mqtt.Client, userdata, msg: mqtt.MQTTMessage) -> None:
-        """Handle incoming FSM state messages.
-
-        Args:
-            client (mqtt.Client): The MQTT client instance.
-            userdata: User-defined data (unused).
-            msg (mqtt.MQTTMessage): Incoming MQTT message.
-        """
-        text = msg.payload.decode() # handle incoming fsm state messages
-
-        # machine entered idle state
+    def on_message(self, client, userdata, msg):
+        text = msg.payload.decode()
+        
+        # Machine idle
         if text == "machineIdle":
             self.machineIdle = True
+            print("MachineIdle to idle")
 
-        # machine left idle state
-        elif text in ("sensing", "reacting"):
+        # Sensing
+        elif text in ("sensingH", "sensingF", "sensing"):
             self.machineIdle = False
+            print(f"MachineIdle to sensing ({text})")
 
-        # reset all idle logic
+        # Reacting
+        elif text == "reactingF":  # eat to fed
+            self.machineIdle = False
+            print("MachineIdle to reacting (eat)")
+            self.hunger.reset()  # reset hunger
+            print("Hunger reset!")
+
+        elif text == "reactingP":  # play to played
+            self.machineIdle = False
+            print("MachineIdle to reacting (play)")
+            self.boredom.reset()  # reset boredom
+            print("Boredom reset!")
+
+        # Reset FSM completely
         elif text == "RESET":
             print("Received RESET")
             self.reset()
@@ -168,4 +176,5 @@ async def main() -> None:
             await asyncio.sleep(0.1)
 
 
-asyncio.run(main())
+if __name__ == "__main__":
+    asyncio.run(main())

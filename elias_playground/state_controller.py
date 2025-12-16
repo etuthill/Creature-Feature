@@ -55,21 +55,34 @@ class StateController:
         # holds the state message to publish
         message = None
 
-        # sensors to idle
-        if line in ("hi", "fi"):
+        # sensors report idle
+        if line == "hi":
+            message = "machineIdle"
+        elif line == "fi":
             message = "machineIdle"
 
-        # idle to sensing + sensing to reacting
-        elif line in ("ih", "if", "he", "fp"):
+        # sensing transitions
+        elif line == "ih":  # idle to sensing (hall)
+            message = "sensingH"
+        elif line == "if":  # idle to sensing (FSR)
+            message = "sensingF"
+        elif line == "he":  # hall sensor to sensing
+            message = "sensing"
+        elif line == "fp":  # FSR sensor to sensing
             message = "sensing"
 
-        # eat to fed and play to played
-        elif line in ("ef", "pp"):
-            message = "reacting"
+        # reacting transitions
+        elif line == "ef":  # eat to fed
+            message = "reactingF"
+        elif line == "pp":  # play to played
+            message = "reactingP"
 
-        # eat to done and play to done
-        elif line in ("ed", "pd"):
+        # Done transitions
+        elif line == "ed":  # eat to done
             message = "machineIdle"
+        elif line == "pd":  # play to done
+            message = "machineIdle"
+
 
         # publish state only if it changed
         if message and message != self.lastState:
