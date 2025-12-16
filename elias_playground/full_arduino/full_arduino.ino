@@ -72,9 +72,9 @@ void setup() {
   //initialize I/O pins
   pinMode(forceSensor, INPUT);
   pinMode(hallSensor, INPUT);
-  pinMode(foodButton, INPUT);
-  pinMode(playButton, INPUT);
-  pinMode(backButton, INPUT);
+  pinMode(foodButton, INPUT_PULLUP);
+  pinMode(playButton, INPUT_PULLUP);
+  pinMode(backButton, INPUT_PULLUP);
 
   //set servo pins
   leftServo.attach(12);
@@ -88,6 +88,19 @@ void setup() {
   delay(10000);
 }
 
+  const unsigned long debounceDelay = 40; // ms
+
+  struct DebouncedButton {
+    int pin;
+    bool stableState;
+    bool lastReading;
+    unsigned long lastChangeTime;
+  };
+
+  DebouncedButton foodBtn  = { foodButton, HIGH, HIGH, 0 };
+  DebouncedButton playBtn  = { playButton, HIGH, HIGH, 0 };
+  DebouncedButton backBtn  = { backButton, HIGH, HIGH, 0 };
+
 void loop() {
   checkSerialAndState();
   //if true use this anim loop
@@ -95,7 +108,33 @@ void loop() {
     
 }
 
+bool buttonPressed(DebouncedButton &btn) {
+  bool reading = digitalRead(btn.pin);
+
+  if (reading != btn.lastReading) {
+    btn.lastChangeTime = millis();
+  }
+
+  if ((millis() - btn.lastChangeTime) > debounceDelay) {
+    if (reading != btn.stableState) {
+      btn.stableState = reading;
+      if (btn.stableState == LOW) { // pressed
+        btn.lastReading = reading;
+        return true;
+      }
+    }
+  }
+
+  btn.lastReading = reading;
+  return false;
+}
+
 void checkSerialAndState() {
+
+  bool foodPressed = buttonPressed(foodBtn);
+  bool playPressed = buttonPressed(playBtn);
+  bool backPressed = buttonPressed(backBtn);
+
   String cmd = "";
 
   if (Serial.available()) {
@@ -191,7 +230,7 @@ void checkSerialAndState() {
           //reset food LED
           LEDsaveState[1][0] = 0;
           LEDsaveState[1][1] = 255;
-          strip.setPixelColor(0, strip.Color(LEDsaveState[1][0],LEDsaveState[1][1],LEDsaveState[1][2]));
+          strip.setPixelColor(1, strip.Color(LEDsaveState[1][0],LEDsaveState[1][1], LEDsaveState[1][2]));
           strip.show();
           break;
       }
@@ -201,8 +240,7 @@ void checkSerialAndState() {
 
   ////////////////////////////////////////////////////////////////////////////////////////////////
   //readings and reactions
-  if (state == HALL && digitalRead(backButton) == HIGH){
-    //hall->idle
+  if (state == HALL && backPressed) {
     Serial.println("hi");
   }
   else if (state == HALL){
@@ -226,12 +264,7 @@ void checkSerialAndState() {
     wasEating = isEating;
   }
 
-  else if (state == FORCE && digitalRead(backButton) == HIGH){
-      //force->idle
-      Serial.println("fi");
-    }
-  if (state == FORCE && digitalRead(backButton) == HIGH){
-    //force->idle
+  if (state == FORCE && backPressed) {
     Serial.println("fi");
   }
   else if (state == FORCE){
@@ -254,14 +287,11 @@ void checkSerialAndState() {
 
     wasPlaying = isPlaying;
   }
-  else if (state == IDLE){
-    //read h/b buttons
-    if(digitalRead(foodButton) == HIGH){
-      //idle->hall
+  else if (state == IDLE) {
+    if (foodPressed) {
       Serial.println("ih");
     }
-    else if(digitalRead(playButton) == HIGH){
-      //idle->force
+    else if (playPressed) {
       Serial.println("if");
     }
   }
