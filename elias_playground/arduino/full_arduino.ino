@@ -96,6 +96,16 @@ void loop() {
 }
 
 void checkSerialAndState() {
+
+  if (Serial.available()) {
+  String cmd = Serial.readStringUntil('\n');
+  cmd.trim();
+
+  if (cmd == "RESET") {
+    resetMachine();
+    return;
+  }
+}
   //prob set anim states in here
   unsigned long now = millis();
   if (now - lastSerialCheck < serialInterval) return;
@@ -104,8 +114,10 @@ void checkSerialAndState() {
 
   //read serial
   String cmd = Serial.readStringUntil('\n');
-  char cmdType = cmd[0];
-  char specific = cmd[3];
+  if (cmd.length() >= 3 && cmd[1] == ':') {
+    char cmdType = cmd[0];
+    char specific = cmd[2];
+  }
   //only true if state has CHANGED
   switch (cmdType) {
     case 'S':   // BUTTON commands
@@ -141,9 +153,6 @@ void checkSerialAndState() {
           strip.setPixelColor(1, strip.Color(0,0,0));
           strip.setPixelColor(2, strip.Color(0,0,0));
           strip.show();
-          break;
-        case 'R':
-          resetMachine();
           break;
       }
       break;
@@ -271,6 +280,29 @@ void checkSerialAndState() {
   }
 }
 
+void resetMachine() {
+  state = IDLE;
+
+  wasEating = false;
+  wasPlaying = false;
+
+  lastEatTime = 0;
+  lastPlayTime = 0;
+
+  LEDsaveState[0][0] = 0;
+  LEDsaveState[0][1] = 255;
+  LEDsaveState[0][2] = 0;
+
+  LEDsaveState[1][0] = 0;
+  LEDsaveState[1][1] = 255;
+  LEDsaveState[1][2] = 0;
+
+  strip.setPixelColor(0, strip.Color(0,255,0));
+  strip.setPixelColor(1, strip.Color(0,255,0));
+  strip.setPixelColor(2, strip.Color(0,0,0));
+  strip.show();
+}
+
 
 //give each of these unique vars
 //CHANGE THESE SO THEY WORK WITH 3 SERVOS UGHHHHHHH
@@ -346,43 +378,21 @@ void boredToPlay() {
   }
 }
 
-// void hungryToEat() {
-//   unsigned long now = millis();
-//   if (now - lastServoUpdate >= servoInterval) {
-//     lastServoUpdate = now;
+void hungryToEat() {
+  unsigned long now = millis();
+  if (now - lastServoUpdate >= servoInterval) {
+    lastServoUpdate = now;
 
-//     if (currentPos == targetPos) return;
+    if (currentPos == targetPos) return;
 
-//     float step = speedDegPerSec * (servoInterval / 1000.0);
+    float step = speedDegPerSec * (servoInterval / 1000.0);
 
-//     if (currentPos < targetPos)
-//       currentPos = min(currentPos + step, targetPos);
-//     else
-//       currentPos = max(currentPos - step, targetPos);
+    if (currentPos < targetPos)
+      currentPos = min(currentPos + step, targetPos);
+    else
+      currentPos = max(currentPos - step, targetPos);
 
-//     myServo->write((int)currentPos);
-//   }
-// }
-
-void resetMachine() {
-  state = IDLE;
-
-  wasEating = false;
-  wasPlaying = false;
-
-  lastEatTime = 0;
-  lastPlayTime = 0;
-
-  LEDsaveState[0][0] = 0;
-  LEDsaveState[0][1] = 255;
-  LEDsaveState[0][2] = 0;
-
-  LEDsaveState[1][0] = 0;
-  LEDsaveState[1][1] = 255;
-  LEDsaveState[1][2] = 0;
-
-  strip.setPixelColor(0, strip.Color(0,255,0));
-  strip.setPixelColor(1, strip.Color(0,255,0));
-  strip.setPixelColor(2, strip.Color(0,0,0));
-  strip.show();
+    myServo->write((int)currentPos);
+  }
 }
+
