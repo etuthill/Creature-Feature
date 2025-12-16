@@ -55,32 +55,32 @@ class StateController:
         # holds the state message to publish
         message = None
 
-        # Sensors report idle
+        # sensors report idle
         if line == "hi":
             message = "machineIdle"
         elif line == "fi":
             message = "machineIdle"
 
-        # Sensing transitions
-        elif line == "ih":  # idle → sensing
+        # sensing transitions
+        elif line == "ih":  # idle to sensing (hall)
+            message = "sensingH"
+        elif line == "if":  # idle to sensing (FSR)
+            message = "sensingF"
+        elif line == "he":  # hall sensor to sensing
             message = "sensing"
-        elif line == "if":  # idle → sensing (other sensor)
-            message = "sensing"
-        elif line == "he":  # hall sensor → sensing
-            message = "sensing"
-        elif line == "fp":  # play sensor → sensing
+        elif line == "fp":  # FSR sensor to sensing
             message = "sensing"
 
-        # Reacting transitions
-        elif line == "ef":  # eat → fed
-            message = "reacting"
-        elif line == "pp":  # play → played
-            message = "reacting"
+        # reacting transitions
+        elif line == "ef":  # eat to fed
+            message = "reactingF"
+        elif line == "pp":  # play to played
+            message = "reactingP"
 
         # Done transitions
-        elif line == "ed":  # eat → done
+        elif line == "ed":  # eat to done
             message = "machineIdle"
-        elif line == "pd":  # play → done
+        elif line == "pd":  # play to done
             message = "machineIdle"
 
 
