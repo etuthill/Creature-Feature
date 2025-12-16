@@ -225,21 +225,11 @@ void checkSerialAndState() {
 
     wasEating = isEating;
   }
-  else if (state == FORCE){
-    if (digitalRead(backButton) == HIGH){
+
+  else if (state == FORCE && digitalRead(backButton) == HIGH){
       //force->idle
       Serial.println("fi");
     }
-    else{
-      //only do if still in this state
-      //read force
-      int forceReading = analogRead(forceSensor);
-      if (forceReading > forceMin && forceReading < forceMax){
-        //force->play react
-        Serial.println("fp");
-      }
-    }
-  }
   if (state == FORCE && digitalRead(backButton) == HIGH){
     //force->idle
     Serial.println("fi");
