@@ -50,6 +50,8 @@ class Boredom:
         self._running: bool = False
         self._skip_next_tick = True 
 
+        self.machineIdle = True
+
     def start(self):
         """
         Start the asynchronous boredom decay loop.
@@ -112,6 +114,9 @@ class Boredom:
             if self.playing:
                 continue
 
+            if not self.machineIdle:
+                continue
+
             # skip first tick (start at actual full hunger)
             if getattr(self, "_skip_next_tick", False):
                 self._skip_next_tick = False
@@ -124,3 +129,14 @@ class Boredom:
                     self.client.publish(self.topic, str(self.boredom))
                 except Exception as e:
                     print("MQTT publish failed:", e)
+
+    def on_message(self, client, userdata, msg):
+        text = msg.payload.decode()
+        
+        # Machine idle
+        if text == "machineIdle":
+            self.machineIdle = True
+            print("MachineIdle to idle")
+        elif text != None:
+            self.machineIdle = False
+            print("MachineIdle to active")

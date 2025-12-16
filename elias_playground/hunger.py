@@ -48,6 +48,8 @@ class Hunger:
         self._running = False # controls whether hunger timer is running
         self._skip_next_tick = True 
 
+        self.machineIdle = True
+
     def start(self) -> None:
         """Start the hunger decay loop if it is not already running."""
         # start hunger decay loop if not already running
@@ -107,6 +109,9 @@ class Hunger:
             # skip decay while eating
             if self.eating:
                 continue
+
+            if not self.machineIdle:
+                continue
             
             # skip first tick (start at actual full hunger)
             if getattr(self, "_skip_next_tick", False):
@@ -122,5 +127,15 @@ class Hunger:
                 except Exception as e:
                     # debug MQTT
                     print("MQTT publish failed", e)
+    
+    def on_message(self, client, userdata, msg):
+        text = msg.payload.decode()
         
+        # Machine idle
+        if text == "machineIdle":
+            self.machineIdle = True
+            print("MachineIdle to idle")
+        elif text != None:
+            self.machineIdle = False
+            print("MachineIdle to active")
                     
