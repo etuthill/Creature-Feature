@@ -128,14 +128,10 @@ class Hunger:
                     # debug MQTT
                     print("MQTT publish failed", e)
     
-    def on_message(self, client, userdata, msg):
-        text = msg.payload.decode()
-        
-        # Machine idle
-        if text == "machineIdle":
-            self.machineIdle = True
-            print("MachineIdle to idle")
-        elif text != None:
-            self.machineIdle = False
-            print("MachineIdle to active")
-                    
+
+    def pause(self):
+        self.machineIdle = False
+
+    def resume(self):
+        self.machineIdle = True
+            

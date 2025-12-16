@@ -126,11 +126,15 @@ class MachineIdle:
         # Machine idle
         if text == "machineIdle":
             self.machineIdle = True
+            self.boredom.resume()
+            self.hunger.resume()
             print("MachineIdle to idle")
 
         # Sensing
         elif text in ("sensingH", "sensingF", "sensing"):
             self.machineIdle = False
+            self.boredom.pause()
+            self.hunger.pause()
             print(f"MachineIdle to sensing ({text})")
 
         # Reacting
