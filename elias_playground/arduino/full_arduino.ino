@@ -56,15 +56,6 @@ int LEDsaveState[2][3] = {
 unsigned long lastSerialCheck = 0;
 const unsigned long serialInterval = 50;
 
-// shut up servos for now
-unsigned long lastServoUpdate = 0;
-const unsigned long servoInterval = 20;
-float currentPos = 90;
-float targetPos = 90;
-float speedDegPerSec = 90;
-Servo* myServo = &leftServo;
-
-void resetMachine();
 
 void setup() {
   //Serial
@@ -112,15 +103,9 @@ void checkSerialAndState() {
   lastSerialCheck = now;
 
   //read serial
-  if (!Serial.available()) return;
-
-    String cmd = Serial.readStringUntil('\n');
-    cmd.trim();
-
-    if (cmd.length() < 1) return;
-
-    char cmdType = cmd.charAt(0);
-    char specific = (cmd.length() > 3) ? cmd.charAt(3) : '\0';
+  String cmd = Serial.readStringUntil('\n');
+  char cmdType = cmd[0];
+  char specific = cmd[3];
   //only true if state has CHANGED
   switch (cmdType) {
     case 'S':   // BUTTON commands
@@ -156,6 +141,9 @@ void checkSerialAndState() {
           strip.setPixelColor(1, strip.Color(0,0,0));
           strip.setPixelColor(2, strip.Color(0,0,0));
           strip.show();
+          break;
+        case 'R':
+          resetMachine();
           break;
       }
       break;
@@ -275,11 +263,12 @@ void checkSerialAndState() {
     else if(digitalRead(playButton) == HIGH){
       //idle->force
       Serial.println("if");
+
+    if (cmd.startsWith("RESET")) {
+    resetMachine();
+    }
     }
   }
-  if (cmd.startsWith("RESET")) {
-    resetMachine();
-}
 }
 
 
@@ -357,52 +346,43 @@ void boredToPlay() {
   }
 }
 
-void hungryToEat() {
-  unsigned long now = millis();
-  if (now - lastServoUpdate >= servoInterval) {
-    lastServoUpdate = now;
+// void hungryToEat() {
+//   unsigned long now = millis();
+//   if (now - lastServoUpdate >= servoInterval) {
+//     lastServoUpdate = now;
 
-    if (currentPos == targetPos) return;
+//     if (currentPos == targetPos) return;
 
-    float step = speedDegPerSec * (servoInterval / 1000.0);
+//     float step = speedDegPerSec * (servoInterval / 1000.0);
 
-    if (currentPos < targetPos)
-      currentPos = min(currentPos + step, targetPos);
-    else
-      currentPos = max(currentPos - step, targetPos);
+//     if (currentPos < targetPos)
+//       currentPos = min(currentPos + step, targetPos);
+//     else
+//       currentPos = max(currentPos - step, targetPos);
 
-    myServo->write((int)currentPos);
-  }
-}
+//     myServo->write((int)currentPos);
+//   }
+// }
 
 void resetMachine() {
-    // reset FSM state
-    state = IDLE;
+  state = IDLE;
 
-    // reset LEDs
-    LEDsaveState[0][0] = 0; LEDsaveState[0][1] = 255; LEDsaveState[0][2] = 0;
-    LEDsaveState[1][0] = 0; LEDsaveState[1][1] = 255; LEDsaveState[1][2] = 0;
-    for (int i=0; i<NUM_LEDS; i++) {
-        strip.setPixelColor(i, 0, 255, 0); // green
-    }
-    strip.show();
+  wasEating = false;
+  wasPlaying = false;
 
-    // reset servos
-    leftServo.write(servoStartPos);
-    rightServo.write(servoStartPos);
-    backServo.write(servoStartPos);
+  lastEatTime = 0;
+  lastPlayTime = 0;
 
-    // reset debounce / timers
-    lastEatTime = 0;
-    lastPlayTime = 0;
-    wasEating = false;
-    wasPlaying = false;
+  LEDsaveState[0][0] = 0;
+  LEDsaveState[0][1] = 255;
+  LEDsaveState[0][2] = 0;
 
-    // reset sensor buffers
-    hallMinLo = max(0, hallMin - 30);
-    hallMaxHi = hallMax + 30;
-    forceMinLo = max(0, forceMin - 30);
-    forceMaxHi = forceMax + 30;
+  LEDsaveState[1][0] = 0;
+  LEDsaveState[1][1] = 255;
+  LEDsaveState[1][2] = 0;
 
-    Serial.println("Machine reset done");
+  strip.setPixelColor(0, strip.Color(0,255,0));
+  strip.setPixelColor(1, strip.Color(0,255,0));
+  strip.setPixelColor(2, strip.Color(0,0,0));
+  strip.show();
 }
