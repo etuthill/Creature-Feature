@@ -46,6 +46,7 @@ class Hunger:
 
         self._task = None # async task reference
         self._running = False # controls whether hunger timer is running
+        self._skip_next_tick = True 
 
     def start(self) -> None:
         """Start the hunger decay loop if it is not already running."""
@@ -106,6 +107,11 @@ class Hunger:
             # skip decay while eating
             if self.eating:
                 continue
+            
+            # skip first tick (start at actual full hunger)
+            if getattr(self, "_skip_next_tick", False):
+                self._skip_next_tick = False
+                continue
 
             # decrease hunger until zero
             if self.hunger > 0:
@@ -116,4 +122,5 @@ class Hunger:
                 except Exception as e:
                     # debug MQTT
                     print("MQTT publish failed", e)
+        
                     
