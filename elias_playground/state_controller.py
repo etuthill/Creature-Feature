@@ -83,13 +83,20 @@ class StateController:
         elif line == "pd":  # play to done
             message = "machineIdle"
 
-
-        # publish state only if it changed
         if message and message != self.lastState:
             self.client.publish("state/text", message)
             print(f"fsm -> {message}")
-            self.lastState = message
 
+            # send to arduino
+            if message == "machineIdle":
+                self.ser.write(b"S:i\n")
+            elif message in ("sensingH", "sensingF", "sensing"):
+                self.ser.write(b"S:h\n")
+            elif message in ("reactingF", "reactingP"):
+                self.ser.write(b"S:r\n")
+
+            self.lastState = message
+            
     def handle_reset(self) -> None:
         """
         Reset the FSM to initial state and notify Arduino.
