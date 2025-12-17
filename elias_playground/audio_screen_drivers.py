@@ -7,6 +7,12 @@ import time
 import os
 import paho.mqtt.client as mqtt
 
+
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+
+AUDIO_DIR = os.path.join(BASE_DIR, "..", "audio")
+EYES_DIR = os.path.join(BASE_DIR, "..", "eyes", "eye_outputs")
+
 class AudioScreenDrivers:
     """
     Handles screen drawing, eye animations, and audio playback for the machine.
@@ -279,8 +285,8 @@ class AudioScreenDrivers:
         """
         Animate the eyes narrowing to indicate hunger.
         """
-        left_dir = "../eyes/eye_outputs/narrowing_food/left"
-        right_dir = "../eyes/eye_outputs/narrowing_food/right"
+        left_dir = os.path.join(EYES_DIR, "narrowing_food", "left")
+        right_dir = os.path.join(EYES_DIR, "narrowing_food", "right")
 
         # run intro sequence once
         intro_steps = [
@@ -316,8 +322,8 @@ class AudioScreenDrivers:
         """
         Animate normal blinking eyes for idle state.
         """
-        left_dir = "../eyes/eye_outputs/normal_blink/left"
-        right_dir = "../eyes/eye_outputs/normal_blink/right"
+        left_dir = os.path.join(EYES_DIR, "normal_blink", "left")
+        right_dir = os.path.join(EYES_DIR, "normal_blink", "right")
 
         steps = [
             ("normal_blink_full_left.rgb565", "normal_blink_full_right.rgb565", 5),
@@ -339,8 +345,8 @@ class AudioScreenDrivers:
         """
         Animate starry eyes for eating or playful states.
         """
-        left_dir = "../eyes/eye_outputs/starry/left"
-        right_dir = "../eyes/eye_outputs/starry/right"
+        left_dir = os.path.join(EYES_DIR, "starry", "left")
+        right_dir = os.path.join(EYES_DIR, "starry", "right")
 
         # intro frame
         self.draw_both_screens(os.path.join(right_dir, "eyes_half_color_small_star_right.rgb565"),
@@ -368,8 +374,8 @@ class AudioScreenDrivers:
         """
         Animate eyes looking side-to-side for boredom state.
         """
-        left_dir = "../eyes/eye_outputs/side_to_side/left"
-        right_dir = "../eyes/eye_outputs/side_to_side/right"
+        left_dir = os.path.join(EYES_DIR, "side_to_side", "left")
+        right_dir = os.path.join(EYES_DIR, "side_to_side", "right")
 
         steps = [
             ("normal_blink_full_left.rgb565", "normal_blink_full_right.rgb565", 3),
@@ -420,7 +426,7 @@ class AudioScreenDrivers:
         Args:
             filename (str): Name of audio file.
         """
-        filepath = os.path.join("../audio", filename)
+        filepath = os.path.join(AUDIO_DIR, filename)
         pygame.mixer.music.load(filepath)
         pygame.mixer.music.play(-1)
 
@@ -447,7 +453,7 @@ class AudioScreenDrivers:
             if self.stop_interval_audio:
                 return
             filename = random.choice(filenames)
-            filepath = os.path.join("../audio", filename)
+            filepath = os.path.join(AUDIO_DIR, filename)
             pygame.mixer.music.load(filepath)
             pygame.mixer.music.play()
             while pygame.mixer.music.get_busy():
