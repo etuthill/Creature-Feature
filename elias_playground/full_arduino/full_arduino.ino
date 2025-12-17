@@ -140,9 +140,10 @@ void checkSerialAndState() {
 
   String cmd = "";
 
-  if (Serial.available()) {
-    cmd = Serial.readStringUntil('\n');
-    cmd.trim();
+ if (Serial.available() > 0) {
+  cmd = Serial.readStringUntil('\n');
+  cmd.trim();
+  }
 
     if (cmd == "RESET") {
       resetMachine();
