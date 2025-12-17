@@ -7,6 +7,8 @@ const unsigned long debounceDelay = 40; // ms
 unsigned long lastForceDisturbance = 0;
 bool forceActive = false;
 
+bool servosEnabled = false;
+
 unsigned long eatExitTime = 0;
 bool eatCooldownArmed = false;
 
@@ -123,10 +125,11 @@ void loop() {
   //if true use this anim loop
   //big statement
 
-  //servos
-  moveServoSmooth(leftServo,  leftCurrentPos,  leftTargetPos,  lastLeftServoUpdate);
-  moveServoSmooth(rightServo, rightCurrentPos, rightTargetPos, lastRightServoUpdate);
-  moveServoSmooth(backServo,  backCurrentPos,  backTargetPos,  lastBackServoUpdate);
+  if (servosEnabled) {
+    moveServoSmooth(leftServo,  leftCurrentPos,  leftTargetPos,  lastLeftServoUpdate);
+    moveServoSmooth(rightServo, rightCurrentPos, rightTargetPos, lastRightServoUpdate);
+    moveServoSmooth(backServo,  backCurrentPos,  backTargetPos,  lastBackServoUpdate);
+  }
 }
 
 bool buttonPressed(DebouncedButton &btn) {
@@ -277,6 +280,8 @@ void checkSerialAndState() {
       rightTargetPos = 95;
       backTargetPos  = 85;
 
+      servosEnabled = true;
+
       Serial.println("ef");
       Serial.println("ed");
   }
@@ -318,6 +323,8 @@ void checkSerialAndState() {
           ));
           strip.show();
 
+          servosEnabled = true;
+
           leftTargetPos  = 85;
           rightTargetPos = 85;
           backTargetPos  = 95;
@@ -326,6 +333,7 @@ void checkSerialAndState() {
           Serial.println("pd");
       }
   }
+}
 
 
 void resetMachine() {
