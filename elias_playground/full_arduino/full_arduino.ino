@@ -1,6 +1,8 @@
 #include <Servo.h>
 #include <Adafruit_NeoPixel.h>
 
+void resetMachine();
+
 const unsigned long debounceDelay = 40; // ms
 
 struct DebouncedButton {
@@ -290,7 +292,7 @@ void checkSerialAndState() {
     }
   }
 }
-
+}
 void resetMachine() {
   state = IDLE;
 
