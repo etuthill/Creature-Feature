@@ -111,7 +111,6 @@ void setup() {
   leftServo.write(servoStartPos);
   rightServo.write(servoStartPos);
   backServo.write(servoStartPos);
-  delay(10000);
 }
 
 
