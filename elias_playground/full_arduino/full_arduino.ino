@@ -261,7 +261,7 @@ void checkSerialAndState() {
   }
   else if (state == FORCE) {
       int forceReading = analogRead(forceSensor);
-      bool disturbed = (forceReading < forceMax);  // petting detected
+      bool disturbed = (forceReading > forceMin && forceReading < forceMax);  // petting detected
       unsigned long now = millis();
 
       if (disturbed) {
