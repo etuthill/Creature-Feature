@@ -73,9 +73,9 @@ void setup() {
 
   //LED strip
   strip.begin();
-  strip.setPixelColor(0, strip.Color(0,255,0)); // first LED GREEN
+  strip.setPixelColor(2, strip.Color(0,255,0)); // first LED GREEN
   strip.setPixelColor(1, strip.Color(0,255,0)); // second LED GREEN
-  strip.setPixelColor(2, strip.Color(0,0,0)); // third LED off
+  strip.setPixelColor(0, strip.Color(0,0,0)); // third LED off
   strip.show();
 
   //initialize I/O pins
@@ -165,33 +165,33 @@ void checkSerialAndState() {
           case 'i':
           // on h/b, off back button
             state = IDLE;
-            strip.setPixelColor(0, strip.Color(LEDsaveState[0][0],LEDsaveState[0][1],LEDsaveState[0][2]));
+            strip.setPixelColor(2, strip.Color(LEDsaveState[0][0],LEDsaveState[0][1],LEDsaveState[0][2]));
             strip.setPixelColor(1, strip.Color(LEDsaveState[1][0],LEDsaveState[1][1],LEDsaveState[1][2]));
-            strip.setPixelColor(2, strip.Color(0,0,0));
+            strip.setPixelColor(0, strip.Color(0,0,0));
             strip.show();
             break;
           case 'h':
           // off h/b, on back button
             state = HALL;
-            strip.setPixelColor(0, strip.Color(0,0,0));
+            strip.setPixelColor(2, strip.Color(0,0,0));
             strip.setPixelColor(1, strip.Color(0,0,0));
-            strip.setPixelColor(2, strip.Color(0,0,255));
+            strip.setPixelColor(0, strip.Color(0,0,255));
             strip.show();
             break;
           case 'f':
             // off h/b, on back button
             state = FORCE;
-            strip.setPixelColor(0, strip.Color(0,0,0));
+            strip.setPixelColor(2, strip.Color(0,0,0));
             strip.setPixelColor(1, strip.Color(0,0,0));
-            strip.setPixelColor(2, strip.Color(0,0,255));
+            strip.setPixelColor(0, strip.Color(0,0,255));
             strip.show();
             break;
           case 'r':
             // off all
             state = REACTING;
-            strip.setPixelColor(0, strip.Color(0,0,0));
-            strip.setPixelColor(1, strip.Color(0,0,0));
             strip.setPixelColor(2, strip.Color(0,0,0));
+            strip.setPixelColor(1, strip.Color(0,0,0));
+            strip.setPixelColor(0, strip.Color(0,0,0));
             strip.show();
             break;
       }
@@ -204,7 +204,7 @@ void checkSerialAndState() {
           LEDsaveState[0][1] -= 15;
           if (LEDsaveState[0][0] > 255) LEDsaveState[0][0] = 255;
           if (LEDsaveState[0][1] < 0) LEDsaveState[0][1] = 0;
-          strip.setPixelColor(0, strip.Color(LEDsaveState[0][0],LEDsaveState[0][1],LEDsaveState[0][2]));
+          strip.setPixelColor(2, strip.Color(LEDsaveState[0][0],LEDsaveState[0][1],LEDsaveState[0][2]));
           strip.show();
           break;
         case 'f':
@@ -224,7 +224,7 @@ void checkSerialAndState() {
           //reset food LED
           LEDsaveState[0][0] = 0;
           LEDsaveState[0][1] = 255;
-          strip.setPixelColor(0, strip.Color(LEDsaveState[0][0],LEDsaveState[0][1],LEDsaveState[0][2]));
+          strip.setPixelColor(2, strip.Color(LEDsaveState[0][0],LEDsaveState[0][1],LEDsaveState[0][2]));
           strip.show();
           break;
         case 'f':
@@ -315,9 +315,9 @@ void resetMachine() {
   LEDsaveState[1][1] = 255;
   LEDsaveState[1][2] = 0;
 
-  strip.setPixelColor(0, strip.Color(0,255,0));
+  strip.setPixelColor(2, strip.Color(0,255,0));
   strip.setPixelColor(1, strip.Color(0,255,0));
-  strip.setPixelColor(2, strip.Color(0,0,0));
+  strip.setPixelColor(0, strip.Color(0,0,0));
   strip.show();
 }
 
