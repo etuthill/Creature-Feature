@@ -265,17 +265,21 @@ void checkSerialAndState() {
     }
 
     // COOLDOWN elapsed -> consume
-    if (eatCooldownArmed && (now - eatExitTime >= eatCooldown)) {
-        eatCooldownArmed = false;
+  if (eatCooldownArmed && (now - eatExitTime >= eatCooldown)) {
+      eatCooldownArmed = false;
 
-        LEDsaveState[0][0] = 0;
-        LEDsaveState[0][1] = 255;
-        strip.setPixelColor(2, strip.Color(0,255,0));
-        strip.show();
+      LEDsaveState[0][0] = 0;
+      LEDsaveState[0][1] = 255;
+      strip.setPixelColor(2, strip.Color(0,255,0));
+      strip.show();
 
-        Serial.println("ef");
-        Serial.println("ed");
-    }
+      leftTargetPos  = 95;
+      rightTargetPos = 95;
+      backTargetPos  = 85;
+
+      Serial.println("ef");
+      Serial.println("ed");
+  }
 
     wasEating = isEating;
 
@@ -314,24 +318,15 @@ void checkSerialAndState() {
           ));
           strip.show();
 
+          leftTargetPos  = 85;
+          rightTargetPos = 85;
+          backTargetPos  = 95;
+
           Serial.println("pp");
           Serial.println("pd");
       }
   }
 
-
-    else if (state == IDLE) {
-      if (foodPressed) {
-        Serial.println("ih");
-        leftTargetPos = 85;
-        rightTargetPos = 85;
-        backTargetPos = 95;
-      }
-      else if (playPressed) {
-        Serial.println("if");
-      }
-    }
-  }
 
 void resetMachine() {
   state = IDLE;
