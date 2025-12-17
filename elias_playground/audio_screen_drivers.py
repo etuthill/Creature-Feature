@@ -503,6 +503,8 @@ class AudioScreenDrivers:
                 self.set_state("eating")
             elif state == "reactingP":
                 self.set_state("playing")
+            elif state == "sensing":
+                self.set_state("eating")
             elif state == "RESET":
                 self.set_state("RESET")
 
