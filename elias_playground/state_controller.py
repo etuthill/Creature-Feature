@@ -45,6 +45,7 @@ class StateController:
 
     def start(self):
         "use as setup function"
+        self.ser.write(b'RESET\n')
         for s in self.drivers.screens:
             self.drivers.power_on_displays(s)
         time.sleep(0.2)  # let displays fully settle
