@@ -7,14 +7,8 @@ class Hunger:
     Represents the hunger need system.
     """
 
-    def __init__(
-        self,
-        mqtt_client,
-        topic: str = "anim/hunger",
-        start_value: int = 17,
-        hungry_threshold: int = 8,
-        decay_range: tuple[float, float] = (1, 3),
-    ):
+    def __init__(self, mqtt_client, topic: str = "anim/hunger", start_value: int = 17,
+                 hungry_threshold: int = 8, decay_range: tuple[float, float] = (1, 3)):
         self.client = mqtt_client
         self.topic = topic
         self.start_value = start_value
@@ -26,29 +20,30 @@ class Hunger:
         self.eating = False
         self.ate_event = False
 
-        self._task: asyncio.Task | None = None
+        self._task = None
         self._running = False
         self._skip_next_tick = True
 
         self.machineIdle = True
 
+        # --- ADDED: subscribe to shutdown topic ---
+        self.client.message_callback_add("system/shutdown", self._on_shutdown_message)
+        self.client.subscribe("system/shutdown")
+
     def start(self) -> None:
-        """Start the hunger decay loop if it is not already running."""
         if not self._running:
             self._running = True
             self._task = asyncio.create_task(self._hunger_timer())
 
     def stop(self) -> None:
-        """Stop the hunger decay loop (sync-safe)."""
         self._running = False
         if self._task:
             self._task.cancel()
+            self._task = None
 
-    # 🔹 ADDED: async shutdown for Ctrl-C
     async def shutdown(self) -> None:
-        """Gracefully shut down the hunger task."""
+        """Stop the hunger timer cleanly."""
         self._running = False
-
         if self._task:
             self._task.cancel()
             await asyncio.gather(self._task, return_exceptions=True)
@@ -72,40 +67,35 @@ class Hunger:
         return self.hunger <= self.hungry_threshold
 
     async def _hunger_timer(self) -> None:
-        """
-        Asynchronous loop that decreases hunger over time.
-        """
-        try:
-            while self._running:
-                await asyncio.sleep(random.uniform(*self.decay_range))
+        while self._running:
+            await asyncio.sleep(random.uniform(*self.decay_range))
 
-                # skip decay while eating
-                if self.eating:
-                    continue
+            if self.eating:
+                continue
 
-                if not self.machineIdle:
-                    continue
+            if not self.machineIdle:
+                continue
 
-                # skip first tick
-                if self._skip_next_tick:
-                    self._skip_next_tick = False
-                    continue
+            if getattr(self, "_skip_next_tick", False):
+                self._skip_next_tick = False
+                continue
 
-                if self.hunger > 0:
-                    self.hunger -= 1
-                    print(f"Hunger decreased to {self.hunger}")
-                    try:
-                        self.client.publish(self.topic, str(self.hunger))
-                    except Exception as e:
-                        print("MQTT publish failed", e)
-
-        except asyncio.CancelledError:
-            pass
-        finally:
-            print("Hunger timer exited")
+            if self.hunger > 0:
+                self.hunger -= 1
+                print(f"Hunger decreased to {self.hunger}")
+                try:
+                    self.client.publish(self.topic, str(self.hunger))
+                except Exception as e:
+                    print("MQTT publish failed", e)
 
     def pause(self):
         self.machineIdle = False
 
     def resume(self):
         self.machineIdle = True
+
+    # --- ADDED: handle shutdown MQTT message ---
+    def _on_shutdown_message(self, client, userdata, msg):
+        if msg.payload.decode().upper() == "STOP":
+            print("Hunger received shutdown command")
+            asyncio.create_task(self.shutdown())
