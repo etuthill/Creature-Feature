@@ -596,5 +596,7 @@ if __name__ == "__main__":
         while True:
             time.sleep(1)
     except KeyboardInterrupt:
+        print("\nShutting screens down")
+    finally:
         drivers.shutdown_all_displays()
-
+        pygame.mixer.quit()

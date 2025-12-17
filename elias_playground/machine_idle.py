@@ -179,16 +179,18 @@ class MachineIdle:
         print("Connected and subscribed.")
 
 
-async def main() -> None:
-        # create and start idle node
-        idle = MachineIdle()
-        idle.start()
+async def main():
+    idle = MachineIdle()
+    idle.start()
 
-        # main idle update loop
+    try:
         while True:
             idle.loop()
             await asyncio.sleep(0.1)
-
+    except KeyboardInterrupt:
+        print("Shutting down…")
+        await idle.boredom.shutdown()
+        await idle.hunger.shutdown()
 
 if __name__ == "__main__":
     asyncio.run(main())
