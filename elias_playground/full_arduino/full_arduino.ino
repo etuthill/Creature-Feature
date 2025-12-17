@@ -4,6 +4,9 @@
 void resetMachine();
 
 const unsigned long debounceDelay = 40; // ms
+const unsigned long petSettleTime = 5000; // 5 seconds after last touch
+unsigned long lastForceDisturbance = 0;
+bool forceActive = false;
 
 struct DebouncedButton {
   int pin;
@@ -260,31 +263,41 @@ void checkSerialAndState() {
     Serial.println("fi");
   }
   else if (state == FORCE){
-    //force hall
+
     int forceReading = analogRead(forceSensor);
-    bool isPlaying = (forceReading < forceMinLo || forceReading > forceMaxHi);
+    bool disturbed = (forceReading < forceMinLo || forceReading > forceMaxHi);
+    unsigned long now = millis();
 
-    unsigned long now_play = millis();
+    if (disturbed) {
+      lastForceDisturbance = now;
 
-    // enter eat
-    if (isPlaying && !wasPlaying && (now_play - lastPlayTime > playCooldown)) {
-        Serial.println("fp");
-        lastPlayTime = now_play;
+      if (!forceActive) {
+        forceActive = true;
+        Serial.println("fp"); // petting started
+      }
     }
 
-    // exit eat (ate)
-    if (!isPlaying && wasPlaying) {
-      //reset food LED
+    // petting has stopped AND stayed stopped for 3 seconds
+    if (forceActive && !disturbed &&
+        (now - lastForceDisturbance >= petSettleTime)) {
+
+      forceActive = false;
+
+      // consume the pet interaction ONCE
       LEDsaveState[1][0] = 0;
       LEDsaveState[1][1] = 255;
-      strip.setPixelColor(1, strip.Color(LEDsaveState[1][0],LEDsaveState[1][1], LEDsaveState[1][2]));
+      strip.setPixelColor(1, strip.Color(
+        LEDsaveState[1][0],
+        LEDsaveState[1][1],
+        LEDsaveState[1][2]
+      ));
       strip.show();
-      Serial.println("pp"); // print once
-        Serial.println("pd"); // print once
-    }
 
-    wasPlaying = isPlaying;
+      Serial.println("pp");
+      Serial.println("pd");
+    }
   }
+
   else if (state == IDLE) {
     if (foodPressed) {
       Serial.println("ih");
