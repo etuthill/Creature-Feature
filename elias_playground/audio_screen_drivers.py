@@ -280,11 +280,11 @@ class AudioScreenDrivers:
             return 
 
         with self.draw_lock:
-            self.draw_rgb565_file(self.screens[0], left_file)
+            # SWAPPED mapping
+            self.draw_rgb565_file(self.screens[1], left_file)
             time.sleep(0.05)
-            self.draw_rgb565_file(self.screens[1], right_file)
-
-        #EYE ANIMATION
+            self.draw_rgb565_file(self.screens[0], right_file)
+            
 
     def narrowing_food_eyes(self):
         """
@@ -397,8 +397,10 @@ class AudioScreenDrivers:
             for lf_name, rf_name, duration in steps:
                 if self.stop_eyes_event.is_set():
                     return
-                self.draw_both_screens(os.path.join(left_dir, lf_name),
-                                       os.path.join(right_dir, rf_name))
+                self.draw_both_screens(
+                    os.path.join(right_dir, rf_name),
+                    os.path.join(left_dir, lf_name)
+                )
                 if not self.sleep_or_stop(duration):
                     return
 
