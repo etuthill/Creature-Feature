@@ -5,6 +5,7 @@ and mqtt messaging for state changes
 
 import serial
 import paho.mqtt.client as mqtt
+import time
 
 
 class StateController:
@@ -41,6 +42,12 @@ class StateController:
 
         # starting fsm state
         self.currentState = "machineIdle"
+
+    def start(self):
+        "use as setup function"
+        for s in self.drivers.screens:
+            self.drivers.power_on_displays(s)
+        time.sleep(0.2)  # let displays fully settle
 
     def loop(self) -> None:
         """
