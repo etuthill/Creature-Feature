@@ -40,8 +40,8 @@ bool wasEating = false;
 bool wasPlaying = false;
 
 // fluctuation buffer
-int hallMinLo = hallMin - 30;
-int hallMaxHi = hallMax + 30;
+int hallMinLo = hallMin - 50;
+int hallMaxHi = hallMax + 50;
 
 //servos
 Servo leftServo;
@@ -261,7 +261,7 @@ void checkSerialAndState() {
   }
   else if (state == FORCE) {
       int forceReading = analogRead(forceSensor);
-      bool disturbed = (forceReading > forceMin && forceReading < forceMax);  // petting detected
+      bool disturbed = (forceReading < forceThreshold);  // petting detected
       unsigned long now = millis();
 
       if (disturbed) {
