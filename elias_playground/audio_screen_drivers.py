@@ -5,6 +5,8 @@ import random
 import threading
 import time
 import os
+import signal
+import sys
 import paho.mqtt.client as mqtt
 
 
@@ -586,11 +588,22 @@ class AudioScreenDrivers:
                 "idle_slightly_maniacle.wav", "hehehewav.wav"], 3, 6)
             
         self.lastMsg = state
-            
+
+
+def cleanup_and_exit(sig=None, frame=None):
+    print("Cleaning up GPIO")
+    try:
+        drivers.shutdown_all_displays()
+    except Exception as e:
+        print("Cleanup error:", e)
+    sys.exit(0)
 
 if __name__ == "__main__":
     drivers = AudioScreenDrivers()
     drivers.set_state("idle")
+    signal.signal(signal.SIGINT, cleanup_and_exit)
+    signal.signal(signal.SIGTERM, cleanup_and_exit)
+
 
     try:
         while True:
