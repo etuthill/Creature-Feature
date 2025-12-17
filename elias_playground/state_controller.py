@@ -181,4 +181,9 @@ if __name__ == "__main__":
         while True:
             fsm.loop()
     except KeyboardInterrupt:
-        print("FSM stopped")
+        print("FSM stopping — resetting Arduino")
+        try:
+            fsm.ser.write(b"RESET\n")
+            time.sleep(0.1)
+        except Exception as e:
+            print("Failed to reset Arduino:", e)

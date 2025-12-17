@@ -596,8 +596,10 @@ def cleanup_and_exit(sig=None, frame=None):
     print("Cleaning up GPIO")
     try:
         drivers.shutdown_all_displays()
+        time.sleep(0.5)
     except Exception as e:
         print("Cleanup error:", e)
+
     sys.exit(0)
 
 if __name__ == "__main__":
