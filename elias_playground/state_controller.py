@@ -141,6 +141,8 @@ class StateController:
         """
         print("FSM connected to MQTT")
         client.subscribe("state/text")
+        client.subscribe("anim/hunger")
+        client.subscribe("anim/boredom")
 
     def on_message(self, client: mqtt.Client, userdata, msg: mqtt.MQTTMessage) -> None:
         """
@@ -154,10 +156,16 @@ class StateController:
             msg (mqtt.MQTTMessage): Incoming MQTT message.
         """
         text = msg.payload.decode()
+        #if msg.topic == "anim/hunger", pass
+        if msg.topic == "anim/hunger":
+            self.ser.write(b'D: hall\n')
+        if msg.topic == "anim/boredom":
+            self.ser.write(b'D: force\n')
 
         if text == "RESET":
             print("FSM received RESET")
             self.handle_reset()
+        
 
 
 if __name__ == "__main__":
