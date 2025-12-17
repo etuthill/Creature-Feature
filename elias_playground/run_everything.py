@@ -10,7 +10,6 @@ procs = []
 def start(cmd):
     p = subprocess.Popen(cmd)
     procs.append(p)
-
 def shutdown(signum=None, frame=None):
     print("Supervisor: shutting down all processes")
 
@@ -20,7 +19,11 @@ def shutdown(signum=None, frame=None):
         except Exception:
             pass
 
-    time.sleep(1)
+    timeout = 5
+    start_time = time.time()
+    for p in procs:
+        while p.poll() is None and (time.time() - start_time < timeout):
+            time.sleep(0.1)
 
     for p in procs:
         if p.poll() is None:
