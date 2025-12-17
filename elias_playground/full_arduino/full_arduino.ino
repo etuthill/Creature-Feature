@@ -33,6 +33,7 @@ unsigned long lastEatTime = 0;
 const unsigned long eatCooldown = 1000;
 unsigned long lastPlayTime = 0;
 const unsigned long playCooldown = 500;
+const unsigned long petCooldown = 500;
 
 bool wasEating = false;
 bool wasPlaying = false;
