@@ -275,7 +275,7 @@ class AudioScreenDrivers:
             right_file (str): Right screen RGB565 file.
         """
         if not left_file or not right_file:
-            return  # fail silently but safely
+            return 
 
         with self.draw_lock:
             self.draw_rgb565_file(self.screens[0], left_file)
@@ -484,29 +484,28 @@ class AudioScreenDrivers:
     # MQTT
 
     def on_message(self, client, userdata, msg):
-        fsm_state = msg.payload.decode()
+        topic = msg.topic
+        state = msg.payload.decode()
 
-        # FSM to behavior mapping
-        if fsm_state == "machineIdle":
-            self.set_state("idle")
+        if topic == "state/text":
+            # FSM screens cues
+            if state == "machineIdle":
+                self.set_state("idle")
+            elif state == "sensingH":
+                self.set_state("hungry")
+            elif state == "sensingF":
+                self.set_state("bored")
+            elif state == "reactingF":
+                self.set_state("eating")
+            elif state == "reactingP":
+                self.set_state("playing")
+            elif state == "RESET":
+                self.set_state("RESET")
 
-        elif fsm_state in ("sensingH",):
-            self.set_state("hungry")
-
-        elif fsm_state in ("sensingF",):
-            self.set_state("boredom")
-
-        elif fsm_state == "sensing":
-            self.set_state("idle")
-
-        elif fsm_state == "reactingF":
-            self.set_state("eating")
-
-        elif fsm_state == "reactingP":
-            self.set_state("playing")
-
-        elif fsm_state == "RESET":
-            self.set_state("RESET")
+        elif topic == "anim/text":
+            # MachineIdle screens (threshold cues)
+            if state in ("idle", "hungry", "bored", "hangry"):
+                self.set_state(state)
 
     def on_connect(self, client, userdata, flags, rc):
         """
@@ -515,7 +514,9 @@ class AudioScreenDrivers:
         Subscribes to 'state/text'.
         """
         client.subscribe("state/text")
+        client.subscribe("anim/text")
         print("Connected and subscribed.")
+
 
     def set_state(self, state: str):
         """
@@ -561,12 +562,12 @@ class AudioScreenDrivers:
             self.eye_thread = threading.Thread(target=self.starry_eyes, daemon=True)
             self.eye_thread.start()
 
-        elif state == "boredom":
+        elif state == "bored":
             self.eye_thread = threading.Thread(target=self.side_to_side_eyes, daemon=True)
             self.eye_thread.start()
             self.start_interval_audio(["bored_mm_mm.wav", "bored_nnnnnaa.wav"], 3, 6)
 
-        elif state == "boredom_hungry":
+        elif state == "hangry":
             self.eye_thread = threading.Thread(target=self.narrowing_food_eyes, daemon=True)
             self.eye_thread.start()
             self.start_interval_audio(["bored_mm_mm.wav", "bored_nnnnnaa.wav", "hungry_dsitraught.wav"], 3, 6)
@@ -583,8 +584,9 @@ class AudioScreenDrivers:
                 "idle_lalala_lalala.wav", "idle_lala_lalala_laLA.wav",
                 "idle_mountain_king.wav", "idle_oraawrr.wav", "idle_second_jaunty_song.wav",
                 "idle_slightly_maniacle.wav", "hehehewav.wav"], 3, 6)
-
+            
         self.lastMsg = state
+            
 
 if __name__ == "__main__":
     drivers = AudioScreenDrivers()
