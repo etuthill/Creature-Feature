@@ -312,34 +312,6 @@ class AudioScreenDrivers:
 
 
 
-    def side_to_side_eyes(self):
-        left_dir = "../eyes/eye_outputs/side_to_side/left"
-        right_dir = "../eyes/eye_outputs/side_to_side/right"
-
-        steps = [
-            ("normal_blink_full_left.rgb565", "normal_blink_full_right.rgb565", 3),
-            ("eyes_half_sideways_left.rgb565", "eyes_half_sideways_right.rgb565", 2),
-            ("eyes_full_sideways_left.rgb565", "eyes_full_sideways_right.rgb565", 2),
-            ("eyes_half_sideways_left.rgb565", "eyes_half_sideways_right.rgb565", 2),
-            ("normal_blink_full_left.rgb565", "normal_blink_full_right.rgb565", 2),
-            ("eyes_half_sideways_left_2.rgb565", "eyes_half_sideways_right_2.rgb565", 2),
-            ("eyes_full_sideways_left_2.rgb565", "eyes_full_sideways_right_2.rgb565", 2),
-            ("eyes_half_sideways_left_2.rgb565", "eyes_half_sideways_right_2.rgb565", 2),
-        ]
-
-        while not self.stop_eyes_event.is_set():
-            for lf_name, rf_name, duration in steps:
-                if self.stop_eyes_event.is_set():
-                    return
-
-                self.draw_both_screens(
-                    os.path.join(left_dir, lf_name),
-                    os.path.join(right_dir, rf_name)
-                )
-
-                if not self.sleep_or_stop(duration):
-                    return
-
     def sleep_or_stop(self, duration, check_interval=0.05):
         """
         Sleep for `duration` seconds, but wake early if stop_eyes_event is set.

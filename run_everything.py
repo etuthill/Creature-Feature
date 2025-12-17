@@ -35,10 +35,10 @@ def shutdown(signum=None, frame=None):
 signal.signal(signal.SIGINT, shutdown)
 signal.signal(signal.SIGTERM, shutdown)
 
-start(["python3", "state_controller.py"])
-start(["python3", "audio_screen_drivers.py"])
-start(["python3", "machine_idle.py"])
-start(["python3", "boredom.py"])
-start(["python3", "hunger.py"])
+start(["python3", "elias_playground/state_controller.py"])
+start(["python3", "elias_playground/audio_screen_drivers.py"])
+start(["python3", "elias_playground/machine_idle.py"])
+start(["python3", "elias_playground/boredom.py"])
+start(["python3", "elias_playground/hunger.py"])
 
 signal.pause()
