@@ -22,26 +22,28 @@ class StateController:
     """
 
     def __init__(self) -> None:
-        """
-        Initialize the StateController.
+        self.client = mqtt.Client()
+        self.client.on_connect = self.on_connect
+        self.client.connect("localhost")
+        self.client.loop_start()
+        self.client.on_message = self.on_message
 
-        Sets up MQTT client, connects to local broker, starts the MQTT loop,
-        and initializes serial communication and FSM state tracking.
-        """
-        self.client = mqtt.Client() # MQTT client used to publish fsm state updates
-        self.client.on_connect = self.on_connect # callback when mqtt connects
-        self.client.connect("localhost") # connect to local 
-        self.client.loop_start() # start mqtt loop in background thread
-        self.client.on_message = self.on_message # start message reading
-
-        # serial connection to arduino non blocking read
         self.ser = serial.Serial('/dev/ttyACM0', baudrate=9600, timeout=0.1)
 
-        # previous published state used to avoid duplicates
-        self.lastState = None
+        # allow Arduino to reboot
+        time.sleep(2.0)
 
-        # starting fsm state
+        # clear garbage from boot
+        self.ser.reset_input_buffer()
+
+        # hard reset machine
+        self.ser.write(b"RESET\n")
+        time.sleep(0.1)
+        self.ser.write(b"S:i\n")
+
+        self.lastState = None
         self.currentState = "machineIdle"
+
 
     def start(self):
         "use as setup function"
