@@ -43,9 +43,6 @@ bool wasPlaying = false;
 int hallMinLo = hallMin - 30;
 int hallMaxHi = hallMax + 30;
 
-int forceMinLo = forceMin - 30;
-int forceMaxHi = forceMax + 30;
-
 //servos
 Servo leftServo;
 Servo rightServo;
@@ -264,7 +261,7 @@ void checkSerialAndState() {
   }
   else if (state == FORCE) {
       int forceReading = analogRead(forceSensor);
-      bool disturbed = (forceReading < 1000);  // petting detected
+      bool disturbed = (forceReading < forceMax);  // petting detected
       unsigned long now = millis();
 
       if (disturbed) {
