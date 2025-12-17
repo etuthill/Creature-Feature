@@ -535,6 +535,9 @@ class AudioScreenDrivers:
         """
         if state == self.lastMsg:
             return
+        
+        self.lastMsg = state
+
             
         self.ensure_displays_on()
 
@@ -598,7 +601,6 @@ class AudioScreenDrivers:
                 "idle_mountain_king.wav", "idle_oraawrr.wav", "idle_second_jaunty_song.wav",
                 "idle_slightly_maniacle.wav", "hehehewav.wav"], 3, 6)
                 
-        self.lastMsg = state
 
 
 
