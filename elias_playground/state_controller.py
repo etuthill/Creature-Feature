@@ -77,9 +77,9 @@ class StateController:
         elif line == "if":  # idle to sensing (FSR)
             message = "sensingF"
         elif line == "he":  # hall sensor to sensing
-            message = "sensing"
+            message = "sensingE"
         elif line == "fp":  # FSR sensor to sensing
-            message = "sensing"
+            message = "sensingP"
 
         # reacting transitions
         elif line == "ef":  # eat to fed
