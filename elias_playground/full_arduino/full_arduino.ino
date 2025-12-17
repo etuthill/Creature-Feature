@@ -27,8 +27,7 @@ const int hallSensor = A1;
 //sensor vars
 int hallMin = 350;
 int hallMax = 750;
-int forceMin = 0;
-int forceMax = 1000;
+int forceThreshold = 1000;
 
 // debounce interactions
 unsigned long lastEatTime = 0;
