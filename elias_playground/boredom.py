@@ -124,7 +124,7 @@ class Boredom:
 
             if self.boredom > 0:
                 self.boredom -= 1
-                self.ser.write(b'D: force\n')
+                
                 print(f"Boredom decreased to {self.boredom}")
                 try:
                     self.client.publish(self.topic, str(self.boredom))
