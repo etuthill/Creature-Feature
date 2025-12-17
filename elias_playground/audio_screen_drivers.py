@@ -280,11 +280,10 @@ class AudioScreenDrivers:
             return 
 
         with self.draw_lock:
-            # SWAPPED mapping
-            self.draw_rgb565_file(self.screens[1], left_file)
+            self.draw_rgb565_file(self.screens[0], left_file)
             time.sleep(0.05)
-            self.draw_rgb565_file(self.screens[0], right_file)
-            
+            self.draw_rgb565_file(self.screens[1], right_file)
+
 
     def narrowing_food_eyes(self):
         """
