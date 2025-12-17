@@ -576,3 +576,14 @@ class AudioScreenDrivers:
                 "idle_slightly_maniacle.wav", "hehehewav.wav"], 3, 6)
 
         self.lastMsg = state
+
+if __name__ == "__main__":
+    drivers = AudioScreenDrivers()
+    drivers.set_state("idle")
+
+    try:
+        while True:
+            time.sleep(1)
+    except KeyboardInterrupt:
+        drivers.shutdown_all_displays()
+
