@@ -158,9 +158,9 @@ class StateController:
         text = msg.payload.decode()
         #if msg.topic == "anim/hunger", pass
         if msg.topic == "anim/hunger":
-            self.ser.write(b'D: hall\n')
+            self.ser.write(b'D:h\n')
         if msg.topic == "anim/boredom":
-            self.ser.write(b'D: force\n')
+            self.ser.write(b'D:f\n')
 
         if text == "RESET":
             print("FSM received RESET")
