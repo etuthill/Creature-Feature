@@ -531,7 +531,7 @@ class AudioScreenDrivers:
         """
         if state == self.lastMsg:
             return
-        
+            
         self.ensure_displays_on()
 
         # stop current animations and audio
@@ -543,6 +543,11 @@ class AudioScreenDrivers:
         with self.draw_lock:
             pass
 
+        # wait for old eye thread to fully exit
+        if self.eye_thread and self.eye_thread.is_alive():
+            self.eye_thread.join(timeout=1.5)
+
+        self.eye_thread = None
 
         self.stop_eyes_event.clear()
         time.sleep(0.05)
@@ -588,8 +593,9 @@ class AudioScreenDrivers:
                 "idle_lalala_lalala.wav", "idle_lala_lalala_laLA.wav",
                 "idle_mountain_king.wav", "idle_oraawrr.wav", "idle_second_jaunty_song.wav",
                 "idle_slightly_maniacle.wav", "hehehewav.wav"], 3, 6)
-            
+                
         self.lastMsg = state
+
 
 
 def cleanup_and_exit(sig=None, frame=None):
