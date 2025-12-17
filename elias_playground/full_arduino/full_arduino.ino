@@ -246,6 +246,7 @@ void checkSerialAndState() {
       strip.setPixelColor(2, strip.Color(LEDsaveState[0][0],LEDsaveState[0][1],LEDsaveState[0][2]));
       strip.show();
       Serial.println("ef"); // print once
+        Serial.println("ed"); // print once
     }
 
     wasEating = isEating;
@@ -275,6 +276,7 @@ void checkSerialAndState() {
       strip.setPixelColor(1, strip.Color(LEDsaveState[1][0],LEDsaveState[1][1], LEDsaveState[1][2]));
       strip.show();
       Serial.println("pp"); // print once
+        Serial.println("pd"); // print once
     }
 
     wasPlaying = isPlaying;

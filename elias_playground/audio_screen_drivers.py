@@ -171,6 +171,12 @@ class AudioScreenDrivers:
         # display ON
         self.send_cmd(s, 0xAF)
 
+    def ensure_displays_on(self):
+        for s in self.screens:
+            lgpio.gpio_write(self.h, s["pmoden"], 1)
+            lgpio.gpio_write(self.h, s["vccen"], 1)
+            self.send_cmd(s, 0xAF)
+
     def draw_rgb565_file(self, s: dict, filename: str, bgr: bool = False):
         """
         Draw RGB565 image file to one screen.
@@ -508,6 +514,8 @@ class AudioScreenDrivers:
         """
         if state == self.lastMsg:
             return
+        
+        self.ensure_displays_on()
 
         # stop current animations and audio
         self.stop_eyes_event.set()
@@ -518,9 +526,6 @@ class AudioScreenDrivers:
         with self.draw_lock:
             pass
 
-        # wait for eye thread to exit
-        if self.eye_thread and self.eye_thread.is_alive():
-            self.eye_thread.join(timeout=1.0)
 
         self.stop_eyes_event.clear()
         time.sleep(0.05)

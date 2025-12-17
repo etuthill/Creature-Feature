@@ -101,19 +101,12 @@ class StateController:
             self.lastState = message
             
     def handle_reset(self) -> None:
-        """
-        Reset the FSM to initial state and notify Arduino.
-
-        Clears lastState and currentState, then sends a RESET command
-        over the serial connection to the Arduino.
-        """
-        # clear FSM state
         self.lastState = None
         self.currentState = "machineIdle"
 
-        # optionally notify arduino
         try:
             self.ser.write(b"RESET\n")
+            self.ser.write(b"S:i\n")
         except Exception as e:
             print("failed to send reset to arduino", e)
 
