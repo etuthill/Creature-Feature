@@ -31,7 +31,7 @@ int forceThreshold = 1000;
 
 // debounce interactions
 unsigned long lastEatTime = 0;
-const unsigned long eatCooldown = 500;
+const unsigned long eatCooldown = 1000;
 unsigned long lastPlayTime = 0;
 const unsigned long playCooldown = 500;
 
@@ -39,8 +39,8 @@ bool wasEating = false;
 bool wasPlaying = false;
 
 // fluctuation buffer
-int hallMinLo = hallMin - 50;
-int hallMaxHi = hallMax + 50;
+int hallMinLo = hallMin - 30;
+int hallMaxHi = hallMax + 30;
 
 //servos
 Servo leftServo;
