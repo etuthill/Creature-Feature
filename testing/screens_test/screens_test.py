@@ -173,11 +173,22 @@ def shutdown_displays(s):
 for scr in screens:
     power_on_displays(scr)
 
-draw_rgb565_file(screens[0], "../../eyes/eye_test_rgb565/left/normal_blink_full_left.rgb565")
-draw_rgb565_file(screens[1], "../../eyes/eye_test_rgb565/right/normal_blink_full_right.rgb565")
+left_file  = "../../eyes/eye_outputs/narrowing_food/left/eyes_full_narrow_left.rgb565"
+right_file = "../../eyes/eye_outputs/narrowing_food/right/eyes_full_narrow_right.rgb565"
 
+
+# power on both screens
+for scr in screens:
+    power_on_displays(scr)
+
+# draw ONE static frame
+draw_rgb565_file(screens[0], left_file)
+draw_rgb565_file(screens[1], right_file)
+
+print("Frame sent, holding...")
 time.sleep(10)
 
+# shutdown
 for scr in screens:
     shutdown_displays(scr)
 
