@@ -28,35 +28,23 @@ class Boredom:
 
         self._task: asyncio.Task | None = None
         self._running: bool = False
-        self._skip_next_tick = True
+        self._skip_next_tick = True 
 
         self.machineIdle = True
 
+        # --- ADDED: subscribe to shutdown topic ---
+        self.client.message_callback_add("system/shutdown", self._on_shutdown_message)
+        self.client.subscribe("system/shutdown")
+
     def start(self):
-        """
-        Start the asynchronous boredom decay loop.
-        """
         if not self._running:
             self._running = True
             self._task = asyncio.create_task(self._boredom_timer())
 
     def stop(self):
-        """
-        Stop the boredom decay loop (sync-safe).
-        """
         self._running = False
         if self._task:
             self._task.cancel()
-
-    async def shutdown(self):
-        """
-        ctrl c shutdown
-        """
-        self._running = False
-
-        if self._task:
-            self._task.cancel()
-            await asyncio.gather(self._task, return_exceptions=True)
             self._task = None
 
     def reset(self):
@@ -77,39 +65,44 @@ class Boredom:
         return self.boredom <= self.bored_threshold
 
     async def _boredom_timer(self):
-        """
-        Internal async loop to gradually decrease boredom over time.
-        """
-        try:
-            while self._running:
-                await asyncio.sleep(random.uniform(*self.decay_range))
+        while self._running:
+            await asyncio.sleep(random.uniform(*self.decay_range))
 
-                if self.playing:
-                    continue
+            if self.playing:
+                continue
 
-                if not self.machineIdle:
-                    continue
+            if not self.machineIdle:
+                continue
 
-                # skip first tick
-                if self._skip_next_tick:
-                    self._skip_next_tick = False
-                    continue
+            if getattr(self, "_skip_next_tick", False):
+                self._skip_next_tick = False
+                continue
 
-                if self.boredom > 0:
-                    self.boredom -= 1
-                    print(f"Boredom decreased to {self.boredom}")
-                    try:
-                        self.client.publish(self.topic, str(self.boredom))
-                    except Exception as e:
-                        print("MQTT publish failed:", e)
-
-        except asyncio.CancelledError:
-            pass
-        finally:
-            print("Boredom timer exited")
+            if self.boredom > 0:
+                self.boredom -= 1
+                print(f"Boredom decreased to {self.boredom}")
+                try:
+                    self.client.publish(self.topic, str(self.boredom))
+                except Exception as e:
+                    print("MQTT publish failed:", e)
 
     def pause(self):
         self.machineIdle = False
 
     def resume(self):
         self.machineIdle = True
+            
+    async def shutdown(self):
+        self._running = False
+        if self._task:
+            self._task.cancel()
+            await asyncio.gather(self._task, return_exceptions=True)
+            self._task = None
+
+    # --- ADDED: handle shutdown MQTT message ---
+    def _on_shutdown_message(self, client, userdata, msg):
+        if msg.payload.decode().upper() == "STOP":
+            print("Boredom received shutdown command")
+            # schedule async shutdown
+            asyncio.create_task(self.shutdown())
+
