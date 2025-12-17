@@ -4,7 +4,6 @@
 void resetMachine();
 
 const unsigned long debounceDelay = 40; // ms
-const unsigned long petSettleTime = 1000; // 5 seconds after last touch
 unsigned long lastForceDisturbance = 0;
 bool forceActive = false;
 
@@ -274,7 +273,7 @@ void checkSerialAndState() {
 
       // petting has stopped AND stayed stopped for petSettleTime
       if (forceActive && !disturbed &&
-          (now - lastForceDisturbance >= petSettleTime)) {
+          (now - lastForceDisturbance >= petCooldown)) {
 
           forceActive = false;
 
