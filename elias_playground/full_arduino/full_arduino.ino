@@ -241,14 +241,16 @@ void checkSerialAndState() {
         lastEatTime = now_eat;
     }
 
-  // exit eat (ate)
-  if (!isEating && wasEating && (now_eat - lastEatTime > eatCooldown)) {
-      // reset food LED
-      ...
-      Serial.println("ef");
-      Serial.println("ed");
-      lastEatTime = now_eat; // reset cooldown for next enter
-  }
+    // exit eat (ate)
+    if (!isEating && wasEating && (now_eat - lastEatTime > eatCooldown)) {
+      //reset food LED
+      LEDsaveState[0][0] = 0;
+      LEDsaveState[0][1] = 255;
+      strip.setPixelColor(2, strip.Color(LEDsaveState[0][0],LEDsaveState[0][1],LEDsaveState[0][2]));
+      strip.show();
+      Serial.println("ef"); // print once
+        Serial.println("ed"); // print once
+    }
 
     wasEating = isEating;
   }
