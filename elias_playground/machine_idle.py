@@ -155,6 +155,15 @@ class MachineIdle:
             print("Received RESET")
             self.reset()
 
+        if msg.topic == "reset/text" and text == "hunger":
+            self.hunger.on_ate()
+            print("Hunger reset by FSM")
+
+        if msg.topic == "reset/text" and text == "boredom":
+            self.boredom.on_played()
+            print("Boredom reset by FSM")
+            
+
     def on_connect(self, client: mqtt.Client, userdata, flags, rc: int) -> None:
         """Subscribe to FSM topic when MQTT connects.
 
@@ -166,6 +175,7 @@ class MachineIdle:
         """
         # subscribe to global fsm state topic
         client.subscribe("state/text")
+        client.subscribe("reset/text")
         print("Connected and subscribed.")
 
 

@@ -79,10 +79,13 @@ class StateController:
 
         # Done transitions
         elif line == "ed":  # eat to done
+            self.client.publish("reset/text", "hunger")
             message = "machineIdle"
         elif line == "pd":  # play to done
+            self.client.publish("reset/text", "boredom")
             message = "machineIdle"
 
+            
         if message and message != self.lastState:
             self.client.publish("state/text", message)
             print(f"fsm -> {message}")
