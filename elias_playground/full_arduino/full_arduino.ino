@@ -8,6 +8,10 @@ const unsigned long petSettleTime = 2000; // 5 seconds after last touch
 unsigned long lastForceDisturbance = 0;
 bool forceActive = false;
 
+bool hallActive = false;
+unsigned long hallActivatedAt = 0;
+const unsigned long hallMinActiveTime = 1000; // ms
+
 struct DebouncedButton {
   int pin;
   bool stableState;
@@ -235,22 +239,24 @@ void checkSerialAndState() {
 
     unsigned long now_eat = millis();
 
-    // enter eat
-    if (isEating && !wasEating && (now_eat - lastEatTime > eatCooldown)) {
-        Serial.println("he");
-        lastEatTime = now_eat;
-    }
+  // enter eat
+  if (isEating && !wasEating && (now_eat - lastEatTime > eatCooldown)) {
+      Serial.println("he");
+      lastEatTime = now_eat;
+  }
 
-    // exit eat (ate)
-    if (!isEating && wasEating) {
-      //reset food LED
-      LEDsaveState[0][0] = 0;
-      LEDsaveState[0][1] = 255;
-      strip.setPixelColor(2, strip.Color(LEDsaveState[0][0],LEDsaveState[0][1],LEDsaveState[0][2]));
-      strip.show();
-      Serial.println("ef"); // print once
-        Serial.println("ed"); // print once
-    }
+  // exit eat (ate)
+  if (!isEating && wasEating) {
+    //reset food LED
+    LEDsaveState[0][0] = 0;
+    LEDsaveState[0][1] = 255;
+    strip.setPixelColor(2, strip.Color(LEDsaveState[0][0],LEDsaveState[0][1],LEDsaveState[0][2]));
+    strip.show();
+    Serial.println("ef");
+    Serial.println("ed");
+  }
+
+wasEating = isEating;
 
     wasEating = isEating;
   }
