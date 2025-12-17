@@ -260,53 +260,53 @@ void checkSerialAndState() {
   }
 
   if (state == FORCE && backPressed) {
-    Serial.println("fi");
+      Serial.println("fi");
   }
-  else if (state == FORCE){
+  else if (state == FORCE) {
+      int forceReading = analogRead(forceSensor);
+      bool disturbed = (forceReading < 1000);  // petting detected
+      unsigned long now = millis();
 
-    int forceReading = analogRead(forceSensor);
-    bool disturbed = (forceReading < forceMaxHi);
-    unsigned long now = millis();
+      if (disturbed) {
+          lastForceDisturbance = now;
 
-    if (disturbed) {
-      lastForceDisturbance = now;
+          if (!forceActive) {
+              forceActive = true;
+              Serial.println("fp"); // petting started
+          }
+      }
 
-      if (!forceActive) {
-        forceActive = true;
-        Serial.println("fp"); // petting started
+      // petting has stopped AND stayed stopped for petSettleTime
+      if (forceActive && !disturbed &&
+          (now - lastForceDisturbance >= petSettleTime)) {
+
+          forceActive = false;
+
+          // consume the pet interaction ONCE
+          LEDsaveState[1][0] = 0;
+          LEDsaveState[1][1] = 255;
+          strip.setPixelColor(1, strip.Color(
+              LEDsaveState[1][0],
+              LEDsaveState[1][1],
+              LEDsaveState[1][2]
+          ));
+          strip.show();
+
+          Serial.println("pp");
+          Serial.println("pd");
+      }
+  }
+
+
+    else if (state == IDLE) {
+      if (foodPressed) {
+        Serial.println("ih");
+      }
+      else if (playPressed) {
+        Serial.println("if");
       }
     }
-
-    // petting has stopped AND stayed stopped for 3 seconds
-    if (forceActive && !disturbed &&
-        (now - lastForceDisturbance >= petSettleTime)) {
-
-      forceActive = false;
-
-      // consume the pet interaction ONCE
-      LEDsaveState[1][0] = 0;
-      LEDsaveState[1][1] = 255;
-      strip.setPixelColor(1, strip.Color(
-        LEDsaveState[1][0],
-        LEDsaveState[1][1],
-        LEDsaveState[1][2]
-      ));
-      strip.show();
-
-      Serial.println("pp");
-      Serial.println("pd");
-    }
   }
-
-  else if (state == IDLE) {
-    if (foodPressed) {
-      Serial.println("ih");
-    }
-    else if (playPressed) {
-      Serial.println("if");
-    }
-  }
-}
 
 void resetMachine() {
   state = IDLE;
