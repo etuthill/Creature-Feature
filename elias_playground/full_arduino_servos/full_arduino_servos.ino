@@ -130,6 +130,21 @@ void loop() {
     moveServoSmooth(rightServo, rightCurrentPos, rightTargetPos, lastRightServoUpdate);
     moveServoSmooth(backServo,  backCurrentPos,  backTargetPos,  lastBackServoUpdate);
   }
+
+  if (foodPressed) {
+    state = HALL;
+    servosEnabled = false;
+  }
+
+  if (playPressed) {
+    state = FORCE;
+    servosEnabled = false;
+  }
+
+  if (backPressed) {
+    state = IDLE;
+    servosEnabled = false;
+  }
 }
 
 bool buttonPressed(DebouncedButton &btn) {
@@ -276,13 +291,20 @@ void checkSerialAndState() {
       strip.setPixelColor(2, strip.Color(0,255,0));
       strip.show();
 
+      Serial.println("ef");
       leftTargetPos  = 95;
       rightTargetPos = 95;
       backTargetPos  = 85;
 
       servosEnabled = true;
 
-      Serial.println("ef");
+      while (
+          abs(leftServo.read() - leftTargetPos) > 1 ||
+          abs(rightServo.read() - rightTargetPos) > 1 ||
+          abs(backServo.read() - backTargetPos) > 1
+      ) {
+          delay(10); // small delay to avoid busy loop
+      }
       Serial.println("ed");
   }
 
@@ -323,13 +345,21 @@ void checkSerialAndState() {
           ));
           strip.show();
 
+          Serial.println("pp");
+          leftTargetPos  = 95;
+          rightTargetPos = 95;
+          backTargetPos  = 85;
+
           servosEnabled = true;
 
-          leftTargetPos  = 85;
-          rightTargetPos = 85;
-          backTargetPos  = 95;
+          while (
+              abs(leftServo.read() - leftTargetPos) > 1 ||
+              abs(rightServo.read() - rightTargetPos) > 1 ||
+              abs(backServo.read() - backTargetPos) > 1
+          ) {
+              delay(10); // small delay to avoid busy loop
+          }
 
-          Serial.println("pp");
           Serial.println("pd");
       }
   }
