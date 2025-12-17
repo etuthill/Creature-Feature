@@ -1,6 +1,15 @@
 #include <Servo.h>
 #include <Adafruit_NeoPixel.h>
 
+const unsigned long debounceDelay = 40; // ms
+
+struct DebouncedButton {
+  int pin;
+  bool stableState;
+  bool lastReading;
+  unsigned long lastChangeTime;
+};
+
 //led strip
 #define NUM_LEDS 3
 #define DATA_PIN 13
@@ -88,14 +97,6 @@ void setup() {
   delay(10000);
 }
 
-  const unsigned long debounceDelay = 40; // ms
-
-  struct DebouncedButton {
-    int pin;
-    bool stableState;
-    bool lastReading;
-    unsigned long lastChangeTime;
-  };
 
   DebouncedButton foodBtn  = { foodButton, HIGH, HIGH, 0 };
   DebouncedButton playBtn  = { playButton, HIGH, HIGH, 0 };
