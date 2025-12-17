@@ -260,6 +260,7 @@ void checkSerialAndState() {
     // exit eat (ate)
     if (!isEating && wasEating) {
         Serial.println("ef"); // print once
+        Serial.println("ed"); // print once
     }
 
     wasEating = isEating;
@@ -284,6 +285,7 @@ void checkSerialAndState() {
     // exit eat (ate)
     if (!isPlaying && wasPlaying) {
         Serial.println("pp"); // print once
+        Serial.println("pd"); // print once
     }
 
     wasPlaying = isPlaying;
