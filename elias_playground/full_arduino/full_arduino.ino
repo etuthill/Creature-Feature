@@ -155,7 +155,7 @@ void checkSerialAndState() {
 
   if (cmd.length() >= 3 && cmd[1] == ':') {
     cmdType  = cmd[0];
-    specific = cmd[2];
+    specific = cmd[3];
   }
    if (cmdType != '\0') {  
   //only true if state has CHANGED
