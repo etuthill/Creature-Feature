@@ -170,10 +170,6 @@ bool buttonPressed(DebouncedButton &btn) {
 
 void checkSerialAndState() {
 
-  bool foodPressed = buttonPressed(foodBtn);
-  bool playPressed = buttonPressed(playBtn);
-  bool backPressed = buttonPressed(backBtn);
-
   String cmd = "";
 
  if (Serial.available() > 0) {
