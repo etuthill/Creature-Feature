@@ -47,8 +47,8 @@ Servo rightServo;
 Servo backServo;
 
 //buttons
-const int foodButton = 7;
-const int playButton = 8;
+const int foodButton = 8;
+const int playButton = 7;
 const int backButton = 9;
 
 int servoStartPos = 90;
