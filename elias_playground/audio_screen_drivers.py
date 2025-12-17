@@ -554,7 +554,7 @@ class AudioScreenDrivers:
             self.start_interval_audio(["idle_hehehehe.wav", "idle_hmhmhm.wav", "idle_jaunty_song.wav",
                 "idle_lalala_lalala.wav", "idle_lala_lalala_laLA.wav",
                 "idle_mountain_king.wav", "idle_oraawrr.wav", "idle_second_jaunty_song.wav",
-                "idle_slightly_maniacle.wav", "hehehewav.wav"], 3, 6)
+                "idle_slightly_maniacle.wav"], 3, 6)
 
         elif state == "hungry":
             self.eye_thread = threading.Thread(target=self.narrowing_food_eyes, daemon=True)
@@ -567,7 +567,7 @@ class AudioScreenDrivers:
             self.eye_thread.start()
 
         elif state == "bored":
-            self.eye_thread = threading.Thread(target=self.side_to_side_eyes, daemon=True)
+            self.eye_thread = threading.Thread(target=self.narrowing_food_eyes, daemon=True)
             self.eye_thread.start()
             self.start_interval_audio(["bored_mm_mm.wav", "bored_nnnnnaa.wav"], 3, 6)
 

@@ -4,7 +4,7 @@
 void resetMachine();
 
 const unsigned long debounceDelay = 40; // ms
-const unsigned long petSettleTime = 5000; // 5 seconds after last touch
+const unsigned long petSettleTime = 2000; // 5 seconds after last touch
 unsigned long lastForceDisturbance = 0;
 bool forceActive = false;
 
