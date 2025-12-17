@@ -121,6 +121,7 @@ class Hunger:
             # decrease hunger until zero
             if self.hunger > 0:
                 self.hunger -= 1
+                self.ser.write(b'D: hall\n')
                 print(f"Hunger decreased to {self.hunger}")
                 try:
                     self.client.publish(self.topic, str(self.hunger))
