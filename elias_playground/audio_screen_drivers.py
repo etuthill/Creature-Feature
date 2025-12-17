@@ -76,6 +76,9 @@ class AudioScreenDrivers:
             self.power_on_displays(s)
             print("Screens powered on")
 
+        self.set_state("idle")
+        print("drivers to idle (boot)")
+
     # SCREEN FUNCTIONS
     def send_cmd(self, s: dict, cmd: int):
         """
