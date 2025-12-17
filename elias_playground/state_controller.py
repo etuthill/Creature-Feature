@@ -103,8 +103,10 @@ class StateController:
             # send to arduino
             if message == "machineIdle":
                 self.ser.write(b"S:i\n")
-            elif message in ("sensingH", "sensingF", "sensing"):
+            elif message in ("sensingH", "sensing"):
                 self.ser.write(b"S:h\n")
+            elif message in ("sensingF");
+                self.ser.write(b"S:f\n")
             elif message in ("reactingF", "reactingP"):
                 self.ser.write(b"S:r\n")
 
