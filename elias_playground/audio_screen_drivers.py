@@ -274,6 +274,9 @@ class AudioScreenDrivers:
             left_file (str): Left screen RGB565 file.
             right_file (str): Right screen RGB565 file.
         """
+        if not left_file or not right_file:
+            return  # fail silently but safely
+
         with self.draw_lock:
             self.draw_rgb565_file(self.screens[0], left_file)
             time.sleep(0.05)
