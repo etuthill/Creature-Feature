@@ -72,6 +72,10 @@ class AudioScreenDrivers:
         # SPEAKERS
         pygame.mixer.init()
 
+        for s in self.screens:
+            self.power_on_displays(s)
+            print("Screens powered on")
+
     # SCREEN FUNCTIONS
     def send_cmd(self, s: dict, cmd: int):
         """
@@ -462,16 +466,29 @@ class AudioScreenDrivers:
     # MQTT
 
     def on_message(self, client, userdata, msg):
-        """
-        MQTT callback when a message is received.
+        fsm_state = msg.payload.decode()
 
-        Args:
-            client: MQTT client instance.
-            userdata: User data (unused).
-            msg: MQTT message object.
-        """
-        text = msg.payload.decode()
-        self.set_state(text)
+        # FSM to behavior mapping
+        if fsm_state == "machineIdle":
+            self.set_state("idle")
+
+        elif fsm_state in ("sensingH",):
+            self.set_state("hungry")
+
+        elif fsm_state in ("sensingF",):
+            self.set_state("boredom")
+
+        elif fsm_state == "sensing":
+            self.set_state("idle")
+
+        elif fsm_state == "reactingF":
+            self.set_state("eating")
+
+        elif fsm_state == "reactingP":
+            self.set_state("playing")
+
+        elif fsm_state == "RESET":
+            self.set_state("RESET")
 
     def on_connect(self, client, userdata, flags, rc):
         """
