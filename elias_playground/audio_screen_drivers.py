@@ -591,7 +591,7 @@ class AudioScreenDrivers:
         elif state == "playing":
             self.eye_thread = threading.Thread(target=self.starry_eyes, daemon=True)
             self.eye_thread.start()
-            self.start_interval_audio(["waAaAa.wav", "wah_wah_wah.wav", "waowaowaoooo.wav", "waow.wav", "wOoOoOw.wav"], 0.5, 1)
+            self.start_interval_audio(["waAaAa.wav", "wah_wah_wah.wav", "waowaowaoooo.wav", "woaw.wav", "wOoOoOw.wav"], 0.5, 1)
 
         elif state == "RESET":
             self.eye_thread = threading.Thread(target=self.normal_blink_eyes, daemon=True)
