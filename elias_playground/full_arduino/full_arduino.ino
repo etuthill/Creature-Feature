@@ -4,7 +4,7 @@
 void resetMachine();
 
 const unsigned long debounceDelay = 40; // ms
-const unsigned long petSettleTime = 2000; // 5 seconds after last touch
+const unsigned long petSettleTime = 1000; // 5 seconds after last touch
 unsigned long lastForceDisturbance = 0;
 bool forceActive = false;
 
@@ -236,21 +236,19 @@ void checkSerialAndState() {
     unsigned long now_eat = millis();
 
     // enter eat
-    if (isEating && !wasEating && (now_eat - lastEatTime > eatCooldown)) {
+    if (isEating && !wasEating) {
         Serial.println("he");
         lastEatTime = now_eat;
     }
 
-    // exit eat (ate)
-    if (!isEating && wasEating) {
-      //reset food LED
-      LEDsaveState[0][0] = 0;
-      LEDsaveState[0][1] = 255;
-      strip.setPixelColor(2, strip.Color(LEDsaveState[0][0],LEDsaveState[0][1],LEDsaveState[0][2]));
-      strip.show();
-      Serial.println("ef"); // print once
-        Serial.println("ed"); // print once
-    }
+  // exit eat (ate)
+  if (!isEating && wasEating && (now_eat - lastEatTime > eatCooldown)) {
+      // reset food LED
+      ...
+      Serial.println("ef");
+      Serial.println("ed");
+      lastEatTime = now_eat; // reset cooldown for next enter
+  }
 
     wasEating = isEating;
   }
