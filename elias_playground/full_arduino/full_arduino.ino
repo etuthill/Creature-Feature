@@ -218,25 +218,6 @@ void checkSerialAndState() {
           break;
       }
       break;
-    case 'R':
-      switch (specific) {
-        case 'h':
-          //reset food LED
-          LEDsaveState[0][0] = 0;
-          LEDsaveState[0][1] = 255;
-          strip.setPixelColor(2, strip.Color(LEDsaveState[0][0],LEDsaveState[0][1],LEDsaveState[0][2]));
-          strip.show();
-          break;
-        case 'f':
-          //reset food LED
-          LEDsaveState[1][0] = 0;
-          LEDsaveState[1][1] = 255;
-          strip.setPixelColor(1, strip.Color(LEDsaveState[1][0],LEDsaveState[1][1], LEDsaveState[1][2]));
-          strip.show();
-          break;
-      }
-      break;
-    }
    }
 
   ////////////////////////////////////////////////////////////////////////////////////////////////
@@ -259,7 +240,12 @@ void checkSerialAndState() {
 
     // exit eat (ate)
     if (!isEating && wasEating) {
-        Serial.println("ef"); // print once
+      //reset food LED
+      LEDsaveState[0][0] = 0;
+      LEDsaveState[0][1] = 255;
+      strip.setPixelColor(2, strip.Color(LEDsaveState[0][0],LEDsaveState[0][1],LEDsaveState[0][2]));
+      strip.show();
+      Serial.println("ef"); // print once
     }
 
     wasEating = isEating;
@@ -283,7 +269,12 @@ void checkSerialAndState() {
 
     // exit eat (ate)
     if (!isPlaying && wasPlaying) {
-        Serial.println("pp"); // print once
+      //reset food LED
+      LEDsaveState[1][0] = 0;
+      LEDsaveState[1][1] = 255;
+      strip.setPixelColor(1, strip.Color(LEDsaveState[1][0],LEDsaveState[1][1], LEDsaveState[1][2]));
+      strip.show();
+      Serial.println("pp"); // print once
     }
 
     wasPlaying = isPlaying;
