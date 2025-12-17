@@ -85,8 +85,8 @@ class StateController:
             self.client.publish("reset/text", "boredom")
             message = "machineIdle"
 
-            
-        if message and message != self.lastState:
+
+        if message is not None and message != self.lastState:
             self.client.publish("state/text", message)
             print(f"fsm -> {message}")
 
