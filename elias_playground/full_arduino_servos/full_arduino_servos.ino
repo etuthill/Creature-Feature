@@ -7,6 +7,10 @@ const unsigned long debounceDelay = 40; // ms
 unsigned long lastForceDisturbance = 0;
 bool forceActive = false;
 
+DebouncedButton foodBtn  = { foodButton, HIGH, HIGH, 0 };
+DebouncedButton playBtn  = { playButton, HIGH, HIGH, 0 };
+DebouncedButton backBtn  = { backButton, HIGH, HIGH, 0 };
+
 bool servosEnabled = false;
 
 unsigned long eatExitTime = 0;
@@ -131,7 +135,8 @@ void loop() {
     moveServoSmooth(backServo,  backCurrentPos,  backTargetPos,  lastBackServoUpdate);
   }
 
-  if (foodPressed) {
+if (state == HALL && buttonPressed(backBtn)) {
+    Serial.println("hi");
     state = HALL;
     servosEnabled = false;
   }
@@ -169,6 +174,10 @@ bool buttonPressed(DebouncedButton &btn) {
 }
 
 void checkSerialAndState() {
+
+  bool foodPressed = buttonPressed(foodBtn);
+  bool playPressed = buttonPressed(playBtn);
+  bool backPressed = buttonPressed(backBtn);
 
   String cmd = "";
 
@@ -293,14 +302,17 @@ void checkSerialAndState() {
       backTargetPos  = 85;
 
       servosEnabled = true;
+      while (leftCurrentPos != leftTargetPos ||
+            rightCurrentPos != rightTargetPos ||
+            backCurrentPos != backTargetPos) {
 
-      while (
-          abs(leftServo.read() - leftTargetPos) > 1 ||
-          abs(rightServo.read() - rightTargetPos) > 1 ||
-          abs(backServo.read() - backTargetPos) > 1
-      ) {
-          delay(10); // small delay to avoid busy loop
+          moveServoSmooth(leftServo,  leftCurrentPos,  leftTargetPos,  lastLeftServoUpdate);
+          moveServoSmooth(rightServo, rightCurrentPos, rightTargetPos, lastRightServoUpdate);
+          moveServoSmooth(backServo,  backCurrentPos,  backTargetPos,  lastBackServoUpdate);
+
+          delay(10);
       }
+
       Serial.println("ed");
   }
 
@@ -348,12 +360,15 @@ void checkSerialAndState() {
 
           servosEnabled = true;
 
-          while (
-              abs(leftServo.read() - leftTargetPos) > 1 ||
-              abs(rightServo.read() - rightTargetPos) > 1 ||
-              abs(backServo.read() - backTargetPos) > 1
-          ) {
-              delay(10); // small delay to avoid busy loop
+          while (leftCurrentPos != leftTargetPos ||
+                rightCurrentPos != rightTargetPos ||
+                backCurrentPos != backTargetPos) {
+
+              moveServoSmooth(leftServo,  leftCurrentPos,  leftTargetPos,  lastLeftServoUpdate);
+              moveServoSmooth(rightServo, rightCurrentPos, rightTargetPos, lastRightServoUpdate);
+              moveServoSmooth(backServo,  backCurrentPos,  backTargetPos,  lastBackServoUpdate);
+
+              delay(10);
           }
 
           Serial.println("pd");
