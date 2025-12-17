@@ -143,7 +143,7 @@ void checkSerialAndState() {
  if (Serial.available() > 0) {
   cmd = Serial.readStringUntil('\n');
   cmd.trim();
-  }
+  
 
     if (cmd == "RESET") {
       resetMachine();
@@ -293,7 +293,7 @@ void checkSerialAndState() {
     }
   }
 }
-}
+
 void resetMachine() {
   state = IDLE;
 
