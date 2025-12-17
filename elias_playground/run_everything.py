@@ -1,6 +1,9 @@
+# run_everything.py
 import subprocess
 import signal
 import sys
+import time
+import os
 
 procs = []
 
@@ -8,10 +11,22 @@ def start(cmd):
     p = subprocess.Popen(cmd)
     procs.append(p)
 
-def shutdown(sig, frame):
-    print("Shutting down all processes")
+def shutdown(signum=None, frame=None):
+    print("Supervisor: shutting down all processes")
+
     for p in procs:
-        p.terminate()
+        try:
+            p.send_signal(signal.SIGINT)
+        except Exception:
+            pass
+
+    time.sleep(1)
+
+    for p in procs:
+        if p.poll() is None:
+            print(f"Force killing PID {p.pid}")
+            p.kill()
+
     sys.exit(0)
 
 signal.signal(signal.SIGINT, shutdown)
