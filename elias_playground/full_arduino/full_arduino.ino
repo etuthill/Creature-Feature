@@ -265,7 +265,7 @@ void checkSerialAndState() {
   else if (state == FORCE){
 
     int forceReading = analogRead(forceSensor);
-    bool disturbed = (forceReading < forceMinLo || forceReading > forceMaxHi);
+    bool disturbed = (forceReading < forceMaxHi);
     unsigned long now = millis();
 
     if (disturbed) {
