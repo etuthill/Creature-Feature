@@ -314,9 +314,9 @@ void startReaction(char type) {
   inputLocked = true;
   pendingDone = type;
 
-  leftTargetPos  = 85;
-  rightTargetPos = 85;
-  backTargetPos  = 95;
+  leftTargetPos  = 80;
+  rightTargetPos = 80;
+  backTargetPos  = 100;
 
   servosEnabled = true;
 }
@@ -373,7 +373,13 @@ void resetMachine() {
   servosEnabled = false;
   pendingDone = '\0';
 
-  leftTargetPos = rightTargetPos = backTargetPos = servoStartPos;
+  leftCurrentPos  = servoStartPos;
+  rightCurrentPos = servoStartPos;
+  backCurrentPos  = servoStartPos;
+
+  leftServo.write(servoStartPos);
+  rightServo.write(servoStartPos);
+  backServo.write(servoStartPos);
 
   strip.setPixelColor(2, strip.Color(0,255,0));
   strip.setPixelColor(1, strip.Color(0,255,0));
