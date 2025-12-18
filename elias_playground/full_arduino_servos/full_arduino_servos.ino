@@ -203,6 +203,7 @@ void checkSerialAndState() {
         case 'r':
           state = REACTING;
           inputLocked = true;
+          servosEnabled = true
           strip.setPixelColor(2, strip.Color(0,0,0));
           strip.setPixelColor(1, strip.Color(0,0,0));
           strip.setPixelColor(0, strip.Color(0,0,0));
