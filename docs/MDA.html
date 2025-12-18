@@ -51,43 +51,81 @@
                                     This shows the full assembly of the final prototype that has all of the individual components in their 
 									appropiate locations.
                                 </p>
+
+								<p>
+									The major mechanical design we had to take into account were the servos and how they would allow for the
+									animatronic movement we wanted the creature to have. We initially had 6 servos stacked to make a large servo spine,
+									but we quickly dropped this idea because it was going to be very difficult for the software team to code. We then 
+									switched to using strings that are tensioned and loosened to result in movement of the creature's slices. 
+								</p>
+								<p>
+									There are foam pieces inbetween each slice that get squished when one side goes down. A side goes down when that servo rotates
+									and puts the string under tension. The other two servos have to loosen at the same time and rotate in the opposite direction to allow for this movement.
+									We made very large spools to loop the strings around to allow them to spool without overlaping. We were worried that if we let the strings overlap
+									too much it would prevent the strings from moving cleanly.
+								</p>
+								<img src = "images\MDA images\full assembly pieces.png" width = "auto" height = "auto" display = "block" left-margin = "auto" right-margin = "auto" alt = "elevator">
+								<p>
+									We had to adjust our spool sizes many times to account for this and it was one of the main deciders of how we planned out the
+									internal component placements. We had to take into account the wiring of each component and how each part would interact. As a result, our full 
+									assembly was crucial in figuring out our placements. 
+								</p>
+
 								<h3>Individual components</h3>
                                 <img src = "images\MDA images\holders.png" width = "600" height = "auto" display = "block" left-margin = "auto" right-margin = "auto" alt = "elevator">
                                 <p>
-                                    Description
+                                    These are holders for the Arduino and Pi. They attach to the top of the base to allow for easy debugging.
                                 </p>
 								<div class="component">
 									<img src="images\CAD images MDA\walls + brackets.png" width = "600" height = "auto" display = "block" left-margin = "auto" right-margin = "auto" alt = "elevator">
 										<p>
-											Description
+											These are the two types of brackets used to secure the sides together and the bottom to the sides. The side
+											brackets are at a 135°. The bottom brackets attach with bolt joints. 
 										</p>
 								<img src = "images\MDA images\pawns.png" width = "600" height = "auto" display = "block" left-margin = "auto" right-margin = "auto" alt = "elevator">
                                 <p>
-                                    Description
+                                    These are the spine pieces that connect to the slices of the creature. The spine pieces resemble pawns and are able to 
+									rotate on one another to accomodate servo movement. The slices have circles to allow for the OLED, pressure sensor
+									and Hall effect sensor wires to be managed. 
+                                </p>
+								<img src = "images\MDA images\top pawn with force sensor.png" width = "600" height = "auto" display = "block" left-margin = "auto" right-margin = "auto" alt = "elevator">
+                                <p>
+                                    This is the top slice of the creature that features the top pawn and the pressure resistive sensor. The top spine piece is flat
+									and secures the sensor to the top of the creatures head so people can pet it.
                                 </p>
 								<img src = "images\MDA images\faceplate.png" width = "800" height = "auto" display = "block" left-margin = "auto" right-margin = "auto" alt = "elevator">
                                 <p>
-                                    Description
+                                    The faceplate holds the OLED screens with clips at the back. The clips are designed to fit snugly around the screens. It also clips to the fiberboard slice. The OLED screens
+									sit outside the frame and the wires move between frames.
                                 </p>
 								<img src = "images\MDA images\servo mounts.png" width = "800" height = "auto" display = "block" left-margin = "auto" right-margin = "auto" alt = "elevator">
                                 <p>
-                                    Description
+                                    The servos are mounted to two pieces of lasercut fiberboard with a large 3D printed spool on them. The spool allows for the string
+									to wrap around them and create movement. The servos rotate and pull the strings down, and the slices move towards the servo
+									that is doing the most pulling. The foam inbetween the slices allow for space to be maintained between the slices.
                                 </p>
 								<img src = "images\MDA images\buttons.png" width = "800" height = "auto" display = "block" left-margin = "auto" right-margin = "auto" alt = "elevator">
                                 <p>
-                                    Description
+                                    There are three buttons. The cheese one is for feeding the creature, the music note is for playing with the creature, and the back arrow
+									is to exit a state. Each of the buttons has a 3D printed keycap that shows their functionality. The buttons are mounted used a 
+									small 3D printed piece that secures them to the acrylic through bolts. 
                                 </p>
 								<img src = "images\CAD images MDA\mouth.png" width = "800" height = "auto" display = "block" left-margin = "auto" right-margin = "auto" alt = "elevator">
                                 <p>
-                                    Description
+                                    The mouth is designed similarly to self-closing tweezers. This allows the mouth to remain closed but openable when someone puts
+									the cheese in the creature's mouth. The bottom beak has space that allows for the Hall effect sensor to sit inside so that
+									the sensor can read when the cheese is put in the beak. The tweezers have a clip on the back to attach to a bar on the slice.
                                 </p>
 								<img src = "images\CAD images MDA\fwop lights.png" width = "800" height = "auto" display = "block" left-margin = "auto" right-margin = "auto" alt = "elevator">
                                 <p>
-                                    Description
+                                    These are the LEDs that are used to show the states of the creature. The left most LED is used to indicate how hungry the creature is, the middle 
+									one indicates how bored it is, and the last one only turns on when the creature is sensing. The LEDs are mounted through press-fit holes in 
+									the front plate. 
                                 </p>
 								<img src = "images\MDA images\speakers.png" width = "800" height = "auto" display = "block" left-margin = "auto" right-margin = "auto" alt = "elevator">
                                 <p>
-                                    Description
+                                    The speakers are used to indicate how the creature is feeling through audio. They are mounted through bolt joints and are attached to
+									sides with holes to allow for sound to escape through the acrylic. 
                                 </p>
 								</div>
 							</section>
