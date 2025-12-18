@@ -11,7 +11,7 @@ unsigned long eatExitTime = 0;
 bool eatCooldownArmed = false;
 
 // sine motion params
-const float sineFrequency = 0.33;
+const float sineFrequency = 0.5;
 const unsigned long sineDuration = 10000; // ms (5 seconds)
 
 unsigned long sineStartTime = 0;
