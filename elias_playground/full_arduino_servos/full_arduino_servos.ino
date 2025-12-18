@@ -10,6 +10,14 @@ bool forceActive = false;
 unsigned long eatExitTime = 0;
 bool eatCooldownArmed = false;
 
+// sine motion params
+const float sineFrequency = 0.5;// Hz
+const unsigned long sineDuration = 5000; // ms (5 seconds)
+
+unsigned long sineStartTime = 0;
+bool sineActive = false;
+
+
 bool inputLocked = false; // lock inputs during REACTING
 
 struct DebouncedButton {
@@ -122,8 +130,12 @@ void setup() {
 
 void loop() {
   checkSerialAndState();
-  updateServos();   // only active in REACTING
+
+  if (state == REACTING) {
+    updateServoSine();
+  }
 }
+
 
 bool buttonPressed(DebouncedButton &btn) {
   bool reading = digitalRead(btn.pin);
@@ -203,7 +215,7 @@ void checkSerialAndState() {
         case 'r':
           state = REACTING;
           inputLocked = true;
-          servosEnabled = true;
+          // servosEnabled = true;
           strip.setPixelColor(2, strip.Color(0,0,0));
           strip.setPixelColor(1, strip.Color(0,0,0));
           strip.setPixelColor(0, strip.Color(0,0,0));
@@ -317,12 +329,11 @@ void startReaction(char type) {
   inputLocked = true;
   pendingDone = type;
 
-  leftTargetPos  = 135;
-  rightTargetPos = 45;
-  backTargetPos  = 45;
-
-  servosEnabled = true;
+  sineStartTime = millis();
+  sineActive = true;
+  servosEnabled = false; // disable smooth
 }
+
 
 void updateServos() {
   /**
@@ -361,6 +372,52 @@ void updateServos() {
     }
   }
 }
+void updateServoSine() {
+  unsigned long now = millis();
+  unsigned long elapsed = now - sineStartTime;
+
+  // stop sine after duration
+  if (elapsed >= sineDuration) {
+    leftServo.write(servoStartPos);
+    rightServo.write(servoStartPos);
+    backServo.write(servoStartPos);
+
+    inputLocked = false;
+    state = IDLE;
+
+    if (pendingDone == 'e') Serial.println("ed");
+    if (pendingDone == 'p') Serial.println("pd");
+
+    pendingDone = '\0';
+    sineActive = false;
+    return;
+  }
+
+  float t = elapsed / 1000.0;// seconds
+  float omega = TWO_PI * sineFrequency;
+
+  int leftPos  = 90 + 60 * sin(omega * t);
+  int rightPos = 90 + 60 * sin(omega * t);
+  int backPos  = 90 + 60 * sin(omega * t);
+
+  leftServo.write(constrain(leftPos,  30, 150));
+  rightServo.write(constrain(rightPos, 30, 150));
+  backServo.write(constrain(backPos,  30, 150));
+}
+
+
+
+// void startReaction(char type) {
+//   state = REACTING;
+//   inputLocked = true;
+//   pendingDone = type;
+
+//   leftTargetPos  = 135;
+//   rightTargetPos = 45;
+//   backTargetPos  = 45;
+
+//   servosEnabled = true;
+// }
 
 void moveServoSmooth(Servo &servo, int &currentPos, int targetPos,
                      unsigned long &lastUpdate) {
@@ -421,3 +478,4 @@ void resetMachine() {
   strip.setPixelColor(0, strip.Color(0,0,0));
   strip.show();
 }
+
