@@ -1,3 +1,4 @@
+@ -1,484 +1,484 @@
 #include <Servo.h>
 #include <Adafruit_NeoPixel.h>
 
@@ -11,8 +12,8 @@ unsigned long eatExitTime = 0;
 bool eatCooldownArmed = false;
 
 // sine motion params
-const float sineFrequency = 0.5;
-const unsigned long sineDuration = 10000; // ms (5 seconds)
+const float sineFrequency = 0.5;// Hz
+const unsigned long sineDuration = 5000; // ms (5 seconds)
 
 unsigned long sineStartTime = 0;
 bool sineActive = false;
@@ -373,15 +374,14 @@ void updateServos() {
   }
 }
 void updateServoSine() {
-  if (!sineActive) return;
   unsigned long now = millis();
   unsigned long elapsed = now - sineStartTime;
 
   // stop sine after duration
   if (elapsed >= sineDuration) {
-    leftServo.write(int(servoStartPos));
-    rightServo.write(int(servoStartPos));
-    backServo.write(int(servoStartPos));
+    leftServo.write(servoStartPos);
+    rightServo.write(servoStartPos);
+    backServo.write(servoStartPos);
 
     inputLocked = false;
     state = IDLE;
@@ -403,9 +403,9 @@ void updateServoSine() {
   float rightPos = 90 + 45 * sin(omega * t + shift);
   float backPos  = 90 + 45 * sin(omega * t);
 
-  leftServo.write(leftPos);
-  rightServo.write(rightPos);
-  backServo.write(backPos);
+  leftServo.write(constrain(leftPos,  30, 150));
+  rightServo.write(constrain(rightPos, 30, 150));
+  backServo.write(constrain(backPos,  30, 150));
 }
 
 
