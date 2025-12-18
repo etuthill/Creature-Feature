@@ -5,6 +5,8 @@ import serial
 import paho.mqtt.client as mqtt
 import time
 
+#ALL OF THIS NEEDS TO BE RESET SOMEHOW!!!!!!!!!
+
 class MachineIdle:
     def __init__(self):
 

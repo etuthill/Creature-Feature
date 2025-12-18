@@ -11,8 +11,8 @@ Adafruit_NeoPixel strip(NUM_LEDS, DATA_PIN, NEO_RGB + NEO_KHZ800);
 const int hallSensor = A1;
 
 //sensor vars
-int hallMin = 250;
-int hallMax = 950;
+int hallMin = 350;
+int hallMax = 750;
 
 // debounce hall effect
 unsigned long lastEatTime = 0;
@@ -60,6 +60,18 @@ void loop(){
                 strip.show();
             }
         }
+        if (cmd == "reset") {
+            LEDsaveState[0] = 0;
+            LEDsaveState[1] = 255;
+            LEDsaveState[2] = 0;
+
+            strip.setPixelColor(0, strip.Color(
+                LEDsaveState[0],
+                LEDsaveState[1],
+                LEDsaveState[2]
+            ));
+            strip.show();
+            }
     }
 
     //read hall

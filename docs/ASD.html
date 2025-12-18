@@ -5,175 +5,233 @@
 	Free for personal and commercial use under the CCA 3.0 license (html5up.net/license)
 -->
 <html>
-	<head>
-		<title>Design Process</title>
-		<link rel="icon" type="image/x-icon" href="images/logo cube small.png">
-		<meta charset="utf-8" />
-		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
-		<link rel="stylesheet" href="assets/css/main.css" />
-		<noscript><link rel="stylesheet" href="assets/css/noscript.css" /></noscript>
-	</head>
-	<body class="is-preload">
 
-		<!-- Wrapper -->
-			<div id="wrapper">
+<head>
+	<title>Design Process</title>
+	<link rel="icon" type="image/x-icon" href="images/logo cube small.png">
+	<meta charset="utf-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+	<link rel="stylesheet" href="assets/css/main.css" />
+	<noscript>
+		<link rel="stylesheet" href="assets/css/noscript.css" />
+	</noscript>
+</head>
 
-				<!-- Header -->
-					<header id="header">
-						<h1>Creature Feature</h1>
-					</header>
-                
-                <!-- Nav -->
-				<nav id="nav">
-					<ul>
-						<li><a href="index.html" class="active">Home</a></li>
-						<li><a href="FSD.html">Full System Diagram</a></li>
-						<li><a href="time.html">Timeline</a></li>
-						<li><a href="ASD.html"><b>Design Process</b></a></li>
-						<li><a href="DEF.html">Data and Energy Flow</a></li>
-						<li><a href="EDA.html">Electrical Design Analysis</a></li>
-						<li><a href="MDA.html">Mechanical Design Analysis</a></li>
-						<li><a href="FDC.html">Software Design Analysis</a></li>
-						<li><a href="BOM.html">Bill of Materials</a></li>
-					</ul>
-				</nav>
+<body class="is-preload">
 
-				<!-- Main -->
-					<div id="main">
-						<!-- Content -->
-						<section id="content" class="main">
-								<header class="major">
-									<h2>Sprint 1 Demo</h2>
-									<video width="1000" height="630" controls>
-										<source src="images/sprint 1 demo.mp4" type="video/mp4">
-										Your browser does not support the video tag.
-									</video>
-								</header>
-							<p> This shows our sprint 1 prototype in action. It is using a placeholder infrared sensor to sense when something covers it in shadow. When it senses that, the servos stop moving and the LED
-							goes from green to red to symbolize that it is stopped.</p>
-							
-							<p>
-								<b> Sprint 1 Mechanical Design</b><br>
-								<img src = "images/sprint 1 mechanical design.png" width = "800" height = "800" display = "block" left-margin = "auto" right-margin = "auto" alt = "claweEleAssem" class="center">
-								<p>During our first sprint, we were mainly ideating on what behaviors we wanted the creature to have and how we wanted to go about making those behaviors possible. 
-								We wanted to have a system that is able to do multiple motions with a limited amount of components since the design has very firm space constraints. 
-								We also wanted to design the creature to be able to be able to revert back to its original standing position after a behavior ended.<br><br>
-								Our original design included a spine made up of six servos. We created the boxy shape of the creature by attaching the frame to the servos which allows
-								it to have both a distinct shape and a moveable body. We considered having the beak be able to open and close via cam when it sensed that food was in its beak. Another mechanical 
-								aspect we explored was having the creature be able to vibrate by using a DC motor.<br><br>
-								We chose six servos because we could have three servos move in one axis and the other three servos move in another axis. This would allow the creature to bend forward and wiggle around.
-								We wanted it to bend over and go to sleep when a blanket was put on it and we wanted it to wiggle when it felt happy or excited.</p>
-							</p>
-							
-							<p>
-								<b> Sprint 1 Electrical Design</b><br>
-								<img src = "images/sprint 1 electrical design.png" width = "1000" height = "auto" display = "block" left-margin = "auto" right-margin = "auto" alt = "fullAssem" class="center">
-								<p>Description here</p>
-							</p>
-							<br>
-							
-							<p>
-								<b> Sprint 1 Software Design</b><br>
-								<img src = "images/sprint 1 software design.png" width = "1000" height = "auto" display = "block" left-margin = "auto" right-margin = "auto" alt = "fullAssem" class="center">
-								<p>Description here</p>
-							</p>
+	<!-- Wrapper -->
+	<div id="wrapper">
 
-							<img src = "images/line.png" width = "auto" height = "auto" display = "block" left-margin = "auto" right-margin = "auto" alt = "fullAssem" class="center">
-							<header class="major">
-								<h2>Sprint 2</h2>
-							</header>
-							<p>
-								<b> Sprint 2 Mechanical Design</b><br>
-								<img src = "images/sprint 2 mechanical design.png" width = "800" height = "700" display = "block" left-margin = "auto" right-margin = "auto" alt = "fullAssem" class="center">
-								<p>Between our first and second sprint, we decided to make a pretty big pivot in our mechanical design. After discussing with the software team, we realized that wrangling six servos
-								was outside the scope of the project. They poses an issue because they would be under stress and would get further and further away from their starting
-								position which would result in the servo no longer knowing where its home position is. This would mean that the creature would be unable to return to its original
-								position and calibrating and tuning six servos would cause a lot of unnecessary complexity to our design.<br><br>
-								Our new design takes a different approach. Instead of having six servos, we narrowed it down to three. These three servos will now pull down on strings attached to the frames of the 
-								creature. This will mean that there will be less strain on the servos, and there will be less complexity for the software team. This changes how the creature will actuate, but it should
-								still be able to make multiple organized behaviors with just the pulling of the strings.<br><br>
-								One of the major concerns with this new design is tensioning the strings. Having improper tension could completely mess up the creature's ability to move so we needed to make sure
-								to manage the tension appropriately. Another concern is that we needed the creature to bend uniformly throughout the frames. As you can see in the cardboard sketchmodel in the top left corner,
-								without any padding inbetween the frames, only the top frame bends. We added springs in the gaps of the frames to help the creature bend uniformly.</p>
-							</p>
-							<p>
-								<b> Sprint 2 Electrical Design</b><br>
-								<img src = "images/sprint 2 electrical design.png" width = "auto" height = "auto" display = "block" left-margin = "auto" right-margin = "auto" alt = "fullAssem" class="center">
-								<p>Description here</p>
-							</p>
-							<p>
-								<b> Sprint 2 Software Design</b><br>
-								<!-- <img src = "images/sprint 2 electrical design.png" width = "auto" height = "auto" display = "block" left-margin = "auto" right-margin = "auto" alt = "fullAssem"> -->
-								<p>Description here</p>
-							</p>
+		<!-- Header -->
+		<header id="header">
+			<h1>Creature Feature</h1>
+		</header>
 
-							<img src = "images/line.png" width = "auto" height = "auto" display = "block" left-margin = "auto" right-margin = "auto" alt = "fullAssem" class="center">
-							<header class="major">
-								<h2>Sprint 3</h2>
-							</header>
-							<p>
-								<b> Sprint 3 Mechanical Design</b><br>
-								<img src = "images\sprint 3 in action.gif" width = "800" height = "auto" display = "block" left-margin = "auto" right-margin = "auto" alt = "fullAssem" class="center">
-								<p>
-									Here is the sprint 3 prototype in action. This showcases the new string and foam design with the 3D printed spine. It does not show the base
-									shape change yet. 
-								</p>
-								<img src = "images/sprint 3 mechanical.png" width = "800" height = "800" display = "block" left-margin = "auto" right-margin = "auto" alt = "fullAssem" class="center">
-								<p>After we solidified how we wanted to pivot our design, we got to work refining all of the details and 
-									creating more CAD for individual pieces. We changed the base's design to be more interesting in the form of an octagon,
-									but that posed its own unique challenge with the fact that the box joints don't line up perfectly. Because we were thinking of 
-									how to assemble everything, we created mounts for all of the components and put emphasis on finalizing their placement in the base.
-									The faceplate was also created to house the LED screen eyes and add to the space aesthetic of the creature.
-								</p>
-								<img src = "images/saschas shapes.png" width = "800" height = "450" display = "block" left-margin = "auto" right-margin = "auto" alt = "fullAssem" class="center">
-								<p>
-									Here is the CAD for some of the individual components. The speakers, LED screen, RGB light, button, spool, and beak movers
-									are featured in this image.
-								</p>
-								<p> An important aspect that we adjusted in this sprint is that we changed the springs to foam. We found the springs to be too 
-									stiff and they did not allow for the slats to bend enough. After a lot of deliberation, we decided that upholstery foam would
-									be perfect. We updated the slat CAD to include many little holes to allow the foam to be sewn on. We also got to work creating
-									large spools that allow the strings that pulls the creature to spool around once. There are three spools with one on top of
-									each servo. 
-								</p>
+		<!-- Nav -->
+		<nav id="nav">
+			<ul>
+				<li><a href="index.html" class="active">Home</a></li>
+				<li><a href="FSD.html">Full System Diagram</a></li>
+				<li><a href="time.html">Timeline</a></li>
+				<li><a href="ASD.html"><b>Design Process</b></a></li>
+				<li><a href="DEF.html">Data and Energy Flow</a></li>
+				<li><a href="EDA.html">Electrical Design Analysis</a></li>
+				<li><a href="MDA.html">Mechanical Design Analysis</a></li>
+				<li><a href="FDC.html">Software Design Analysis</a></li>
+				<li><a href="BOM.html">Bill of Materials</a></li>
+			</ul>
+		</nav>
 
-							</p>
-							<p>
-								<b> Sprint 3 Electrical Design</b><br>
-								<img src = "images\sprint 3 electrical\electrical shabang.png" width = "900" height = "auto" display = "block" left-margin = "auto" right-margin = "auto" alt = "fullAssem" class="center">
-								<p>Description here</p>
+		<!-- Main -->
+		<div id="main">
+			<!-- Content -->
+			<section id="content" class="main">
+				<header class="major">
+					<h2>Sprint 1 Demo</h2>
+					<video width="1000" height="630" controls>
+						<source src="images/sprint 1 demo.mp4" type="video/mp4">
+						Your browser does not support the video tag.
+					</video>
+				</header>
+				<p> This shows our sprint 1 prototype in action. It is using a placeholder infrared sensor to sense when
+					something covers it in shadow. When it senses that, the servos stop moving and the LED
+					goes from green to red to symbolize that it is stopped.</p>
 
-								<img src = "images\sprint 3 electrical\screens working.jpg" width = "auto" height = "700" display = "block" left-margin = "auto" right-margin = "auto" alt = "fullAssem" class="center">
-								<p>Description here</p>
-							</p>
-							<p>
-								<b> Sprint 3 Software Design</b><br>
-								<img src = "img-1019555-eminem-5-musicas-do-eminem-que-so-os-maiores-fas-conhecem-ca_widelg.jpg" width = "300" height = "auto" display = "block" left-margin = "auto" right-margin = "auto" alt = "fullAssem" class="center">
-								<p>Description here</p>
-							</p>
-						</section>
-					</div>
+				<p>
+					<b> Sprint 1 Mechanical Design</b><br>
+					<img src="images/sprint 1 mechanical design.png" width="800" height="800" display="block"
+						left-margin="auto" right-margin="auto" alt="claweEleAssem" class="center">
+				<p>During our first sprint, we were mainly ideating on what behaviors we wanted the creature to have and
+					how we wanted to go about making those behaviors possible.
+					We wanted to have a system that is able to do multiple motions with a limited amount of components
+					since the design has very firm space constraints.
+					We also wanted to design the creature to be able to be able to revert back to its original standing
+					position after a behavior ended.<br><br>
+					Our original design included a spine made up of six servos. We created the boxy shape of the
+					creature by attaching the frame to the servos which allows
+					it to have both a distinct shape and a moveable body. We considered having the beak be able to open
+					and close via cam when it sensed that food was in its beak. Another mechanical
+					aspect we explored was having the creature be able to vibrate by using a DC motor.<br><br>
+					We chose six servos because we could have three servos move in one axis and the other three servos
+					move in another axis. This would allow the creature to bend forward and wiggle around.
+					We wanted it to bend over and go to sleep when a blanket was put on it and we wanted it to wiggle
+					when it felt happy or excited.</p>
+				</p>
 
-				<!-- Footer -->
-					<footer id="footer">
-						<section>
-							<h3>Back to main page</h3>
-								<li><a href="index.html" class="button">Back to Home</a></li>
-							</ul>
-						</section>
-						<p class="copyright">&copy; Creature Fearure. Design: <a href="https://html5up.net">HTML5 UP</a>.</p>
-					</footer>
+				<p>
+					<b> Sprint 1 Electrical Design</b><br>
+					<img src="images/sprint 1 electrical design.png" width="1000" height="auto" display="block"
+						left-margin="auto" right-margin="auto" alt="fullAssem" class="center">
+				<p>During sprint 1, we ordered the sensor we needed. They did not arrive until after the end of sprint
+					1. As a result, we substituted an IR Distance sensor. The purpose of this was to demonstrate
+					an interaction. We paired this sensor with two servos in a demonstration of a small segment of our
+					early spine design. We also included an RGB LED that we scavanged from the Electrical Stockroom.
+					This was meant to demo how the light would correspond to interactions. All of these components were
+					hooked up to the Arduino R4 Wifi that we used throughout the project. At this point, the Arduino was
+					powered and uploaded to from a laptop.
+				</p>
+				</p>
+				<br>
 
-			</div>
+				<p>
+					<b> Sprint 1 Software Design</b><br>
+					<img src="images/sprint 1 software design.png" width="1000" height="auto" display="block"
+						left-margin="auto" right-margin="auto" alt="fullAssem" class="center">
+				<p>Description here</p>
+				</p>
 
-		<!-- Scripts -->
-			<script src="assets/js/jquery.min.js"></script>
-			<script src="assets/js/jquery.scrollex.min.js"></script>
-			<script src="assets/js/jquery.scrolly.min.js"></script>
-			<script src="assets/js/browser.min.js"></script>
-			<script src="assets/js/breakpoints.min.js"></script>
-			<script src="assets/js/util.js"></script>
-			<script src="assets/js/main.js"></script>
+				<img src="images/line.png" width="auto" height="auto" display="block" left-margin="auto"
+					right-margin="auto" alt="fullAssem" class="center">
+				<header class="major">
+					<h2>Sprint 2</h2>
+				</header>
+				<p>
+					<b> Sprint 2 Mechanical Design</b><br>
+					<img src="images/sprint 2 mechanical design.png" width="800" height="700" display="block"
+						left-margin="auto" right-margin="auto" alt="fullAssem" class="center">
+				<p>Between our first and second sprint, we decided to make a pretty big pivot in our mechanical design.
+					After discussing with the software team, we realized that wrangling six servos
+					was outside the scope of the project. They poses an issue because they would be under stress and
+					would get further and further away from their starting
+					position which would result in the servo no longer knowing where its home position is. This would
+					mean that the creature would be unable to return to its original
+					position and calibrating and tuning six servos would cause a lot of unnecessary complexity to our
+					design.<br><br>
+					Our new design takes a different approach. Instead of having six servos, we narrowed it down to
+					three. These three servos will now pull down on strings attached to the frames of the
+					creature. This will mean that there will be less strain on the servos, and there will be less
+					complexity for the software team. This changes how the creature will actuate, but it should
+					still be able to make multiple organized behaviors with just the pulling of the strings.<br><br>
+					One of the major concerns with this new design is tensioning the strings. Having improper tension
+					could completely mess up the creature's ability to move so we needed to make sure
+					to manage the tension appropriately. Another concern is that we needed the creature to bend
+					uniformly throughout the frames. As you can see in the cardboard sketchmodel in the top left corner,
+					without any padding inbetween the frames, only the top frame bends. We added springs in the gaps of
+					the frames to help the creature bend uniformly.</p>
+				</p>
+				<p>
+					<b> Sprint 2 Electrical Design</b><br>
+					<img src="images/sprint 2 electrical design.png" width="auto" height="auto" display="block"
+						left-margin="auto" right-margin="auto" alt="fullAssem" class="center">
+				<p>Description here</p>
+				</p>
+				<p>
+					<img src="images/calibration.png" width="auto" height="auto" display="block" left-margin="auto"
+						right-margin="auto" alt="fullAssem" class="center">
+				<p>Description here</p>
+				</p>
+				<p>
+					<b> Sprint 2 Software Design</b><br>
+					<!-- <img src = "images/sprint 2 electrical design.png" width = "auto" height = "auto" display = "block" left-margin = "auto" right-margin = "auto" alt = "fullAssem"> -->
+				<p>Description here</p>
+				</p>
 
-	</body>
+				<img src="images/line.png" width="auto" height="auto" display="block" left-margin="auto"
+					right-margin="auto" alt="fullAssem" class="center">
+				<header class="major">
+					<h2>Sprint 3</h2>
+				</header>
+				<p>
+					<b> Sprint 3 Mechanical Design</b><br>
+					<img src="images\sprint 3 in action.gif" width="800" height="auto" display="block"
+						left-margin="auto" right-margin="auto" alt="fullAssem" class="center">
+				<p>
+					Here is the sprint 3 prototype in action. This showcases the new string and foam design with the 3D
+					printed spine. It does not show the base
+					shape change yet.
+				</p>
+				<img src="images/sprint 3 mechanical.png" width="800" height="800" display="block" left-margin="auto"
+					right-margin="auto" alt="fullAssem" class="center">
+				<p>After we solidified how we wanted to pivot our design, we got to work refining all of the details and
+					creating more CAD for individual pieces. We changed the base's design to be more interesting in the
+					form of an octagon,
+					but that posed its own unique challenge with the fact that the box joints don't line up perfectly.
+					Because we were thinking of
+					how to assemble everything, we created mounts for all of the components and put emphasis on
+					finalizing their placement in the base.
+					The faceplate was also created to house the LED screen eyes and add to the space aesthetic of the
+					creature.
+				</p>
+				<img src="images/saschas shapes.png" width="800" height="450" display="block" left-margin="auto"
+					right-margin="auto" alt="fullAssem" class="center">
+				<p>
+					Here is the CAD for some of the individual components. The speakers, LED screen, RGB light, button,
+					spool, and beak movers
+					are featured in this image.
+				</p>
+				<p> An important aspect that we adjusted in this sprint is that we changed the springs to foam. We found
+					the springs to be too
+					stiff and they did not allow for the slats to bend enough. After a lot of deliberation, we decided
+					that upholstery foam would
+					be perfect. We updated the slat CAD to include many little holes to allow the foam to be sewn on. We
+					also got to work creating
+					large spools that allow the strings that pulls the creature to spool around once. There are three
+					spools with one on top of
+					each servo.
+				</p>
+
+				</p>
+				<p>
+					<b> Sprint 3 Electrical Design</b><br>
+					<img src="images\sprint 3 electrical\electrical shabang.png" width="900" height="auto"
+						display="block" left-margin="auto" right-margin="auto" alt="fullAssem" class="center">
+				<p>Description here</p>
+
+				<img src="images\sprint 3 electrical\screens working.jpg" width="auto" height="700" display="block"
+					left-margin="auto" right-margin="auto" alt="fullAssem" class="center">
+				<p>Description here</p>
+				</p>
+				<p>
+					<b> Sprint 3 Software Design</b><br>
+					<img src="img-1019555-eminem-5-musicas-do-eminem-que-so-os-maiores-fas-conhecem-ca_widelg.jpg"
+						width="300" height="auto" display="block" left-margin="auto" right-margin="auto" alt="fullAssem"
+						class="center">
+				<p>Description here</p>
+				</p>
+			</section>
+		</div>
+
+		<!-- Footer -->
+		<footer id="footer">
+			<section>
+				<h3>Back to main page</h3>
+				<li><a href="index.html" class="button">Back to Home</a></li>
+				</ul>
+			</section>
+			<p class="copyright">&copy; Creature Fearure. Design: <a href="https://html5up.net">HTML5 UP</a>.</p>
+		</footer>
+
+	</div>
+
+	<!-- Scripts -->
+	<script src="assets/js/jquery.min.js"></script>
+	<script src="assets/js/jquery.scrollex.min.js"></script>
+	<script src="assets/js/jquery.scrolly.min.js"></script>
+	<script src="assets/js/browser.min.js"></script>
+	<script src="assets/js/breakpoints.min.js"></script>
+	<script src="assets/js/util.js"></script>
+	<script src="assets/js/main.js"></script>
+
+</body>
+
 </html>

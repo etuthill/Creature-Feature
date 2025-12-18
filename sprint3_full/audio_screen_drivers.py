@@ -17,7 +17,7 @@ class AudioScreenDrivers:
         self.client.loop_start()
 
         self.msg = "idle"
-        self.lastMsg = "idle"
+        self.lastMsg = None
         
         # SCREENS
         # open GPIO chip
@@ -29,11 +29,11 @@ class AudioScreenDrivers:
             {"cs": 6, "dc": 13, "rst": 20, "vccen": 4, "pmoden": 22}
         ]
 
-        self.stop_eyes = False
+        self.stop_eyes_event = threading.Event()
+        self.eye_thread = None
         self.stop_interval_audio = True
         self.spi_lock = threading.Lock()     # protects SPI bus
         self.draw_lock = threading.Lock()    # protects full frame draws
-
 
         # setup GPIO pins
         for s in self.screens:
@@ -174,119 +174,155 @@ class AudioScreenDrivers:
 
         self.send_data(s, fixed)
 
-    def shutdown_displays(self, s):
-        self.send_cmd(s, 0xAE)
-        lgpio.gpio_write(self.h, s["vccen"], 0)
-        time.sleep(0.1)
-        lgpio.gpio_write(self.h, s["pmoden"], 0)
+    def shutdown_all_displays(self):
+        print("Shutting down displays safely")
+
+        for s in self.screens:
+            try:
+                # display OFF
+                self.send_cmd(s, 0xAE)
+
+                # panel power off
+                lgpio.gpio_write(self.h, s["vccen"], 0)
+                time.sleep(0.1)
+
+                # logic power off
+                lgpio.gpio_write(self.h, s["pmoden"], 0)
+
+            except Exception as e:
+                print("Shutdown error:", e)
+
+        try:
+            lgpio.gpiochip_close(self.h)
+        except:
+            pass
+
 
     def draw_both_screens(self, left_file, right_file):
         with self.draw_lock:
             self.draw_rgb565_file(self.screens[0], left_file)
-            time.sleep(0.002)
+            time.sleep(0.05)
             self.draw_rgb565_file(self.screens[1], right_file)
 
     def narrowing_food_eyes(self):
-        self.stop_eyes = False
         left_dir = "../eyes/eye_outputs/narrowing_food/left"
         right_dir = "../eyes/eye_outputs/narrowing_food/right"
 
-        steps = [
-            ("eyes_big_open_color_left.rgb565", "eyes_big_open_color_right.rgb565", 3),
-            ("eyes_half_narrow_left.rgb565", "eyes_half_narrow_right.rgb565", 1.5),
-            ("eyes_full_narrow_left.rgb565", "eyes_full_narrow_right.rgb565", 1.5),
-            ("eyes_half_narrow_left.rgb565", "eyes_half_narrow_right.rgb565", 1.5),
-            ("normal_blink_full_right.rgb565", "normal_blink_full_left.rgb565", 2),
+        # run onces narrow
+        intro_steps = [
+            ("eyes_big_open_color_left.rgb565", "eyes_big_open_color_right.rgb565", 0.5),
+            ("eyes_half_narrow_left.rgb565", "eyes_half_narrow_right.rgb565", 0.6),
+            ("eyes_full_narrow_left.rgb565", "eyes_full_narrow_right.rgb565", 0.8),
         ]
 
-        while not self.stop_eyes:
-            if self.stop_eyes:
-                return
-            for lf_name, rf_name, duration in steps:
-                lf = os.path.join(left_dir, lf_name)
-                rf = os.path.join(right_dir, rf_name)
+        # hungry stare loop
+        loop_steps = [
+            ("eyes_full_narrow_left.rgb565", "eyes_full_narrow_right.rgb565", 5),
+            ("normal_blink_closed_left.rgb565", "normal_blink_closed_right.rgb565", 0.5),
+        ]
 
-                self.draw_both_screens(lf, rf)
-                time.sleep(duration)
+        # run intro once
+        for lf_name, rf_name, duration in intro_steps:
+            if self.stop_eyes_event.is_set():
+                return
+
+            self.draw_both_screens(
+                os.path.join(left_dir, lf_name),
+                os.path.join(right_dir, rf_name)
+            )
+
+            if not self.sleep_or_stop(duration):
+                return
+
+        # loop hungry stare
+        while not self.stop_eyes_event.is_set():
+            for lf_name, rf_name, duration in loop_steps:
+                if self.stop_eyes_event.is_set():
+                    return
+
+                self.draw_both_screens(
+                    os.path.join(left_dir, lf_name),
+                    os.path.join(right_dir, rf_name)
+                )
+
+                if not self.sleep_or_stop(duration):
+                    return
 
     def normal_blink_eyes(self):
-        self.stop_eyes = False
         left_dir = "../eyes/eye_outputs/normal_blink/left"
         right_dir = "../eyes/eye_outputs/normal_blink/right"
 
         steps = [
             ("normal_blink_full_left.rgb565", "normal_blink_full_right.rgb565", 5),
-            ("normal_blink_half_left.rgb565", "normal_blink_half_right.rgb565", 1.5),
-            ("normal _blink_closed_left.rgb565", "norma_ blink_closed_right.rgb565", 1.5),
-            ("normal_blink_half_left.rgb565", "normal_blink_half_right.rgb565", 1.5),
+            ("normal_blink_half_left.rgb565", "normal_blink_half_right.rgb565", 0.75),
+            ("normal_blink_closed_left.rgb565", "normal_blink_closed_right.rgb565", 0.75),
+            ("normal_blink_half_left.rgb565", "normal_blink_half_right.rgb565", 0.75),
         ]
 
-        while not self.stop_eyes:
-            if self.stop_eyes:
-                return
+        while not self.stop_eyes_event.is_set():
             for lf_name, rf_name, duration in steps:
-                lf = os.path.join(left_dir, lf_name)
-                rf = os.path.join(right_dir, rf_name)
+                if self.stop_eyes_event.is_set():
+                    return
 
-                self.draw_both_screens(lf, rf)
-                time.sleep(duration)
+                self.draw_both_screens(
+                    os.path.join(left_dir, lf_name),
+                    os.path.join(right_dir, rf_name)
+                )
 
-
+                if not self.sleep_or_stop(duration):
+                    return
+                    
     def starry_eyes(self):
-        self.stop_eyes = False
         left_dir = "../eyes/eye_outputs/starry/left"
         right_dir = "../eyes/eye_outputs/starry/right"
 
-        left_file = os.path.join(left_dir, "normal_blink_full_left.rgb565")
-        right_file = os.path.join(right_dir, "normal_blink_full_right.rgb565")
-        self.draw_both_screens(left_file, right_file)
-        time.sleep(2)
+        # intro frame 
+        self.draw_both_screens(
+            os.path.join(right_dir, "eyes_half_color_small_star_right.rgb565"),
+            os.path.join(left_dir, "eyes_half_color_small_star_left.rgb565")
+        )
+
+        if not self.sleep_or_stop(2):
+            return
 
         steps = [
-            ("eyes_half_color_small_star_left.rgb565", "eyes_half_color_small_star_right.rgb565", 1.5),
-            ("eyes_half_color_large_star_stars_left.rgb565", "eyes_half_color_large_star_stars_right.rgb565", 1.5),
-            ("eyes_half_color_small_circle_stars_left.rgb565", "eyes_half_color_small_circle_stars_right.rgb565", 1.5),
-            ("normal_blink_full_right.rgb565", "normal_blink_full_left.rgb565", 1.5),
+            ("eyes_half_color_small_star_left.rgb565",
+            "eyes_half_color_small_star_right.rgb565", 1.5),
+
+            ("eyes_half_color_large_star_stars_left.rgb565",
+            "eyes_half_color_large_star_stars_right.rgb565", 1.5),
+
+            ("eyes_half_color_small_circle_stars_left.rgb565",
+            "eyes_half_color_small_circle_stars_right.rgb565", 1.5),
         ]
 
-
-        while not self.stop_eyes:
-            
+        while not self.stop_eyes_event.is_set():
             for lf_name, rf_name, duration in steps:
-                if self.stop_eyes:
+                if self.stop_eyes_event.is_set():
                     return
-                lf = os.path.join(left_dir, lf_name)
-                rf = os.path.join(right_dir, rf_name)
 
-                self.draw_both_screens(lf, rf)
-                time.sleep(duration)
+                # 🔁 SWAP HERE
+                self.draw_both_screens(
+                    os.path.join(right_dir, rf_name),
+                    os.path.join(left_dir, lf_name)
+                )
 
-    def side_to_side_eyes(self):
-        self.stop_eyes = False
-        left_dir = "../eyes/eye_outputs/side_to_side/left"
-        right_dir = "../eyes/eye_outputs/side_to_side/right"
-
-        steps = [
-            ("normal_blink_full_left.rgb565", "normal_blink_full_right.rgb565", 3),
-            ("eyes_half_sideways_left.rgb565", "eyes_half_sideways_right.rgb565", 2),
-            ("eyes_full_sideways_left.rgb565", "eyes_full_sideways_right.rgb565", 2),
-            ("eyes_half_sideways_left.rgb565", "eyes_half_sideways_right.rgb565", 2),
-            ("normal_blink_full_left.rgb565", "normal_blink_full_right.rgb565", 2),
-            ("eyes_half_sideways_left2.rgb565", "eyes_half_sideways_right2.rgb565", 2),
-            ("eyes_full_sideways_left2.rgb565", "eyes_full_sideways_right2.rgb565", 2),
-            ("eyes_half_sideways_left2.rgb565", "eyes_half_sideways_right2.rgb565", 2),
-        ]
-
-        while not self.stop_eyes:
-            for lf_name, rf_name, duration in steps:
-                if self.stop_eyes:
+                if not self.sleep_or_stop(duration):
                     return
-                lf = os.path.join(left_dir, lf_name)
-                rf = os.path.join(right_dir, rf_name)
 
-                self.draw_both_screens(lf, rf)
-                time.sleep(duration)
 
+
+    def sleep_or_stop(self, duration, check_interval=0.05):
+        """
+        Sleep for `duration` seconds, but wake early if stop_eyes_event is set.
+        Returns False if stopped early, True if full duration elapsed.
+        """
+        start = time.time()
+        while time.time() - start < duration:
+            if self.stop_eyes_event.is_set():
+                return False
+            time.sleep(check_interval)
+        return True
 
     # SPEAKER FUNCTIONs
     def start_looping_sound(self, filename):
@@ -333,7 +369,7 @@ class AudioScreenDrivers:
     # MQTT FUNCTIONS
 
     def on_message(self, client, userdata, msg):
-        text = msg.payload.decode()    # convert bytes → string
+        text = msg.payload.decode() # convert bytes → string
         if text == "idle":
             self.msg = "idle"
         elif text == "hungry":
@@ -350,43 +386,49 @@ class AudioScreenDrivers:
         if state == self.lastMsg:
             return
 
-        self.stop_eyes = True
+        # stop eyes + audio
+        self.stop_eyes_event.set()
         self.stop_interval_audio = True
         self.stop_sound()
 
-        # wait for any in-progress frame to finish
+        # wait for draw in progress
         with self.draw_lock:
             pass
 
-        time.sleep(0.1)
-        self.stop_eyes = False
+        # wait for eye thread to exit
+        if self.eye_thread and self.eye_thread.is_alive():
+            self.eye_thread.join(timeout=1.0)
 
+        self.stop_eyes_event.clear()
+        time.sleep(0.05)
 
         if state == "idle":
-            threading.Thread(
+            self.eye_thread = threading.Thread(
                 target=self.normal_blink_eyes,
                 daemon=True
-            ).start()
+            )
+            self.eye_thread.start()
 
             self.start_interval_audio(["idle_hehehehe.wav", 
                 "idle_hmhmhm.wav", "idle_jaunty_song.wav", "idle_lalala_lalala.wav", 
-                "idle_lala_lalala_laLA.wav", "idle_mountain_king.wav", "idle_oraawwrr.wav", 
+                "idle_lala_lalala_laLA.wav", "idle_mountain_king.wav", "idle_oraawrr.wav", 
                 "idle_second_jaunty_song.wav", "idle_slightly_maniacle.wav"], 3,6)
 
         elif state == "hungry":
-            threading.Thread(
+            self.eye_thread = threading.Thread(
                 target=self.narrowing_food_eyes,
                 daemon=True
-            ).start()
+            )
+            self.eye_thread.start()
 
-            self.start_interval_audio(["hungry_dsitraught.wav"], 5,10)
+            self.start_interval_audio(["hungry_dsitraught.wav"], 5, 10)
 
         elif state == "eating":
             self.start_looping_sound("eating_omnomnom.wav")
-            threading.Thread(
+            self.eye_thread = threading.Thread(
                 target=self.starry_eyes,
                 daemon=True
-            ).start()
+            )
+            self.eye_thread.start()
 
         self.lastMsg = state
-

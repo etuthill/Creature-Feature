@@ -4,10 +4,10 @@ from PIL import Image
 TARGET_WIDTH = 96
 TARGET_HEIGHT = 64
 
-INPUT_RIGHT = "animations/narrowing_food/right"
-INPUT_LEFT = "animations/narrowing_food/left"
+INPUT_RIGHT = "animations/starry/right"
+INPUT_LEFT = "animations/starry/left"
 
-OUTPUT_BASE = "eye_outputs/narrowing_food"
+OUTPUT_BASE = "eye_outputs/starry"
 OUTPUT_RIGHT = os.path.join(OUTPUT_BASE, "right")
 OUTPUT_LEFT = os.path.join(OUTPUT_BASE, "left")
 

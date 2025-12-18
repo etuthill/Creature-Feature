@@ -27,7 +27,7 @@ class Sprint3:
 
         #states - idle, hungry, eating
         self.currentState = "idle"
-        self.lastState = "idle"
+        self.lastState = None
         self.eat = False
         self.ate = False
 
@@ -40,6 +40,7 @@ class Sprint3:
         asyncio.create_task(self.readSerial())
         for s in self.drivers.screens:
             self.drivers.power_on_displays(s)
+        time.sleep(0.2)  # let displays fully settle
 
     def loop(self):
         "control system"
@@ -90,7 +91,7 @@ class Sprint3:
         while True:
             line = self.ser.readline().decode(errors="ignore").strip() 
             if not line: 
-                await asyncio.sleep(0)
+                await asyncio.sleep(0.01)
                 continue
             if line == "eat":
                 print("eat")
@@ -102,6 +103,31 @@ class Sprint3:
                 self.hunger = 17
 
             await asyncio.sleep(0) 
+   
+    def cleanup(self):
+        print("Cleaning up on interrupt")
+
+        # stop eyes + audio
+        self.drivers.stop_eyes_event.set()
+        self.drivers.stop_interval_audio = True
+        self.drivers.stop_sound()
+
+        # reset LED on Arduino
+        try:
+            self.ser.write(b"reset\n")
+            time.sleep(0.1)
+        except:
+            pass
+
+        # power off screens properly
+        self.drivers.shutdown_all_displays()
+
+        # close serial
+        try:
+            self.ser.close()
+        except:
+            pass
+
 
 
 if __name__ == "__main__":
@@ -111,6 +137,13 @@ if __name__ == "__main__":
         creature.start()
         while True:
             creature.loop()
-            await asyncio.sleep(0.02)
+            await asyncio.sleep(0.1)
 
-    asyncio.run(main_loop())
+    try:
+        asyncio.run(main_loop())
+
+    except KeyboardInterrupt:
+        print("Keyboard interrupt received")
+
+    finally:
+        creature.cleanup()
