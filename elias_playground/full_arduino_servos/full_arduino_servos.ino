@@ -314,9 +314,9 @@ void startReaction(char type) {
   inputLocked = true;
   pendingDone = type;
 
-  leftTargetPos  = 70;
-  rightTargetPos = 70;
-  backTargetPos  = 110;
+  leftTargetPos  = 45;
+  rightTargetPos = 90;
+  backTargetPos  = 90;
 
   servosEnabled = true;
 }
