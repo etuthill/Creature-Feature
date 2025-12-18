@@ -322,6 +322,17 @@ void startReaction(char type) {
 }
 
 void updateServos() {
+  /**
+  Moves servos to a target position (or back to start position if already in target)
+  * Behavior:
+  *   - Returns if servos disabled
+  *   - uses moveServoSmooth to move servos
+  *   - When all servos reach their targets:
+  *       * If target was not 90, resets target to 90
+  *       * If target was 90, ends by
+  *         disabling servos, unlocking inputs to allow interaction, sending "pd" or "ed" to update state machine
+  * should be called repeatedly from loop() 
+    */
   if (!servosEnabled) return;
 
   moveServoSmooth(leftServo,  leftCurrentPos,  leftTargetPos,  lastLeftServoUpdate);
@@ -350,6 +361,26 @@ void updateServos() {
 
 void moveServoSmooth(Servo &servo, int &currentPos, int targetPos,
                      unsigned long &lastUpdate) {
+  /**
+ * Smoothly moves servo towards target position.
+ *
+ * Changes servo position in small steps at a fixed time interval,
+ * producing non-blocking, time-based motion. Updates until target is reached.
+
+ * Args:
+ *   servo: servo object
+ *   currentPos: where servo is (changes by step)
+ *   targetPos: where the servo is going 
+ *   lastUpdate: timestamp of last update
+ *
+ * Behavior:
+ *   - Returns if the update interval hasn't passed
+ *   - Finds step size based on speedDegPerSec and servoInterval, - 1 degree minimum
+ *   - Moves the servo toward the target position
+ *   - Writes the updated position 
+ *
+ * should be called repeatedly - gets called from updateServos
+ */
 
   unsigned long now = millis();
   if (now - lastUpdate < servoInterval) return;
