@@ -107,10 +107,12 @@ void setup() {
   pinMode(playButton, INPUT_PULLUP);
   pinMode(backButton, INPUT_PULLUP);
 
-  // set servo pins
-  leftServo.attach(12);
-  rightServo.attach(11);
-  backServo.attach(10);
+  //Down down
+  leftServo.attach(11);
+
+  rightServo.attach(10);
+  //Down down
+  backServo.attach(12);
 
   // set servos to initial positions
   leftServo.write(servoStartPos);
@@ -315,7 +317,7 @@ void startReaction(char type) {
   pendingDone = type;
 
   leftTargetPos  = 90;
-  rightTargetPos = 45;
+  rightTargetPos = 135;
   backTargetPos  = 90;
 
   servosEnabled = true;
