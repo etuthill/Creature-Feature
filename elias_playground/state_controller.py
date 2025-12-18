@@ -96,21 +96,23 @@ class StateController:
             message = "machineIdle"
 
 
-        if message and message != self.lastState:
-            self.client.publish("state/text", message)
-            print(f"fsm -> {message}")
-            
-            # send to arduino
+        if message:
+            if message != self.lastState:
+                self.client.publish("state/text", message)
+                print(f"fsm -> {message}")
+
+            # ALWAYS tell Arduino what to do
             if message == "machineIdle":
                 self.ser.write(b"S:i\n")
-            elif message in ("sensingH",):
+            elif message == "sensingH":
                 self.ser.write(b"S:h\n")
-            elif message in ("sensingF",):
+            elif message == "sensingF":
                 self.ser.write(b"S:f\n")
             elif message in ("reactingF", "reactingP"):
                 self.ser.write(b"S:r\n")
 
             self.lastState = message
+
             
     def handle_reset(self) -> None:
         self.lastState = None
