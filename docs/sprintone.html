@@ -1,0 +1,146 @@
+<!DOCTYPE HTML>
+<!--
+	Stellar by HTML5 UP
+	html5up.net | @ajlkn
+	Free for personal and commercial use under the CCA 3.0 license (html5up.net/license)
+-->
+<html>
+
+<head>
+	<title>Design Process</title>
+	<link rel="icon" type="image/x-icon" href="images/logo cube small.png">
+	<meta charset="utf-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+	<link rel="stylesheet" href="assets/css/main.css" />
+	<noscript>
+		<link rel="stylesheet" href="assets/css/noscript.css" />
+	</noscript>
+</head>
+
+<body class="is-preload">
+
+	<!-- Wrapper -->
+	<div id="wrapper">
+
+		<!-- Header -->
+		<header id="header">
+			<h1>Creature Feature</h1>
+		</header>
+
+		<!-- Nav -->
+		<nav id="nav">
+			<ul>
+				<li><a href="index.html" class="active">Home</a></li>
+				<li><a href="FSD.html">Full System Diagram</a></li>
+				<li><a href="time.html">Timeline</a></li>
+				<li><a href="ASD.html"><b>Design Process</b></a></li>
+				<li><a href="DEF.html">Data and Energy Flow</a></li>
+				<li><a href="EDA.html">Electrical Design Analysis</a></li>
+				<li><a href="MDA.html">Mechanical Design Analysis</a></li>
+				<li><a href="FDC.html">Software Design Analysis</a></li>
+				<li><a href="BOM.html">Bill of Materials</a></li>
+			</ul>
+		</nav>
+
+		<!-- Main -->
+		<div id="main">
+			<!-- Content -->
+			<section id="content" class="main">
+                <h2>Sprint 1 Demo</h2>
+					<video width="1000" height="630" controls>
+						<source src="images/sprint 1 demo.mp4" type="video/mp4">
+						Your browser does not support the video tag.
+					</video>
+				</header>
+				<p> This shows our sprint 1 prototype in action. It is using a placeholder infrared sensor to sense when
+					something covers it in shadow. When it senses that, the servos stop moving and the LED
+					goes from green to red to symbolize that it is stopped.</p>
+
+				<p>
+					<b> Sprint 1 Mechanical Design</b><br>
+					<img src="images/sprint 1 mechanical design.png" width="800" height="800" display="block"
+						left-margin="auto" right-margin="auto" alt="claweEleAssem" class="center">
+				<p>During our first sprint, we were mainly ideating on what behaviors we wanted the creature to have and
+					how we wanted to go about making those behaviors possible.
+					We wanted to have a system that is able to do multiple motions with a limited amount of components
+					since the design has very firm space constraints.
+					We also wanted to design the creature to be able to be able to revert back to its original standing
+					position after a behavior ended.<br><br>
+					Our original design included a spine made up of six servos. We created the boxy shape of the
+					creature by attaching the frame to the servos which allows
+					it to have both a distinct shape and a moveable body. We considered having the beak be able to open
+					and close via cam when it sensed that food was in its beak. Another mechanical
+					aspect we explored was having the creature be able to vibrate by using a DC motor.<br><br>
+					We chose six servos because we could have three servos move in one axis and the other three servos
+					move in another axis. This would allow the creature to bend forward and wiggle around.
+					We wanted it to bend over and go to sleep when a blanket was put on it and we wanted it to wiggle
+					when it felt happy or excited.</p>
+				</p>
+
+				<p>
+					<b> Sprint 1 Electrical Design</b><br>
+					<img src="images/sprint 1 electrical design.png" width="1000" height="auto" display="block"
+						left-margin="auto" right-margin="auto" alt="fullAssem" class="center">
+				<p>During sprint 1, we ordered the sensor we needed. They did not arrive until after the end of sprint
+					1. As a result, we substituted an IR Distance sensor. The purpose of this was to demonstrate
+					an interaction. We paired this sensor with two servos in a demonstration of a small segment of our
+					early spine design. We also included an RGB LED that we scavanged from the Electrical Stockroom.
+					This was meant to demo how the light would correspond to interactions. All of these components were
+					hooked up to the Arduino R4 Wifi that we used throughout the project. At this point, the Arduino was
+					powered and uploaded to from a laptop.
+				</p>
+				</p>
+				<br>
+
+				<p>
+					<b> Sprint 1 Software Design</b><br>
+					<img src="images\sprint 1 software new.png" width="1000" height="auto" display="block"
+						left-margin="auto" right-margin="auto" alt="fullAssem" class="center">
+				<p>
+					Since we were focusing as a team on creature design and were lacking some of the electrical components we 
+					wanted, we designed a simple sensing loop for Sprint 1 that could integrate easily and communicate the idea 
+					of a Finite State Machine. The state diagram is pictured on the left. The creature had two states: Nothing 
+					Found and Sensor Activated. While in Nothing Found, the LED was red and the servos remained still, while 
+					in Sensor Activated the LED was green and the servos moved. The creature switched states depending on whether 
+					the sensor reading was high or low.</p>
+				<p>
+					Since Sprint 1 was primarily used for design exploration, a theoretical full state machine for the creature was also 
+					created, pictured on the right. The creature would have had three main states—Standby, Sensing, and Reacting—which 
+					would have been changed through user interactions. This control system was inspired by Tamagotchis, which feature slowly 
+					draining health bars that prompt user interaction through button presses. During Standby, the creature would have lost 
+					“health.” This would have been addressed by pressing a button to interact with the creature, initiating the Sensing mode, 
+					where the creature would have used its sensor to detect user interaction. If the user interacted successfully, the creature
+					would have played a happy animation and reset its health. A back button option was included to prevent soft locks in case 
+					the sensor failed to register interaction.
+				</p>
+				</p>
+                <ul class="actions">
+						<li><a href="ASD.html" class="button">Back to Design Process</a></li>
+				</ul>
+			</section>
+		</div>
+
+		<!-- Footer -->
+		<footer id="footer">
+			<section>
+				<h3>Back to main page</h3>
+				<li><a href="index.html" class="button">Back to Home</a></li>
+				</ul>
+			</section>
+			<p class="copyright">&copy; Creature Fearure. Design: <a href="https://html5up.net">HTML5 UP</a>.</p>
+		</footer>
+
+	</div>
+
+	<!-- Scripts -->
+	<script src="assets/js/jquery.min.js"></script>
+	<script src="assets/js/jquery.scrollex.min.js"></script>
+	<script src="assets/js/jquery.scrolly.min.js"></script>
+	<script src="assets/js/browser.min.js"></script>
+	<script src="assets/js/breakpoints.min.js"></script>
+	<script src="assets/js/util.js"></script>
+	<script src="assets/js/main.js"></script>
+
+</body>
+
+</html>

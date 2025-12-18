@@ -1,0 +1,144 @@
+<!DOCTYPE HTML>
+<!--
+	Stellar by HTML5 UP
+	html5up.net | @ajlkn
+	Free for personal and commercial use under the CCA 3.0 license (html5up.net/license)
+-->
+<html>
+
+<head>
+	<title>Design Process</title>
+	<link rel="icon" type="image/x-icon" href="images/logo cube small.png">
+	<meta charset="utf-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+	<link rel="stylesheet" href="assets/css/main.css" />
+	<noscript>
+		<link rel="stylesheet" href="assets/css/noscript.css" />
+	</noscript>
+</head>
+
+<body class="is-preload">
+
+	<!-- Wrapper -->
+	<div id="wrapper">
+
+		<!-- Header -->
+		<header id="header">
+			<h1>Creature Feature</h1>
+		</header>
+
+		<!-- Nav -->
+		<nav id="nav">
+			<ul>
+				<li><a href="index.html" class="active">Home</a></li>
+				<li><a href="FSD.html">Full System Diagram</a></li>
+				<li><a href="time.html">Timeline</a></li>
+				<li><a href="ASD.html"><b>Design Process</b></a></li>
+				<li><a href="DEF.html">Data and Energy Flow</a></li>
+				<li><a href="EDA.html">Electrical Design Analysis</a></li>
+				<li><a href="MDA.html">Mechanical Design Analysis</a></li>
+				<li><a href="FDC.html">Software Design Analysis</a></li>
+				<li><a href="BOM.html">Bill of Materials</a></li>
+			</ul>
+		</nav>
+
+		<!-- Main -->
+		<div id="main">
+			<!-- Content -->
+			<section id="content" class="main">
+                <header class="major">
+					<h2>Sprint 2</h2>
+				</header>
+				<p>
+					<b> Sprint 2 Mechanical Design</b><br>
+					<img src="images/sprint 2 mechanical design.png" width="800" height="700" display="block"
+						left-margin="auto" right-margin="auto" alt="fullAssem" class="center">
+				<p>Between our first and second sprint, we decided to make a pretty big pivot in our mechanical design.
+					After discussing with the software team, we realized that wrangling six servos
+					was outside the scope of the project. They poses an issue because they would be under stress and
+					would get further and further away from their starting
+					position which would result in the servo no longer knowing where its home position is. This would
+					mean that the creature would be unable to return to its original
+					position and calibrating and tuning six servos would cause a lot of unnecessary complexity to our
+					design.<br><br>
+					Our new design takes a different approach. Instead of having six servos, we narrowed it down to
+					three. These three servos will now pull down on strings attached to the frames of the
+					creature. This will mean that there will be less strain on the servos, and there will be less
+					complexity for the software team. This changes how the creature will actuate, but it should
+					still be able to make multiple organized behaviors with just the pulling of the strings.<br><br>
+					One of the major concerns with this new design is tensioning the strings. Having improper tension
+					could completely mess up the creature's ability to move so we needed to make sure
+					to manage the tension appropriately. Another concern is that we needed the creature to bend
+					uniformly throughout the frames. As you can see in the cardboard sketchmodel in the top left corner,
+					without any padding inbetween the frames, only the top frame bends. We added springs in the gaps of
+					the frames to help the creature bend uniformly.</p>
+				</p>
+				<p>
+					<b> Sprint 2 Electrical Design</b><br>
+					<img src="images/sprint 2 electrical design.png" width="auto" height="auto" display="block"
+						left-margin="auto" right-margin="auto" alt="fullAssem" class="center">
+				<p>During sprint 2, we received and calibrated our hall effect sensor and force sensitive resistor.
+					Above are the plots created with the data
+					taken. This allowed us to create thresholds above/below which the creature sensed being fed or pet.
+					We also got the pixel LEDs that
+					we used in the final design. Additionally, we got the Raspberry Pi 5 up and running, which meant
+					that our arduino scripts could be uploaded and
+					compiled through the Pi. We got a good portion of the full circuit built, including the Pi, Arduino,
+					two sensors, and LEDs. We already
+					had the servos we used in the final design, but did not add them to the circuit due to currant draw
+					concerns. This was around the time we transitioned to a different design that used fewer, but
+					significantly larger
+					servos. The previous servos were 60mA, and the new ones were 2A. Of the components we did wire, we
+					stuck to running one or two at a
+					time to ensure safety. It was around this time that we decided on a rough final circuit design, and
+					started thinking about bigger power supplies.
+				</p>
+				</p>
+				<p>
+					<b> Sprint 2 Software Design</b><br>
+					<img src = "images\sprint3_overall_loop (1).png" width = "800" height = "auto" display = "block" left-margin = "auto" right-margin = "auto" alt = "fullAssem">
+				<p>For Sprint 2, we focused on integrating our new sensors and pivoting our mechanical design, so the only 
+					scripts that were written were for testing and calibrating the sensors. The control software for this section 
+					was purely theoretical, but it became much more fleshed out during this sprint since we had the 
+					necessary parts to gain clearer understanding of what the creature should do. The hardware that would have 
+					been used in this system is shown in the diagram.</p>
+				<p>
+					While the overall loop appears similar to the previous sprint, the state change descriptions illustrate what each specific component would 
+					have been doing in each state and show that there were actually two versions of both the Sensing and Reacting states. 
+					One version supported the food loop, where the user selected the feed button and “fed” the creature using the hall-effect 
+					sensor, which the creature then reacted to before its hunger was reset. A second, parallel loop functioned similarly 
+					but targeted boredom instead, using the force sensor. These two action loops significantly increased the complexity of 
+					the system compared to the previous sprint.
+				</p>
+				</p>
+
+                <ul class="actions">
+						<li><a href="ASD.html" class="button">Back to Design Process</a></li>
+				</ul>
+			</section>
+		</div>
+
+		<!-- Footer -->
+		<footer id="footer">
+			<section>
+				<h3>Back to main page</h3>
+				<li><a href="index.html" class="button">Back to Home</a></li>
+				</ul>
+			</section>
+			<p class="copyright">&copy; Creature Fearure. Design: <a href="https://html5up.net">HTML5 UP</a>.</p>
+		</footer>
+
+	</div>
+
+	<!-- Scripts -->
+	<script src="assets/js/jquery.min.js"></script>
+	<script src="assets/js/jquery.scrollex.min.js"></script>
+	<script src="assets/js/jquery.scrolly.min.js"></script>
+	<script src="assets/js/browser.min.js"></script>
+	<script src="assets/js/breakpoints.min.js"></script>
+	<script src="assets/js/util.js"></script>
+	<script src="assets/js/main.js"></script>
+
+</body>
+
+</html>
