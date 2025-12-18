@@ -133,12 +133,22 @@
 					<b> Sprint 2 Electrical Design</b><br>
 					<img src="images/sprint 2 electrical design.png" width="auto" height="auto" display="block"
 						left-margin="auto" right-margin="auto" alt="fullAssem" class="center">
-				<p>Description here</p>
+				<p>During sprint 2, we received and calibrated our hall effect sensor and force sensitive resistor.
+					Above are the plots created with the data
+					taken. This allowed us to create thresholds above/below which the creature sensed being fed or pet.
+					We also got the pixel LEDs that
+					we used in the final design. Additionally, we got the Raspberry Pi 5 up and running, which meant
+					that our arduino scripts could be uploaded and
+					compiled through the Pi. We got a good portion of the full circuit built, including the Pi, Arduino,
+					two sensors, and LEDs. We already
+					had the servos we used in the final design, but did not add them to the circuit due to currant draw
+					concerns. This was around the time we transitioned to a different design that used fewer, but
+					significantly larger
+					servos. The previous servos were 60mA, and the new ones were 2A. Of the components we did wire, we
+					stuck to running one or two at a
+					time to ensure safety. It was around this time that we decided on a rough final circuit design, and
+					started thinking about bigger power supplies.
 				</p>
-				<p>
-					<img src="images/calibration.png" width="auto" height="auto" display="block" left-margin="auto"
-						right-margin="auto" alt="fullAssem" class="center">
-				<p>Description here</p>
 				</p>
 				<p>
 					<b> Sprint 2 Software Design</b><br>
@@ -193,19 +203,55 @@
 				</p>
 				<p>
 					<b> Sprint 3 Electrical Design</b><br>
-					<img src="images\sprint 3 electrical\electrical shabang.png" width="900" height="auto"
-						display="block" left-margin="auto" right-margin="auto" alt="fullAssem" class="center">
-				<p>Description here</p>
+					<img src="images/final circuit white bg.png" width="900" height="auto" display="block"
+						left-margin="auto" right-margin="auto" alt="fullAssem" class="center">
+				<p>It was during this sprint that the final circuit design was finalized, including Pin numbers that
+					could
+					be shared with software. A final power supply was ordered. The full circuit was wired and soldered
+					together the
+					same day the power supply arrived. It includes the Pi with a speaker bonnet and two speakers, two
+					OLED screens,
+					three servos, the two sensors, the pixel LEDs, and three buttons.
+				</p>
 
 				<img src="images\sprint 3 electrical\screens working.jpg" width="auto" height="700" display="block"
 					left-margin="auto" right-margin="auto" alt="fullAssem" class="center">
-				<p>Description here</p>
+				<p>When the circuit was first wired, our focus was on quick completion so testing of components and
+					inital code testing
+					could be completed. Additionally, there were no heat guns available for use during the soldering
+					process that day,
+					so electrical tape was used as a temporary substitute. Once the testing process was underway, and on
+					a day that the other software
+					subteam member was busy, wire management became the focus. We added heatshrink tubing and
+					resoldering to more appropriate lengths
+					based on the known mechanical requirements. We also made sure to properly detangle everything and
+					twist or tape things together to
+					minimize future issues.
+				</p>
 				</p>
 				<p>
-					<b> Sprint 3 Software Design</b><br>
-					<img src="img-1019555-eminem-5-musicas-do-eminem-que-so-os-maiores-fas-conhecem-ca_widelg.jpg"
-						width="300" height="auto" display="block" left-margin="auto" right-margin="auto" alt="fullAssem"
-						class="center">
+
+
+					<img src="images\sprint 3 electrical\electrical shabang.png" width="auto" height="700"
+						display="block" left-margin="auto" right-margin="auto" alt="fullAssem" class="center">
+				<p>Another major step for electrical this sprint was getting the screens up and running. We had to do
+					research on SPI control, specifically
+					with the screens we had that required 10 pins to be wired. It took significant effort and testing to
+					ensure that everything was properly secured
+					because we had a set of pins that were fairly easy to bend and we didn't have the appropriate
+					connector. The appropriate connector wouldn't have
+					been of much use to use because we were soldering the screens to the speaker bonnet breakout holes.
+					We tested continuity before applying power
+					which was good because we had to remove a small amount of solder connecting two pins. It took a full
+					day and the joint effort of software and electrical (or rather one
+					person on both subteams) to get the screens fully operational due to a lack of existing drivers that
+					would have worked for our project.
+				</p>
+				</p>
+				<b> Sprint 3 Software Design</b><br>
+				<img src="img-1019555-eminem-5-musicas-do-eminem-que-so-os-maiores-fas-conhecem-ca_widelg.jpg"
+					width="300" height="auto" display="block" left-margin="auto" right-margin="auto" alt="fullAssem"
+					class="center">
 				<p>Description here</p>
 				</p>
 			</section>
