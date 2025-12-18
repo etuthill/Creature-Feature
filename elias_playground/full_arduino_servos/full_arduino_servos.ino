@@ -168,6 +168,9 @@ bool buttonPressed(DebouncedButton &btn) {
 }
 
 void checkSerialAndState() {
+  if (state == REACTING) {
+    return;
+  }
 
   // block inputs while reacting
   bool foodPressed = !inputLocked && buttonPressed(foodBtn);
