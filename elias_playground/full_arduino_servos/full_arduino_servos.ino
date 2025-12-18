@@ -405,9 +405,9 @@ void updateServoSine() {
   float rightPos = 90 + 45 * sin(omega * t + shift);
   float backPos  = 90 + 45 * sin(omega * t);
 
-  leftServo.write(leftPos, 30, 150);
-  rightServo.write(rightPos, 30, 150);
-  backServo.write(backPos, 30, 150);
+  leftServo.write(leftPos);
+  rightServo.write(rightPos);
+  backServo.write(backPos);
 }
 
 
