@@ -97,7 +97,23 @@
 					<b> Sprint 1 Software Design</b><br>
 					<img src="images\sprint 1 software new.png" width="1000" height="auto" display="block"
 						left-margin="auto" right-margin="auto" alt="fullAssem" class="center">
-				<p>Description here</p>
+				<p>
+					Since we were focusing as a team on creature design and were lacking some of the electrical components we 
+					wanted, we designed a simple sensing loop for Sprint 1 that could integrate easily and communicate the idea 
+					of a Finite State Machine. The state diagram is pictured on the left. The creature had two states: Nothing 
+					Found and Sensor Activated. While in Nothing Found, the LED was red and the servos remained still, while 
+					in Sensor Activated the LED was green and the servos moved. The creature switched states depending on whether 
+					the sensor reading was high or low.</p>
+				<p>
+					Since Sprint 1 was primarily used for design exploration, a theoretical full state machine for the creature was also 
+					created, pictured on the right. The creature would have had three main states—Standby, Sensing, and Reacting—which 
+					would have been changed through user interactions. This control system was inspired by Tamagotchis, which feature slowly 
+					draining health bars that prompt user interaction through button presses. During Standby, the creature would have lost 
+					“health.” This would have been addressed by pressing a button to interact with the creature, initiating the Sensing mode, 
+					where the creature would have used its sensor to detect user interaction. If the user interacted successfully, the creature
+					would have played a happy animation and reset its health. A back button option was included to prevent soft locks in case 
+					the sensor failed to register interaction.
+				</p>
 				</p>
 
 				<img src="images/line.png" width="auto" height="auto" display="block" left-margin="auto"
@@ -153,7 +169,19 @@
 				<p>
 					<b> Sprint 2 Software Design</b><br>
 					<img src = "images\sprint3_overall_loop (1).png" width = "800" height = "auto" display = "block" left-margin = "auto" right-margin = "auto" alt = "fullAssem">
-				<p>Description here</p>
+				<p>For Sprint 2, we focused on integrating our new sensors and pivoting our mechanical design, so the only 
+					scripts that were written were for testing and calibrating the sensors. The control software for this section 
+					was purely theoretical, but it became much more fleshed out during this sprint since we had the 
+					necessary parts to gain clearer understanding of what the creature should do. The hardware that would have 
+					been used in this system is shown in the diagram.</p>
+				<p>
+					While the overall loop appears similar to the previous sprint, the state change descriptions illustrate what each specific component would 
+					have been doing in each state and show that there were actually two versions of both the Sensing and Reacting states. 
+					One version supported the food loop, where the user selected the feed button and “fed” the creature using the hall-effect 
+					sensor, which the creature then reacted to before its hunger was reset. A second, parallel loop functioned similarly 
+					but targeted boredom instead, using the force sensor. These two action loops significantly increased the complexity of 
+					the system compared to the previous sprint.
+				</p>
 				</p>
 
 				<img src="images/line.png" width="auto" height="auto" display="block" left-margin="auto"
@@ -252,7 +280,22 @@
 				<img src="images\sprint 3 software.png"
 					width="900" height="auto" display="block" left-margin="auto" right-margin="auto" alt="fullAssem"
 					class="center">
-				<p>Description here</p>
+				<p>With the speakers and screens wired, we were ready to integrate them into the software. The first step was 
+					writing custom drivers for both the speakers and the screens, allowing us to run audio files and animations 
+					quickly and easily using simple function calls. This approach helped keep our final state machine(s) much 
+					cleaner.</p>
+				<p>
+					Since this sprint marked our first time integrating the state machine with all of the electrical components, 
+					we opted to use the simplified state machine pictured above. In this version, we only implemented part of one 
+					possible loop of the system. This loop used all of our components except for the buttons, which were implemented later, 
+					and the servos, which would have added a significant level of complexity to testing and were therefore excluded from 
+					this initial integration.
+				</p>
+				<p>
+					Integrating this smaller portion of the state machine allowed us to debug individual aspects of the system much more 
+					quickly than if we had worked with the full implementation. It also provided the foundation needed to revise the 
+					complete state machine and made the next round of integration considerably smoother.
+				</p>
 
 				<img src="images/line.png" width="auto" height="auto" display="block" left-margin="auto"
 					right-margin="auto" alt="fullAssem" class="center">
