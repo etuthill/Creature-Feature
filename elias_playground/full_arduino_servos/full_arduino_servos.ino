@@ -215,6 +215,8 @@ void checkSerialAndState() {
         case 'r':
           state = REACTING;
           inputLocked = true;
+          sineStartTime = millis();
+          sineActive = true;
           // servosEnabled = true;
           strip.setPixelColor(2, strip.Color(0,0,0));
           strip.setPixelColor(1, strip.Color(0,0,0));
@@ -373,6 +375,7 @@ void updateServos() {
   }
 }
 void updateServoSine() {
+  if (!sineActive) return;
   unsigned long now = millis();
   unsigned long elapsed = now - sineStartTime;
 
