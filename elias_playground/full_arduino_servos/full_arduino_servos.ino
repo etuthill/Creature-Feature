@@ -129,12 +129,21 @@ void setup() {
 }
 
 void loop() {
+  static State lastState = IDLE;
+  if (state != lastState) {
+    Serial.print("[STATE] -> ");
+    Serial.println(state);
+    lastState = state;
+  }
+
   checkSerialAndState();
 
   if (state == REACTING) {
+    Serial.println("[LOOP] Calling updateServoSine()");
     updateServoSine();
   }
 }
+
 
 
 bool buttonPressed(DebouncedButton &btn) {
@@ -376,6 +385,12 @@ void updateServos() {
   }
 }
 void updateServoSine() {
+
+  static unsigned long lastPrint = 0;
+  if (millis() - lastPrint > 500) {
+    Serial.println("[SINE] updateServoSine running");
+    lastPrint = millis();
+  }
   unsigned long now = millis();
   unsigned long elapsed = now - sineStartTime;
 
