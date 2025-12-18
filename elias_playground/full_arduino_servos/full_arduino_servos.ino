@@ -11,8 +11,8 @@ unsigned long eatExitTime = 0;
 bool eatCooldownArmed = false;
 
 // sine motion params
-const float sineFrequency = 0.5;// Hz
-const unsigned long sineDuration = 5000; // ms (5 seconds)
+const float sineFrequency = 1/3;
+const unsigned long sineDuration = 10000; // ms (5 seconds)
 
 unsigned long sineStartTime = 0;
 bool sineActive = false;
@@ -396,9 +396,11 @@ void updateServoSine() {
   float t = elapsed / 1000.0;// seconds
   float omega = TWO_PI * sineFrequency;
 
-  int leftPos  = 90 - 60 * sin(omega * t);
-  int rightPos = 90 + 60 * sin(omega * t);
-  int backPos  = 90 + 60 * sin(omega * t);
+  float shift = (2*3.1415926535897932384626433832795028841971693993751058209749445923)/3;
+
+  float leftPos  = 90 - 45 * sin(omega * t - shift);
+  float rightPos = 90 + 45 * sin(omega * t + shift);
+  float backPos  = 90 + 45 * sin(omega * t);
 
   leftServo.write(constrain(leftPos,  30, 150));
   rightServo.write(constrain(rightPos, 30, 150));
