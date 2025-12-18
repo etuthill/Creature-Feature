@@ -398,9 +398,9 @@ void updateServoSine() {
 
   float shift = (2*3.1415926535897932384626433832795028841971693993751058209749445923)/3;
 
-  float leftPos  = 90 - 60 * sin(omega * t - shift);
-  float rightPos = 90 + 60 * sin(omega * t + shift);
-  float backPos  = 90 + 60 * sin(omega * t);
+  float leftPos  = 90 - 45 * sin(omega * t - shift);
+  float rightPos = 90 + 45 * sin(omega * t + shift);
+  float backPos  = 90 + 45 * sin(omega * t);
 
   leftServo.write(constrain(leftPos,  30, 150));
   rightServo.write(constrain(rightPos, 30, 150));
