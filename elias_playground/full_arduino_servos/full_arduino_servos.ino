@@ -396,8 +396,8 @@ void updateServoSine() {
   float t = elapsed / 1000.0;// seconds
   float omega = TWO_PI * sineFrequency;
 
-  int leftPos  = 90 + 60 * sin(omega * t);
-  int rightPos = 90 - 60 * sin(omega * t);
+  int leftPos  = 90 - 60 * sin(omega * t);
+  int rightPos = 90 + 60 * sin(omega * t);
   int backPos  = 90 + 60 * sin(omega * t);
 
   leftServo.write(constrain(leftPos,  30, 150));
