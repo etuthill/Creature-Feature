@@ -381,9 +381,9 @@ void updateServoSine() {
 
   // stop sine after duration
   if (elapsed >= sineDuration) {
-    leftServo.write(servoStartPos);
-    rightServo.write(servoStartPos);
-    backServo.write(servoStartPos);
+    leftServo.write(int(servoStartPos));
+    rightServo.write(int(servoStartPos));
+    backServo.write(int(servoStartPos));
 
     inputLocked = false;
     state = IDLE;
@@ -404,10 +404,6 @@ void updateServoSine() {
   float leftPos  = 90 - 45 * sin(omega * t - shift);
   float rightPos = 90 + 45 * sin(omega * t + shift);
   float backPos  = 90 + 45 * sin(omega * t);
-
-  leftServo.write(constrain(leftPos,  30, 150));
-  rightServo.write(constrain(rightPos, 30, 150));
-  backServo.write(constrain(backPos,  30, 150));
 }
 
 
