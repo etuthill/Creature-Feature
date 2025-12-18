@@ -7,8 +7,9 @@ class Hunger:
     Represents the hunger need system.
     """
 
-    def __init__(self, mqtt_client, topic: str = "anim/hunger", start_value: int = 17,
-                 hungry_threshold: int = 8, decay_range: tuple[float, float] = (1, 3)):
+    def __init__(
+            self, mqtt_client, topic: str = "anim/hunger", start_value: int = 17,
+                 hungry_threshold: int = 8, decay_range: tuple[float, float] = (5, 10)):
         self.client = mqtt_client
         self.topic = topic
         self.start_value = start_value
@@ -26,7 +27,6 @@ class Hunger:
 
         self.machineIdle = True
 
-        # --- ADDED: subscribe to shutdown topic ---
         self.client.message_callback_add("system/shutdown", self._on_shutdown_message)
         self.client.subscribe("system/shutdown")
 

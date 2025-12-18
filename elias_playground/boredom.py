@@ -14,7 +14,7 @@ class Boredom:
         topic: str = "anim/boredom",
         start_value: int = 17,
         bored_threshold: int = 8,
-        decay_range: Tuple[int, int] = (1, 3)
+        decay_range: Tuple[int, int] = (5, 10)
     ):
         self.client = mqtt_client
         self.topic = topic
