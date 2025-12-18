@@ -345,7 +345,7 @@ void updateServos() {
       rightCurrentPos == rightTargetPos &&
       backCurrentPos == backTargetPos) {
 
-    if (leftTargetPos != servoStartPos) {
+    if (leftTargetPos != servoStartPos || rightTargetPos != servoStartPos || backTargetPos != servoStartPos) {
       leftTargetPos  = servoStartPos;
       rightTargetPos = servoStartPos;
       backTargetPos  = servoStartPos;
