@@ -109,7 +109,7 @@ void setup() {
 
   //Down down
   leftServo.attach(11);
-  //Down down
+  //Down up
   rightServo.attach(10);
   //Down down
   backServo.attach(12);
@@ -318,7 +318,7 @@ void startReaction(char type) {
   pendingDone = type;
 
   leftTargetPos  = 135;
-  rightTargetPos = 135;
+  rightTargetPos = 45;
   backTargetPos  = 45;
 
   servosEnabled = true;
