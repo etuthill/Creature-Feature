@@ -344,7 +344,6 @@ void updateServos() {
       if (pendingDone == 'p') Serial.println("pd");
 
       pendingDone = '\0';
-      state = IDLE;
     }
   }
 }
