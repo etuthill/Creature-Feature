@@ -314,9 +314,9 @@ void startReaction(char type) {
   inputLocked = true;
   pendingDone = type;
 
-  leftTargetPos  = 80;
-  rightTargetPos = 80;
-  backTargetPos  = 100;
+  leftTargetPos  = 70;
+  rightTargetPos = 70;
+  backTargetPos  = 110;
 
   servosEnabled = true;
 }
@@ -357,7 +357,8 @@ void moveServoSmooth(Servo &servo, int &currentPos, int targetPos,
 
   if (currentPos == targetPos) return;
 
-  float step = speedDegPerSec * (servoInterval / 1000.0);
+  // ensure we always move at least 1 degree
+  int step = max(1, (int)(speedDegPerSec * servoInterval / 1000.0));
 
   if (currentPos < targetPos)
     currentPos = min(currentPos + step, targetPos);
