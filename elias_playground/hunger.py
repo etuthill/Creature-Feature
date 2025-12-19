@@ -94,7 +94,6 @@ class Hunger:
     def resume(self):
         self.machineIdle = True
 
-    # --- ADDED: handle shutdown MQTT message ---
     def _on_shutdown_message(self, client, userdata, msg):
         if msg.payload.decode().upper() == "STOP":
             print("Hunger received shutdown command")

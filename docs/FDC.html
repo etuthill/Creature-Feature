@@ -5,90 +5,155 @@
 	Free for personal and commercial use under the CCA 3.0 license (html5up.net/license)
 -->
 <html>
-	<head>
-		<title>Firmware Design and Code</title>
-		<link rel="icon" type="image/x-icon" href="images/logo cube small.png">
-		<meta charset="utf-8" />
-		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
-		<link rel="stylesheet" href="assets/css/main.css" />
-		<noscript><link rel="stylesheet" href="assets/css/noscript.css" /></noscript>
-	</head>
-	<body class="is-preload">
 
-		<!-- Wrapper -->
-			<div id="wrapper">
+<head>
+	<title>Firmware Design and Code</title>
+	<link rel="icon" type="image/x-icon" href="images/logo cube small.png">
+	<meta charset="utf-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+	<link rel="stylesheet" href="assets/css/main.css" />
+	<noscript>
+		<link rel="stylesheet" href="assets/css/noscript.css" />
+	</noscript>
+</head>
 
-				<!-- Header -->
-					<header id="header">
-						<h1>Creature Feature</h1>
-					</header>
+<body class="is-preload">
 
-				<!-- Nav -->
-				<nav id="nav">
-					<ul>
-						<li><a href="index.html" class="active">Home</a></li>
-						<li><a href="FSD.html">Full System Diagram</a></li>
-						<li><a href="time.html">Timeline</a></li>
-						<li><a href="ASD.html">Design Process</a></li>
-						<li><a href="DEF.html">Data and Energy Flow</a></li>
-						<li><a href="EDA.html">Electrical Design Analysis</a></li>
-						<li><a href="MDA.html">Mechanical Design Analysis</a></li>
-						<li><a href="FDC.html"><b>Software Design Analysis</b></a></li>
-						<li><a href="BOM.html">Bill of Materials</a></li>
-					</ul>
-				</nav>
+	<!-- Wrapper -->
+	<div id="wrapper">
 
-				<!-- Main -->
-					<div id="main">
+		<!-- Header -->
+		<header id="header">
+			<h1>Creature Feature</h1>
+		</header>
 
-						<!-- Content -->
-							<section id="content" class="main">
-								<h2>Software Design</h2>
-								<h3>Software Diagram</h3>
-								<div style="text-align: center;">
-									<img src = "images\software diagram.png" width = "1000" height = "auto" display = "block" left-margin = "auto" right-margin = "auto" alt = "flow-chart">
-								</div>
-								<p>
-									Description 
-								</p>
-								<img src="images\normal_blink.gif" width="300" height="auto" display="block"
-								left-margin="auto" right-margin="auto" alt="fullAssem" class="center">
-								<img src="images\starry.gif" width="300" height="auto" display="block"
-								left-margin="auto" right-margin="auto" alt="fullAssem" class="center">
-								<img src="images\narrowing_food.gif" width="300" height="auto" display="block"
-								left-margin="auto" right-margin="auto" alt="fullAssem" class="center">
-								<p>
-									Here are GIFs of the eye animations for the OLED screens. 
-								</p>
+		<!-- Nav -->
+		<nav id="nav">
+			<ul>
+				<li><a href="index.html" class="active">Home</a></li>
+				<li><a href="FSD.html">Full System Diagram</a></li>
+				<li><a href="time.html">Timeline</a></li>
+				<li><a href="ASD.html">Design Process</a></li>
+				<li><a href="DEF.html">Data and Energy Flow</a></li>
+				<li><a href="EDA.html">Electrical Design Analysis</a></li>
+				<li><a href="MDA.html">Mechanical Design Analysis</a></li>
+				<li><a href="FDC.html"><b>Software Design Analysis</b></a></li>
+				<li><a href="BOM.html">Bill of Materials</a></li>
+			</ul>
+		</nav>
 
-							</section>
-                            <section id="content" class="main">
-								<h2>Source Code</h2>
-								<a href="https://github.com/etuthill/Creature-Feature" target="_blank">Visit the Source Code Repository</a>
-							</section>
+		<!-- Main -->
+		<div id="main">
 
-					</div>
+			<!-- Content -->
+			<section id="content" class="main">
+				<h2>Software Design</h2>
+				<h3>Software Diagram</h3>
+				<div style="text-align: center;">
+					<img src="images\final software diagram.png" width="1000" height="auto" display="block"
+						left-margin="auto" right-margin="auto" alt="flow-chart">
+				</div>
+				<p>
+					Our final control system consists of five python scripts run simultaneously through a sixth script
+					called run_everthing.py, and an Arduino script. The Python scripts communication with each
+					other through the use of the python library Mosquitto. The Arduino communicates with the rest of the
+					system through one script that sends and receives serial information. The python scripts are the
+					following:
+					<br><br>
+					state_controller.py: <br>
+					Acts as a finite state machine (FSM) controller that connects the Arduino to the rest of the system.
+					It listens for short messages sent from the Arduino over a serial connection, figures out what state
+					the system should be in (idle, sensing, or reacting), and publishes those updates over MQTT when the
+					state changes.
+					It also sends commands back to the Arduino so the hardware knows what to do next.
+					It also listens for MQTT messages to handle resets and trigger behaviors like hunger or boredom
+					animations, and it takes care of startup and reset logic so the system doesn't get out of sync.
+					<br><br>
+					machine_idle.py: <br>
+					This node handles what the machine does when it’s in the idle state. It keeps track of two internal
+					needs (hunger and boredom) and lets them slowly decrease over time.
+					Based on those values, it decides whether the machine is just idle, hungry, bored, or “hangry”,
+					and publishes that over MQTT when it changes. The node listens for FSM updates so it knows when the
+					machine leaves idle to start sensing or reacting, at which point it pauses the need timers, and it
+					resets the appropriate need when the machine eats or plays.
+					Overall, it acts as the background logic that determines idle behaviors and animations when nothing
+					else is happening.
+					<br><br>
+					hunger.py and boredom.py:<br>
+					These contain two classes that manage the creature’s need: hunger and boredom.
+					Each one slowly counts down over time using an asynchronous timer (only while the machine is idle)
+					and publishes its current value over MQTT as it decreases.
+					When the value drops below a threshold, the need is considered active (hungry or bored), which other
+					parts of the system can react to.
+					Both systems pause while the machine is sensing or reacting, reset when the machine eats or plays,
+					and can be shut down via a shared MQTT shutdown message.
+					<br><br>
+					audio_screen_drivers.py: <br>
+					This script handles the creature’s screens and speakers. It drives two SPI OLED screens and the
+					speakers, listens for messages over MQTT, and changes animations and sounds based on the current
+					state.
+					Depending on whether the machine is idle, hungry, bored, eating, playing, or hangry,
+					it starts the corresponding eye animation in a background thread and plays looping or interval-based
+					sounds.
+					In some ways, this was one of the most complex scripts to write because we had to write drivers from
+					scratch and take care to avoid screen corruption.
+					<br><br>
+					full_arduino_servos.ino: <br>
+					This runs the hardware side of the system, handling buttons, sensors, LEDs, and servo motion while
+					talking to state_controller.py over serial.
+					It reads the hall effect sensor in the beak and force sensor on top of the head to detect eating and
+					petting, buttons, and sends state transitions back to
+					the controller using short serial messages. When the machine enters a reacting state, it locks
+					inputs and plays servo animations then returns to idle and sends a message that it’s done.
+					The sketch also controls three NeoPixel LEDs to give visual feedback for hunger and boredom levels
+					and carefully manages timing so all interactions remain non-blocking.
+					This script was not fully functional for demo day, and servo information was commented out. We later
+					went back in and did more work.
 
-				<!-- Footer -->
-					<footer id="footer">
-						<section>
-							<h3>Back to main page</h3>
-								<li><a href="index.html" class="button">Back to Home</a></li>
-							</ul>
-						</section>
-						<p class="copyright">&copy; Creature Feature. Design: <a href="https://html5up.net">HTML5 UP</a>.</p>
-					</footer>
 
-			</div>
 
-		<!-- Scripts -->
-			<script src="assets/js/jquery.min.js"></script>
-			<script src="assets/js/jquery.scrollex.min.js"></script>
-			<script src="assets/js/jquery.scrolly.min.js"></script>
-			<script src="assets/js/browser.min.js"></script>
-			<script src="assets/js/breakpoints.min.js"></script>
-			<script src="assets/js/util.js"></script>
-			<script src="assets/js/main.js"></script>
 
-	</body>
+					<img src="images\normal_blink.gif" width="300" height="auto" display="block" left-margin="auto"
+						right-margin="auto" alt="fullAssem" class="center">
+					<img src="images\starry.gif" width="300" height="auto" display="block" left-margin="auto"
+						right-margin="auto" alt="fullAssem" class="center">
+					<img src="images\narrowing_food.gif" width="300" height="auto" display="block" left-margin="auto"
+						right-margin="auto" alt="fullAssem" class="center">
+				<p>
+					Here are GIFs of the eye animations for the OLED screens. They did not record well. These gifs are
+					imperfect because the eyes consist of a start animation and a loop and these only show a loop.
+				</p>
+
+			</section>
+			<section id="content" class="main">
+				<h2>Source Code</h2>
+				<a href="https://github.com/etuthill/Creature-Feature" target="_blank">Visit the Source Code
+					Repository</a>
+			</section>
+
+		</div>
+
+		<!-- Footer -->
+		<footer id="footer">
+			<section>
+				<h3>Back to main page</h3>
+				<li><a href="index.html" class="button">Back to Home</a></li>
+				</ul>
+			</section>
+			<p class="copyright">&copy; Creature Feature. Design: <a href="https://html5up.net">HTML5 UP</a>.</p>
+		</footer>
+
+	</div>
+
+	<!-- Scripts -->
+	<script src="assets/js/jquery.min.js"></script>
+	<script src="assets/js/jquery.scrollex.min.js"></script>
+	<script src="assets/js/jquery.scrolly.min.js"></script>
+	<script src="assets/js/browser.min.js"></script>
+	<script src="assets/js/breakpoints.min.js"></script>
+	<script src="assets/js/util.js"></script>
+	<script src="assets/js/main.js"></script>
+
+</body>
+
 </html>
